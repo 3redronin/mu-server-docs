@@ -8,17 +8,17 @@ if [[ -f 'pom.xml' ]];
 then
 
   scp deploy.sh ubuntu@muserver.io:~
-  mvn -B releaser:release
-#  mvn clean package
+#  mvn -B releaser:release
+  mvn clean package
   scp target/docs-*.jar ubuntu@muserver.io:~
-  ssh ubuntu@muserver.io 'bash deploy.sh'
+  ssh ubuntu@muserver.io "bash deploy.sh $(basename target/docs-*.jar)"
 
 else
 
   ls -la
   pkill -15 -f 'docs' || echo "Nothing killed"
 
-  nohup java -jar docs*.jar &
+  nohup java -jar $1 &
 
   tail -f logs/mudocs.log
 

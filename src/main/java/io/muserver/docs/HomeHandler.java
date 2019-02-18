@@ -7,18 +7,18 @@ import org.jtwig.JtwigModel;
 
 import java.util.Map;
 
-public class HomeHandler extends ViewHandler implements RouteHandler {
+public class HomeHandler implements RouteHandler {
 
-    public HomeHandler(boolean isLocal) {
-        super(isLocal);
+    private final TemplateLoader loader;
+    public HomeHandler(TemplateLoader loader) {
+        this.loader = loader;
     }
 
     @Override
     public void handle(MuRequest request, MuResponse response, Map<String, String> pathParams) throws Exception {
-        JtwigModel model = model();
-        render(response, "home", model);
+        JtwigModel model = App.model();
+        response.contentType("text/html");
+        loader.load("home").render(model, response.outputStream());
     }
-
-
 
 }
