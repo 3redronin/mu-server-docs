@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mu Server</title>
+    <link rel="stylesheet" href="/prism/prism-1.15.0.css">
+    <link rel="stylesheet" href="/mu.css">
+</head>
+<body>
+
+<header>
+    <h1>Mu Server</h1>
+    <p>Java's modern web server</p>
+</header>
+<main>
+    <h2>Quick start</h2>
+
+    <p>Add one dependency...</p>
+
+    {% include "incs/maven.html" %}
+
+    <p>...and say hello:</p>
+
+    <pre><code class="language-java">import io.muserver.*;
+
+public class Hello {
+    public static void main(String[] args) {
+        MuServer server = MuServerBuilder.httpServer()
+            .addHandler(Method.GET, "/", (request, response, pathParams) -> {
+                response.write("Hello, world");
+            })
+            .start();
+        System.out.println("Started server at " + server.uri());
+    }
+}</code></pre>
+
+
+    <h2>Features</h2>
+
+    <ul>
+        <li>Simple static resource handling</li>
+        <li>Extremely simple HTTPS configuration</li>
+        <li>Server Sent Events</li>
+        <li>JAX-RS Rest support with no extra dependencies</li>
+        <li>Automatic documentation for rest services</li>
+        <li>Simple CORS support for JAX-RS</li>
+        <li>File Upload support</li>
+        <li>Trivial support for streaming data</li>
+        <li>Support for Range requests</li>
+        <li>Optional async handling</li>
+        <li>Path contexts</li>
+        <li>Header parsers for some common header types</li>
+        <li>Statistics</li>
+        <li>GZIP</li>
+
+    </ul>
+
+    <p>For more info see <a href="https://github.com/3redronin/mu-server">https://github.com/3redronin/mu-server</a>
+
+        or check out the <a href="https://www.javadoc.io/doc/io.muserver/mu-server">Java docs</a>.</p>
+
+</main>
+</body>
+<script src="/prism/prism-1.15.0.min.js"></script>
+</html>
