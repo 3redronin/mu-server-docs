@@ -44,7 +44,9 @@ public class SourceCodeInjector extends SimpleJtwigFunction {
                 code = code.substring(code.indexOf("public class "));
             }
 
-            return "<pre><code class=\"language-" + lang + "\">" + code + "</pre></code>";
+            return "<pre><code class=\"language-" + lang + "\">" + code + "</pre></code>" +
+                "<a class=\"github-link\" href=\"https://github.com/3redronin/mu-server-docs/blob/master/src/main/java/io/muserver/docs/samples/"
+                + Mutils.urlEncode(name) + "\">(see full file)</a>";
         } catch (Exception e) {
             log.error("Error rendering source code", e);
             return "Error";

@@ -53,3 +53,9 @@ th, td {
 tr:nth-of-type(even) {
     background-color: #eaeffe;
 }
+
+a.github-link {
+    display: block;
+    margin: 2px 0 15px 0;
+    font-size: smaller;
+}
