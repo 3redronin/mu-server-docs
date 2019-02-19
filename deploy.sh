@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-
 set -e
 set -x
 
@@ -16,7 +15,7 @@ then
 else
 
   ls -la
-  pkill -15 -f 'docs' || echo "Nothing killed"
+  pkill 'java' || echo "Nothing killed"
 
   nohup java -jar $1 &
 

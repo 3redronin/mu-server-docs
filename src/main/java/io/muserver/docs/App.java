@@ -71,7 +71,7 @@ public class App {
                 if (isLocal) {
                     template = JtwigTemplate.fileTemplate(new File(viewBase, relativePath + ".html"), config);
                 } else {
-                    template = JtwigTemplate.classpathTemplate("/" + relativePath + ".html");
+                    template = JtwigTemplate.classpathTemplate("/views/" + relativePath + ".html");
                 }
                 try (OutputStream out = new BufferedOutputStream(response.outputStream(), 4096)) {
                     template.render(model, out);
