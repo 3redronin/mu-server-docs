@@ -3,9 +3,9 @@ package io.muserver.docs;
 import io.muserver.*;
 import io.muserver.docs.handlers.HomeHandler;
 import io.muserver.docs.handlers.MutilsHandler;
+import io.muserver.docs.handlers.ResourceHandlingHandler;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
-import org.jtwig.environment.DefaultEnvironmentConfiguration;
 import org.jtwig.environment.EnvironmentConfiguration;
 import org.jtwig.environment.EnvironmentConfigurationBuilder;
 import org.slf4j.Logger;
@@ -38,6 +38,7 @@ public class App {
             })
             .addHandler(Method.GET, "/", new HomeHandler(renderer))
             .addHandler(Method.GET, "/mutils", new MutilsHandler(renderer))
+            .addHandler(Method.GET, "/resources", new ResourceHandlingHandler(renderer))
             .addHandler(fileOrClasspath("src/main/resources/web", "/web"))
             .start();
 
@@ -48,7 +49,10 @@ public class App {
     private static ViewRenderer getTemplateLoader(boolean isLocal) throws IOException {
         File viewBase;
         EnvironmentConfigurationBuilder builder = EnvironmentConfigurationBuilder.configuration()
-            .escape().withInitialEngine("html").and();
+            .escape().withInitialEngine("html")
+            .and()
+            .functions().add(new SourceCodeInjector(isLocal))
+            .and();
         if (isLocal) {
             viewBase = new File("src/main/resources/views").getCanonicalFile();
             if (!viewBase.isDirectory()) {
@@ -71,7 +75,7 @@ public class App {
                 if (isLocal) {
                     template = JtwigTemplate.fileTemplate(new File(viewBase, relativePath + ".html"), config);
                 } else {
-                    template = JtwigTemplate.classpathTemplate("/views/" + relativePath + ".html");
+                    template = JtwigTemplate.classpathTemplate("/views/" + relativePath + ".html", config);
                 }
                 try (OutputStream out = new BufferedOutputStream(response.outputStream(), 4096)) {
                     template.render(model, out);
