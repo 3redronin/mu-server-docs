@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{title}}</title>
+    <link rel="stylesheet" href="/prism/prism-1.15.0.css">
+    <link rel="stylesheet" href="/mu.css">
+    {% block head %}
+    {% endblock %}
+</head>
+<body>
+
+<header>
+    <h1>Mu Server</h1>
+    <p>Java's modern web server</p>
+</header>
+<main>
+    <h2>{{title}}</h2>
+
+    {% block main %}
+    {% endblock %}
+
+</main>
+</body>
+<script src="/prism/prism-1.15.0.min.js"></script>
+</html>

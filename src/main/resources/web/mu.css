@@ -26,3 +26,23 @@ main {
     padding: 20px;
     max-width: 1000px;
 }
+
+table {
+    border-collapse: collapse;
+}
+
+th {
+    text-align: left;
+}
+
+thead {
+    background-color: #c0d4e3;
+}
+
+th, td {
+    padding: 3px;
+}
+
+tr:nth-of-type(even) {
+    background-color: #eaeffe;
+}

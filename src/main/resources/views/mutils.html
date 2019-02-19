@@ -1,0 +1,26 @@
+{% extends "template.html" %}
+{% block main %}
+
+The <a href="https://www.javadoc.io/page/io.muserver/mu-server/latest/io/muserver/Mutils.html">Mutils</a>
+class contains various useful utilities. Examples below:
+
+<table>
+    <thead>
+    <tr>
+        <th>Function</th>
+        <th>Input</th>
+        <th>Output</th>
+    </tr>
+    </thead>
+    <tbody>
+{% for example in examples %}
+<tr>
+    <td>{{ example.area }}</td>
+    <td><code>{{ example.input }}</code></td>
+    <td>{{ example.output }}</td>
+</tr>
+{% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
