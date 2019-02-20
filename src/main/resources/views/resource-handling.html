@@ -28,4 +28,12 @@ a short-lived cache value, while HTML pages have no cache.</p>
 that do not have any mime type or headers configured by default. To set custom headers for <code>.dan</code> files,
 you would use the following code:</p>
 
+{{ source("ResourceMimeTypes.java") | raw }}
+
+<p>You can try downloading a .dan file and viewing the response headers here: <a href="/dan-file.dan">/dan-file.dan</a></p>
+
+<h2>More details</h2>
+
+<p>See the {{ javadoc("io.muserver.handlers.ResourceHandlerBuilder") | raw }} JavaDoc for more options.</p>
+
 {% endblock %}

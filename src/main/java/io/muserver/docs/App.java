@@ -5,6 +5,7 @@ import io.muserver.docs.handlers.HomeHandler;
 import io.muserver.docs.handlers.MimeTypesHandler;
 import io.muserver.docs.handlers.MutilsHandler;
 import io.muserver.docs.handlers.ResourceHandlingHandler;
+import io.muserver.docs.samples.ResourceMimeTypes;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
 import org.jtwig.environment.EnvironmentConfiguration;
@@ -18,7 +19,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import static io.muserver.MuServerBuilder.muServer;
-import static io.muserver.handlers.ResourceHandlerBuilder.fileOrClasspath;
 
 public class App {
     private static final Logger log = LoggerFactory.getLogger(App.class);
@@ -41,7 +41,7 @@ public class App {
             .addHandler(Method.GET, "/mutils", new MutilsHandler(renderer))
             .addHandler(Method.GET, "/resources", new ResourceHandlingHandler(renderer))
             .addHandler(Method.GET, "/resources/mime-types", new MimeTypesHandler(renderer))
-            .addHandler(fileOrClasspath("src/main/resources/web", "/web"))
+            .addHandler(ResourceMimeTypes.resourceHandler())
             .start();
 
         log.info("Started at " + server.uri());
@@ -53,7 +53,7 @@ public class App {
         EnvironmentConfigurationBuilder builder = EnvironmentConfigurationBuilder.configuration()
             .escape().withInitialEngine("html")
             .and()
-            .functions().add(new SourceCodeInjector(isLocal))
+            .functions().add(new SourceCodeInjector(isLocal)).add(new JavaDocLink())
             .and();
         if (isLocal) {
             viewBase = new File("src/main/resources/views").getCanonicalFile();
