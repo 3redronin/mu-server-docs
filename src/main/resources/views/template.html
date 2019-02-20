@@ -12,16 +12,22 @@
 <body>
 
 <header>
-    <h1><a href="/" title="Go home">Mu Server</a></h1>
+    <h2><a href="/" title="Go home">Mu Server</a></h2>
     <p>Java's modern web server</p>
 </header>
 <main>
-    <h2>{{title}}</h2>
+    <h1>{{title}}</h1>
 
     {% block main %}
     {% endblock %}
 
 </main>
+<footer>
+    Mu Server is an open source web server library published under the <a
+        href="https://github.com/3redronin/mu-server/blob/master/LICENSE">MIT Licence</a>. Browse the <a
+        href="https://github.com/3redronin/mu-server">source code on
+    Github</a>.
+</footer>
 </body>
 <script src="/prism/prism-1.15.0.min.js"></script>
 </html>

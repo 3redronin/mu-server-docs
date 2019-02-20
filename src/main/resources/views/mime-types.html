@@ -1,0 +1,36 @@
+{% extends "template.html" %}
+{% block head %}
+<style>
+    .extensions, .headers {
+        font-family: monospace;
+    }
+</style>
+{% endblock %}
+{% block main %}
+
+<p>This page lists the default mime types and headers set by Mu Server as of version {{version}}.</p>
+<p>If there is no extension, then <code>application/octect-stream</code> is used or you can
+    <a href="/resources">customize these values</a>.</p>
+
+<table>
+    <thead>
+    <tr>
+        <th>Mime Type</th>
+        <th>Applies to</th>
+        <th>Gzipped</th>
+        <th>Response Headers</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for type in types %}
+    <tr>
+        <td>{{ type.mimeType }}</td>
+        <td class="extensions">{{ type.extensions }}</td>
+        <td>{{ type.gzip }}</td>
+        <td class="headers">{{ type.headers | raw }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

@@ -1,20 +1,31 @@
 {% extends "template.html" %}
 {% block main %}
 
-In the most simple case, you simply want to serve the contents of a directory:
+<p>In the most simple case, you simply want to serve the contents of a directory:</p>
 
 {{ source("ResourceHandling.java") | raw }}
 
-Or if you have bundled some static data into an uber jar, you'll want to serve it from the classpath:
+<p>Or if you have bundled some static data into an uber jar, you'll want to serve it from the classpath:</p>
 
 <pre><code class="language-java">ResourceHandlerBuilder.classpathHandler("/web")</code></pre>
 
-Or perhaps you want to serve from a local path during development, but from the classpath when it is available. In this
-case, the following builder can be used:
+<p>Or perhaps you want to serve from a local path during development and from the classpath when running as an uber jar.
+    In this case, the following builder can be used:</p>
 
 <pre><code class="language-java">ResourceHandlerBuilder.fileOrClasspath("src/main/resources/web", "/web")</code></pre>
 
-This means: "if there is a directory called <code>src/main/resources/web</code> then use that, otherwise load from
-<code>/web</code> on the classpath".
+<p>This means: "if there is a directory called <code>src/main/resources/web</code> then use that, otherwise load from
+    <code>/web</code> on the classpath".</p>
+
+<h2>Mime Types and Headers</h2>
+
+<p>Mu Server comes with some opinionated response headers. For example, Javascript and CSS files are served with
+a short-lived cache value, while HTML pages have no cache.</p>
+
+<p>You can browse the <a href="/resources/mime-types">full list of mime types and headers</a>.</p>
+
+<p>You can also customize headers based on file extensions. For example, perhaps you have <code>.dan</code> files
+that do not have any mime type or headers configured by default. To set custom headers for <code>.dan</code> files,
+you would use the following code:</p>
 
 {% endblock %}

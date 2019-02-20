@@ -21,7 +21,6 @@ public class ResourceHandlingHandler implements RouteHandler {
                 .with("title", "Static resource handling")
         );
 
-
     }
 
 }

@@ -2,6 +2,7 @@ package io.muserver.docs;
 
 import io.muserver.*;
 import io.muserver.docs.handlers.HomeHandler;
+import io.muserver.docs.handlers.MimeTypesHandler;
 import io.muserver.docs.handlers.MutilsHandler;
 import io.muserver.docs.handlers.ResourceHandlingHandler;
 import org.jtwig.JtwigModel;
@@ -39,6 +40,7 @@ public class App {
             .addHandler(Method.GET, "/", new HomeHandler(renderer))
             .addHandler(Method.GET, "/mutils", new MutilsHandler(renderer))
             .addHandler(Method.GET, "/resources", new ResourceHandlingHandler(renderer))
+            .addHandler(Method.GET, "/resources/mime-types", new MimeTypesHandler(renderer))
             .addHandler(fileOrClasspath("src/main/resources/web", "/web"))
             .start();
 
