@@ -16,7 +16,7 @@
     <thead>
     <tr>
         <th>Mime Type</th>
-        <th>Applies to</th>
+        <th>Extensions</th>
         <th>Gzipped</th>
         <th>Response Headers</th>
     </tr>
@@ -25,7 +25,7 @@
     {% for type in types %}
     <tr>
         <td>{{ type.mimeType }}</td>
-        <td class="extensions">{{ type.extensions }}</td>
+        <td class="extensions">{{ type.extensions | raw }}</td>
         <td>{{ type.gzip }}</td>
         <td class="headers">{{ type.headers | raw }}</td>
     </tr>

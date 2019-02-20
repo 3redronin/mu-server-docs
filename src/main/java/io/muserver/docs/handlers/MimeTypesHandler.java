@@ -24,7 +24,7 @@ public class MimeTypesHandler implements RouteHandler {
                 .with("title", "Mime Types")
                 .with("types", ResourceType.getResourceTypes().stream()
                     .map(rt -> {
-                        String extensions = rt.extensions.isEmpty() ? "(default)" : String.join(", ", rt.extensions);
+                        String extensions = rt.extensions.isEmpty() ? "(default)" : String.join("<br>", rt.extensions);
                         String headers = rt.headers.entries().stream()
                             .map(e -> e.getKey() + ": " + e.getValue())
                             .collect(Collectors.joining("<br>"));
