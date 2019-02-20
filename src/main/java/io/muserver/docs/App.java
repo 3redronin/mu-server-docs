@@ -69,6 +69,8 @@ public class App {
         }
         EnvironmentConfiguration config = builder.build();
 
+        String muVersion = MuServer.artifactVersion();
+
         return new ViewRenderer() {
             @Override
             public void render(MuResponse response, String relativePath, JtwigModel model) {
@@ -89,7 +91,7 @@ public class App {
             @Override
             public JtwigModel model() {
                 return new JtwigModel()
-                    .with("version", "0.19.4");
+                    .with("version", muVersion);
             }
         };
 
