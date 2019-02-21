@@ -1,0 +1,36 @@
+{% extends "template.html" %}
+{% block main %}
+
+<p>One way to route requests with a handler is by using the <code>addHandler(Method, String, RouteHandler)</code>
+    method on the {{ javadoc("io.muserver.MuServerBuilder") | raw }}.</p>
+
+<p>The path template parameter can be accessed in the <code>pathParams</code> in the handler, and the path template
+    uses the same as the JAX-RS path parameters, which means you can restrict matches using regular expressions.</p>
+
+{{ source("RoutingWithPathParams.java") | raw }}
+
+<p>Try it out:</p>
+<ul>
+    <li><a href="/routes/noparam">/routes/noparam</a></li>
+    <li><a href="/routes/strings/this-is-the-name">/routes/strings/this-is-the-name</a></li>
+    <li><a href="/routes/numbers/42">/routes/numbers/42</a></li>
+    <li><a href="/routes/numbers/hello">/routes/numbers/hello</a> (returns 404 as it's not a number)</li>
+</ul>
+
+<h2>Routing without parameters</h2>
+
+<p>A more flexible way to route is to example the request and programmatically decide whether a handler
+    should handle the request or not.</p>
+
+<p>In this case, specify a {{ javadoc("io.muserver.MuHandler") | raw }} that returns <code>true</code>
+    if the handler will handle the request, or <code>false</code> to allow the next handler in the chain
+    to potentially handle the request.</p>
+
+{{ source("RoutingWithoutPathParams.java") | raw }}
+
+<p>When a request is received by Mu Server, it loops through the handlers in the order they are
+    added to the server builder until a suitable handler is found. Because of this, handlers that return
+    <code>false</code>
+    can be used as filters, or request log writers, or can set default response headers.</p>
+
+{% endblock %}

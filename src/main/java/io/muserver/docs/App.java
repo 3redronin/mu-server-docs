@@ -39,6 +39,19 @@ public class App {
             .addHandler(Method.GET, "/https", new HttpsHandler(renderer))
             .addHandler(Method.GET, "/resources", new ResourceHandlingHandler(renderer))
             .addHandler(Method.GET, "/resources/mime-types", new MimeTypesHandler(renderer))
+
+            .addHandler(Method.GET, "/routes", new RoutingHandler(renderer))
+            .addHandler(Method.GET, "/routes/noparam", (req, resp, pathParams) -> {
+                resp.write("No parameters");
+            })
+            .addHandler(Method.GET, "/routes/strings/{name}", (req, resp, pathParams) -> {
+                String name = pathParams.get("name");
+                resp.write("The name is: " + name);
+            })
+            .addHandler(Method.GET, "/routes/numbers/{id : [0-9]+}", (req, resp, pathParams) -> {
+                int id = Integer.parseInt(pathParams.get("id"));
+                resp.write("The ID is: " + id);
+            })
             .addHandler(ResourceMimeTypes.resourceHandler())
             .start();
 
