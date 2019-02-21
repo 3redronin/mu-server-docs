@@ -1,10 +1,7 @@
 package io.muserver.docs;
 
 import io.muserver.*;
-import io.muserver.docs.handlers.HomeHandler;
-import io.muserver.docs.handlers.MimeTypesHandler;
-import io.muserver.docs.handlers.MutilsHandler;
-import io.muserver.docs.handlers.ResourceHandlingHandler;
+import io.muserver.docs.handlers.*;
 import io.muserver.docs.samples.ResourceMimeTypes;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
@@ -39,6 +36,7 @@ public class App {
             })
             .addHandler(Method.GET, "/", new HomeHandler(renderer))
             .addHandler(Method.GET, "/mutils", new MutilsHandler(renderer))
+            .addHandler(Method.GET, "/https", new HttpsHandler(renderer))
             .addHandler(Method.GET, "/resources", new ResourceHandlingHandler(renderer))
             .addHandler(Method.GET, "/resources/mime-types", new MimeTypesHandler(renderer))
             .addHandler(ResourceMimeTypes.resourceHandler())

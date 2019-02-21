@@ -8,13 +8,13 @@ import static org.junit.Assert.assertEquals;
 
 public class JavaDocLinkTest {
 
+    private final JavaDocLink link = new JavaDocLink();
+
     @Test
     public void createsJavaDocLinks() {
-        JavaDocLink link = new JavaDocLink();
         assertEquals("<a href=\"https://www.javadoc.io/page/io.muserver/mu-server/latest/io/muserver/Mutils.html\">Mutils</a>",
             link.execute(new MockRequest("io.muserver.Mutils")));
     }
-
 
     private class MockRequest extends FunctionRequest {
         private final String[] args;

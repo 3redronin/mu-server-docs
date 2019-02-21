@@ -1,0 +1,19 @@
+{% extends "template.html" %}
+{% block main %}
+
+<p>It's often useful to be able to start a server with a self-signed cert. The following code starts a web-server
+on HTTPS port 9443 with a simple handler:</p>
+
+{{ source("HttpsSelfSignedCert.java") | raw }}
+
+<h2>Signed certificates</h2>
+
+<p>To use a signed certificate, you need to create an <code>SSLContext</code> and pass it to the <code>withHttpsConfig</code>
+    method on the {{ javadoc("io.muserver.MuServerBuilder") | raw }} class.</p>
+
+<p>The {{ javadoc("io.muserver.SSLContextBuilder") | raw }} has a number of useful ways to create a context, for
+example you can load a cert from the file system, classpath, or an <code>InputStream</code>.</p>
+
+{{ source("HttpsWithCert.java") | raw }}
+
+{% endblock %}
