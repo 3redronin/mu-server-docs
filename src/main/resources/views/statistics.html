@@ -1,0 +1,29 @@
+{% extends "template.html" %}
+{% block main %}
+
+<p>The {{ javadoc("io.muserver.MuStats") | raw }} class can give you various statistics about your server.</p>
+
+{{ source("StatisticsExample.java") | raw }}
+
+<p>Here are some stats for this website:</p>
+
+<table>
+    <tr>
+        <th>Active connections</th>
+        <td style="text-align:right">{{activeConnections}}</td>
+    </tr>
+    <tr>
+        <th>Completed requests</th>
+        <td style="text-align:right">{{completedRequests}}</td>
+    </tr>
+    <tr>
+        <th>Bytes uploaded</th>
+        <td style="text-align:right">{{bytesUploaded}}</td>
+    </tr>
+    <tr>
+        <th>Bytes downloaded</th>
+        <td style="text-align:right">{{bytesDownloaded}}</td>
+    </tr>
+</table>
+
+{% endblock %}
