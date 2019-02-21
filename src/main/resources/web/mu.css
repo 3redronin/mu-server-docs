@@ -62,12 +62,14 @@ a.github-link {
 }
 
 footer {
-    margin: 100px auto 50px auto;
+    margin: 60px auto 50px auto;
     max-width: 1000px;
-    padding-top: 30px;
     border-top: #c0d4e3 solid 1px;
+}
+
+footer .yapping {
+    margin-top: 50px;
     font-size: x-small;
     font-style: italic;
     text-align: center;
-
 }
