@@ -16,7 +16,7 @@ public class HomeHandler implements RouteHandler {
 
     @Override
     public void handle(MuRequest request, MuResponse response, Map<String, String> pathParams) throws Exception {
-        renderer.render(response, "home", renderer.model());
+        renderer.render(response, "home", renderer.model().with("title", "Mu Server quick start"));
     }
 
 }

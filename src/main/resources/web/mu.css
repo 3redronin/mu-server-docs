@@ -4,26 +4,28 @@ html, body {
     font-family: Arial, serif;
 }
 
-header {
-    text-align: center;
-    padding: 20px;
-    background-color: #c0d4e3;
-    box-shadow: 0 4px 2px #888888;
+nav {
+    background-color: #051a29;
+    color: White;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
-header h1, header h2 {
-    margin: 0 0 10px 0;
-    padding: 0;
-    font-size: 40pt;
-}
-header h2 a {
-    color: black;
-    text-decoration: none;
+nav div {
+    padding: 5px;
 }
 
-header p {
-    margin: 0;
-    padding: 0;
-    font-style: italic;
+nav a, nav a:visited {
+    color: White;
+    text-decoration: none;
+}
+nav a img {
+    width: 30px; height: 30px;display: block;
+    padding: 5px;
+}
+nav a:hover {
+    color: #209CEE;
+    text-decoration: underline;
 }
 
 main {
@@ -36,7 +38,7 @@ table {
     border-collapse: collapse;
     margin-top: 20px;
     margin-bottom: 20px;
-    border-bottom: #c0d4e3 solid 1px;
+    border-bottom: #209CEE solid 1px;
 }
 
 th {
@@ -44,7 +46,7 @@ th {
 }
 
 thead {
-    background-color: #c0d4e3;
+    background-color: #209CEE;
 }
 
 th, td {
@@ -64,7 +66,7 @@ a.github-link {
 footer {
     margin: 60px auto 50px auto;
     max-width: 1000px;
-    border-top: #c0d4e3 solid 1px;
+    border-top: #209CEE solid 1px;
 }
 
 footer .yapping {
@@ -72,4 +74,13 @@ footer .yapping {
     font-size: x-small;
     font-style: italic;
     text-align: center;
+}
+
+pre {
+    background-color: #f5f2f0;
+    padding: 1em;
+    margin: .5em 0;
+}
+pre code {
+    line-height: 1.5;
 }

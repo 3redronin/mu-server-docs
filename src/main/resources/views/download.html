@@ -1,0 +1,20 @@
+{% extends "template.html" %}
+{% block main %}
+
+<h2>Maven</h2>
+
+{% include "incs/maven.html" %}
+
+<h2>Gradle</h2>
+
+<pre><code>compile group: 'io.muserver', name: 'mu-server', version: '{{version}}'</code></pre>
+
+<h2>Direct downloads</h2>
+
+<ul>
+    <li><a href="http://central.maven.org/maven2/io/muserver/mu-server/{{version}}/mu-server-{{version}}.jar">mu-server-{{version}}.jar</a></li>
+    <li><a href="http://central.maven.org/maven2/io/muserver/mu-server/{{version}}/mu-server-{{version}}-sources.jar">mu-server-{{version}}-sources.jar</a></li>
+    <li><a href="http://central.maven.org/maven2/io/muserver/mu-server/{{version}}/mu-server-{{version}}-javadoc.jar">mu-server-{{version}}-javadoc.jar</a></li>
+</ul>
+
+{% endblock %}

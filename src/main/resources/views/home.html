@@ -1,24 +1,36 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Mu Server</title>
-    <link rel="stylesheet" href="/prism/prism-1.15.0.css">
-    <link rel="stylesheet" href="/mu.css">
-    <link rel="apple-touch-icon" sizes="180x180" href="/logos/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/logos/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/logos/favicon-16x16.png">
-    <link rel="manifest" href="/site.webmanifest">
-</head>
-<body>
+{% extends "template.html" %}
+{% block head %}
+<style>
+    main>h1, footer .homeLink {
+        display: none;
+    }
+    header {
+        text-align: center;
+        margin: 30px; padding: 0;
+        background-color: #FFFF;
+    }
+    header img {
+        border: 0;
+        width: 100px;
+        height: 100px;
+    }
+
+    header p {
+        margin: 10px 0;
+        padding: 0;
+        color: Black;
+        font-size: larger;
+    }
+</style>
+{% endblock %}
+{% block main %}
 
 <header>
-    <h1>Mu Server</h1>
-    <p>Java's modern web server</p>
+    <img src="/logos/android-chrome-192x192.png" alt="Logo" title="">
+    <p>Mu Server: Java's modern web server</p>
 </header>
-<main>
-    <h2>Quick start</h2>
+
+    <h2>Quick Start</h2>
 
     <p>Add one dependency...</p>
 
@@ -65,14 +77,4 @@ public class Hello {
 
         or check out the <a href="https://www.javadoc.io/doc/io.muserver/mu-server">Java docs</a>.</p>
 
-</main>
-<footer>
-    <p class="yapping">
-        Mu Server is an open source web server library published under the <a
-            href="https://github.com/3redronin/mu-server/blob/master/LICENSE">MIT Licence</a>. Browse the <a
-            href="https://github.com/3redronin/mu-server">source code on
-        Github</a>.</p>
-</footer>
-</body>
-<script src="/prism/prism-1.15.0.min.js"></script>
-</html>
+{% endblock %}

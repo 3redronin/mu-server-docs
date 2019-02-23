@@ -35,6 +35,7 @@ public class App {
                 return false;
             })
             .addHandler(Method.GET, "/", new HomeHandler(renderer))
+            .addHandler(Method.GET, "/download", new VanillaHandler(renderer, "download", "Download Mu Server"))
             .addHandler(Method.GET, "/mutils", new MutilsHandler(renderer))
             .addHandler(Method.GET, "/https", new VanillaHandler(renderer, "https", "HTTPS Configuration"))
             .addHandler(Method.GET, "/resources", new VanillaHandler(renderer, "resource-handling", "Static resource handling"))
