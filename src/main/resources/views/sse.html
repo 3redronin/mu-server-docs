@@ -1,0 +1,24 @@
+{% extends "template.html" %}
+{% block main %}
+
+<p>Server Sent Events (SSE) allow you to publish data over a long-lived response to a client.</p>
+
+<p>To publish, create a handler and then create an {{ javadoc("io.muserver.SsePublisher") | raw }}
+publisher using the <code>SsePublisher.start(request, response)</code> method.</p>
+
+<p>The following example creates a thread that will send 1000 messages to the browser
+and then close the stream:</p>
+
+{{ source("ServerSentEventsExample.java") | raw }}
+
+<p>This page connects to the endpoint above and prints each message as it comes in:</p>
+
+{{ source("sse.html") | raw }}
+
+<p>Note that in these examples a thread is kept open per client, and each call to
+<code>send</code> is blocking. See {{ javadoc("io.muserver.AsyncSsePublisher") | raw }}
+for an async version that has callbacks.</p>
+
+
+
+{% endblock %}

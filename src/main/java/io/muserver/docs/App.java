@@ -3,6 +3,7 @@ package io.muserver.docs;
 import io.muserver.*;
 import io.muserver.docs.handlers.*;
 import io.muserver.docs.samples.ResourceMimeTypes;
+import io.muserver.docs.samples.ServerSentEventsExample;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
 import org.jtwig.environment.EnvironmentConfiguration;
@@ -42,6 +43,12 @@ public class App {
             .addHandler(Method.GET, "/resources/mime-types", new MimeTypesHandler(renderer))
             .addHandler(Method.GET, "/statistics", new StatisticsHandler(renderer))
             .addHandler(Method.GET, "/uploads", new VanillaHandler(renderer, "upload", "File Uploads"))
+            .addHandler(Method.GET, "/sse", new VanillaHandler(renderer, "sse", "Server Sent Events"))
+            .addHandler(Method.GET, "/sse", new VanillaHandler(renderer, "sse", "Server Sent Events"))
+            .addHandler(Method.GET, "/sse/counter", (request, response, pathParams) -> {
+                SsePublisher publisher = SsePublisher.start(request, response);
+                new Thread(() -> ServerSentEventsExample.count(publisher)).start();
+            })
 
             .addHandler(Method.GET, "/routes", new VanillaHandler(renderer, "routing", "Routing with path parameters"))
             .addHandler(Method.GET, "/routes/noparam", (req, resp, pathParams) -> {

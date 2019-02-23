@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SSE Example</title>
+</head>
+<body>
+
+<p>Connection status: <span class="status">not started</span></p>
+<p>Messages:</p>
+<div class="messages"></div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', _ => {
+        let $ = document.querySelector.bind(document);
+        let status = $('.status');
+        let messages = $('.messages');
+        let source = new EventSource('/sse/counter');
+
+        source.addEventListener('open', e => {
+            console.log('Connected', e);
+            status.textContent = 'Connected';
+        });
+
+        source.addEventListener('error', e => {
+            console.log('error', e);
+            status.textContent = 'Error';
+        });
+
+        source.addEventListener('message', e => {
+            messages.appendChild(document.createTextNode(e.data));
+            messages.appendChild(document.createElement('br'));
+        });
+    });
+</script>
+
+</body>
+</html>
