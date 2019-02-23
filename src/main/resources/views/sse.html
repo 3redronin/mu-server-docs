@@ -49,4 +49,17 @@ for an async version that has callbacks.</p>
     });
 </script>
 
+<h2>JAX RS SSE Publishing</h2>
+
+<p>If using JAX-RS resources, you can use an SSE broadcaster to broadcast to multiple
+clients.</p>
+
+<p>In the following example, there is a single incrementing counter and clients can register
+to updates to the counter. Note that no matter how many clients are connected, they will all
+share the same counter and only a single thread is used.</p>
+
+{{ source("JaxRSBroadcastExample.java") | raw }}
+
+<p>The same HTML as for the previous example can be used.</p>
+
 {% endblock %}
