@@ -29,9 +29,10 @@ public class SourceCodeInjector extends SimpleJtwigFunction {
         try {
             String name = request.get(0).toString();
             String ext = name.substring(name.lastIndexOf('.') + 1);
+            String dir = (ext.equals("java")) ? "src/main/java/io/muserver/docs/samples" : "src/main/resources/samples";
             InputStream in;
             if (isLocal) {
-                in = new FileInputStream("src/main/java/io/muserver/docs/samples/" + name);
+                in = new FileInputStream(dir + "/" + name);
             } else {
                 in = getClass().getResourceAsStream("/samples/" + name);
             }
@@ -42,10 +43,14 @@ public class SourceCodeInjector extends SimpleJtwigFunction {
             if (ext.equals("java")) {
                 lang = "java";
                 code = code.substring(code.indexOf("public class ")).trim();
+            } else if (ext.equals("html")) {
+                lang = "markup";
+                code = code.substring(code.indexOf("<body>") + 6, code.indexOf("</body>"));
+                code = code.trim();
             }
 
             return "<pre><code class=\"language-" + lang + "\">" + Mutils.htmlEncode(code) + "</pre></code>" +
-                "<a class=\"github-link\" href=\"https://github.com/3redronin/mu-server-docs/blob/master/src/main/java/io/muserver/docs/samples/"
+                "<a class=\"github-link\" href=\"https://github.com/3redronin/mu-server-docs/blob/master/" + dir + "/"
                 + Mutils.urlEncode(name) + "\">(see full file)</a>";
         } catch (Exception e) {
             log.error("Error rendering source code", e);

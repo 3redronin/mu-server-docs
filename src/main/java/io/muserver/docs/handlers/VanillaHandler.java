@@ -23,7 +23,6 @@ public class VanillaHandler implements RouteHandler {
         renderer.render(response, viewName,
             renderer.model().with("title", title)
         );
-
     }
 
 }

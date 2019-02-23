@@ -19,7 +19,7 @@ public class StatisticsHandler implements RouteHandler {
     }
 
     @Override
-    public void handle(MuRequest request, MuResponse response, Map<String, String> pathParams) throws Exception {
+    public void handle(MuRequest request, MuResponse response, Map<String, String> pathParams) {
         MuStats stats = request.server().stats();
         renderer.render(response, "statistics",
             renderer.model()

@@ -1,0 +1,18 @@
+{% extends "template.html" %}
+{% block main %}
+
+<p>Handling file uploads is very simple, and several options for handling files are available. For example,
+you can access the uploaded file as an in memory byte array or as a string for text uploads, or you can
+save the file to disk, or access the input stream of the upload.</p>
+
+<p>Given an HTML form like this:</p>
+
+{{ source("upload.html") | raw }}
+
+<p>You can access the <code>your-file</code> upload by looking it up on the request object:</p>
+
+{{ source("UploadExample.java") | raw }}
+
+<p>Multiple file uploads are also supported. See the {{ javadoc("io.muserver.UploadedFile") | raw }} docs for more info.</p>
+
+{% endblock %}

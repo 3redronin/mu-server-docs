@@ -40,6 +40,7 @@ public class App {
             .addHandler(Method.GET, "/resources", new VanillaHandler(renderer, "resource-handling", "Static resource handling"))
             .addHandler(Method.GET, "/resources/mime-types", new MimeTypesHandler(renderer))
             .addHandler(Method.GET, "/statistics", new StatisticsHandler(renderer))
+            .addHandler(Method.GET, "/uploads", new VanillaHandler(renderer, "upload", "File Uploads"))
 
             .addHandler(Method.GET, "/routes", new VanillaHandler(renderer, "routing", "Routing with path parameters"))
             .addHandler(Method.GET, "/routes/noparam", (req, resp, pathParams) -> {
