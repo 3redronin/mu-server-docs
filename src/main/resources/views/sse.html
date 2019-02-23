@@ -19,6 +19,34 @@ and then close the stream:</p>
 <code>send</code> is blocking. See {{ javadoc("io.muserver.AsyncSsePublisher") | raw }}
 for an async version that has callbacks.</p>
 
+<h3>Try it out</h3>
 
+<p>Connection status: <span class="status">Not started. <input type="button" value="start" id="startButton"></span></p>
+<p>Messages:</p>
+<div class="messages"></div>
+
+<script>
+    document.getElementById('startButton').addEventListener('click', _ => {
+        let $ = document.querySelector.bind(document);
+        let status = $('.status');
+        let messages = $('.messages');
+        let source = new EventSource('/sse/counter');
+
+        source.addEventListener('open', e => {
+            console.log('Connected', e);
+            status.textContent = 'Connected';
+        });
+
+        source.addEventListener('error', e => {
+            console.log('error', e);
+            status.textContent = 'Error';
+        });
+
+        source.addEventListener('message', e => {
+            messages.appendChild(document.createTextNode(e.data));
+            messages.appendChild(document.createElement('br'));
+        });
+    });
+</script>
 
 {% endblock %}

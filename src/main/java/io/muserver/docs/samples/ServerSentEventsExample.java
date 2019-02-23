@@ -22,12 +22,12 @@ public class ServerSentEventsExample {
     }
 
     public static void count(SsePublisher publisher) {
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 100; i++) {
             try {
                 publisher.send("Number " + i);
                 Thread.sleep(1000);
             } catch (Exception e) {
-                System.out.println("The user has probably disconnected so stopping.");
+                // The user has probably disconnected so stopping
                 break;
             }
         }

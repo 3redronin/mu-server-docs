@@ -6,12 +6,12 @@
 </head>
 <body>
 
-<p>Connection status: <span class="status">not started</span></p>
+<p>Connection status: <span class="status">Not started. <input type="button" value="start" id="startButton"></span></p>
 <p>Messages:</p>
 <div class="messages"></div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', _ => {
+    document.getElementById('startButton').addEventListener('click', _ => {
         let $ = document.querySelector.bind(document);
         let status = $('.status');
         let messages = $('.messages');
