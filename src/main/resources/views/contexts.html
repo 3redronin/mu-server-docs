@@ -1,0 +1,54 @@
+{% extends "template.html" %}
+{% block main %}
+
+<p>To serve requests from a sub-path, add a context handler using the {{ javadoc("io.muserver.ContextHandlerBuilder") }}
+class, and then add handlers to that context.</p>
+
+<p>The request object can provide the full path, or the context path, or path relative to the context.</p>
+
+<p>Contexts can also be nested.</p>
+
+<p>The following example exposes 3 paths:</p>
+<ul>
+    <li><code>/something</code></li>
+    <li><code>/api/something</code></li>
+    <li><code>/api/nested/something</code></li>
+</ul>
+
+{{ source("ContextsExample.java") | raw }}
+
+<p>The corresponding requests have the following values:</p>
+
+<table>
+    <thead>
+    <tr>
+        <th>Full path</th>
+        <th>Context path</th>
+        <th>Relative path</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td><code>/something</code></td>
+        <td><code>/</code></td>
+        <td><code>/something</code></td>
+    </tr>
+    <tr>
+        <td><code>/api/something</code></td>
+        <td><code>/api</code></td>
+        <td><code>/something</code></td>
+    </tr>
+    <tr>
+        <td><code>/api/nested/something</code></td>
+        <td><code>/api/nested</code></td>
+        <td><code>/something</code></td>
+    </tr>
+    </tbody>
+</table>
+
+<p>One common case for contexts is hosting static data on a sub-path. To do that, just add a
+resource handler to a context. The example hosts static data at <code>/static</code>:</p>
+
+{{ source("ResourceHandlingWithContext.java") | raw }}
+
+{% endblock %}

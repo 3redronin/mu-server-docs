@@ -42,6 +42,7 @@ public class App {
             .addHandler(Method.GET, "/resources", new VanillaHandler(renderer, "resource-handling", "Static resource handling"))
             .addHandler(Method.GET, "/resources/mime-types", new MimeTypesHandler(renderer))
             .addHandler(Method.GET, "/statistics", new StatisticsHandler(renderer))
+            .addHandler(Method.GET, "/contexts", new VanillaHandler(renderer, "contexts", "Path Contexts"))
             .addHandler(Method.GET, "/uploads", new VanillaHandler(renderer, "upload", "File Uploads"))
             .addHandler(Method.GET, "/sse", new VanillaHandler(renderer, "sse", "Server Sent Events"))
             .addHandler(Method.GET, "/sse", new VanillaHandler(renderer, "sse", "Server Sent Events"))

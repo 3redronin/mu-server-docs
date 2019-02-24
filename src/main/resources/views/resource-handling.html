@@ -17,6 +17,16 @@
 <p>This means: "if there is a directory called <code>src/main/resources/web</code> then use that, otherwise load from
     <code>/web</code> on the classpath".</p>
 
+<h2>Paths</h2>
+
+<p>If you wish to serve the files from another path, you can add a resource handler to a
+{{ javadoc("io.muserver.ContextHandlerBuilder") }}. The following would server all resources from
+the <code>/web</code> classpath path on the <code>/static/</code> path:</p>
+
+{{ source("ResourceHandlingWithContext.java") | raw }}
+
+<p>See <a href="/contexts">more info about contexts</a>.</p>
+
 <h2>Mime Types and Headers</h2>
 
 <p>Mu Server comes with some opinionated response headers. For example, Javascript and CSS files are served with
