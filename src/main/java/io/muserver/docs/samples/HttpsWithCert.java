@@ -25,6 +25,8 @@ public class HttpsWithCert {
             .addHandler(Method.GET, "/", (req, resp, pp) -> resp.write("This is HTTPS"))
             .start();
 
+        server.changeSSLContext(sslContext);
+
         System.out.println("Server started at " + server.uri());
 
     }

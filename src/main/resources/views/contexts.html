@@ -1,7 +1,8 @@
 {% extends "template.html" %}
 {% block main %}
 
-<p>To serve requests from a sub-path, add a context handler using the {{ javadoc("io.muserver.ContextHandlerBuilder") }}
+<p>To serve requests from a sub-path, add a context handler using the
+    {{ javadoc("io.muserver.ContextHandlerBuilder") | raw }}
 class, and then add handlers to that context.</p>
 
 <p>The request object can provide the full path, or the context path, or path relative to the context.</p>

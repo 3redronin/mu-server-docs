@@ -16,4 +16,24 @@ example you can load a cert from the file system, classpath, or an <code>InputSt
 
 {{ source("HttpsWithCert.java") | raw }}
 
+<h2>Changing certs at runtime</h2>
+
+<p>To perform a hot change of an HTTPS certificate, construct a new SSLContext and change it using the MuServer
+server reference:</p>
+
+<pre><code class="language-java">server.changeSSLContext(sslContext);</code></pre>
+
+<h2>HSTS Handler</h2>
+
+<p>HTTP Strict-Transport-Security instructs browsers to only access your website via HTTPS. This is achieved
+by setting the <code>Strict-Transport-Security</code> response header.</p>
+
+<p>For convenience, the {{ javadoc("io.muserver.handlers.HttpsRedirectorBuilder") | raw }} class can be used
+to generate a handler to do this for you. Just tell it the HTTPS port to redirect to, and the amount of time
+the directive is valid for.</p>
+
+{{ source("HSTSExample.java") | raw }}
+
+<p>If you omit the HSTS config on this builder, it will redirect to HTTPS without setting HSTS headers.</p>
+
 {% endblock %}
