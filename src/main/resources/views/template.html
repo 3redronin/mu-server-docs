@@ -41,4 +41,16 @@
 </footer>
 </body>
 <script src="/prism/prism-1.15.0.min.js"></script>
+
+{% if (not isLocal) %}
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-59122302-2"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-59122302-2');
+</script>
+{% endif %}
+
 </html>

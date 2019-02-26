@@ -113,7 +113,8 @@ public class App {
             @Override
             public JtwigModel model() {
                 return new JtwigModel()
-                    .with("version", muVersion);
+                    .with("version", muVersion)
+                    .with("isLocal", isLocal);
             }
         };
 
