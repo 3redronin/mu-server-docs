@@ -2,6 +2,8 @@ package io.muserver.docs;
 
 import io.muserver.*;
 import io.muserver.docs.handlers.*;
+import io.muserver.docs.samples.AcmeCertManager;
+import io.muserver.docs.samples.AcmeCertManagerBuilder;
 import io.muserver.docs.samples.ResourceMimeTypes;
 import io.muserver.docs.samples.ServerSentEventsExample;
 import org.jtwig.JtwigModel;
@@ -27,9 +29,15 @@ public class App {
 
         ViewRenderer renderer = getTemplateLoader(isLocal);
 
+        AcmeCertManager acmeCertManager = isLocal ? null : AcmeCertManagerBuilder.letsEncryptStaging()
+            .withConfigDir(new File("letsencrypt"))
+            .withDomain("muserver.io")
+            .build();
+
         MuServer server = muServer()
             .withHttpPort(8080)
             .withHttpsPort(8443)
+            .withHttpsConfig(acmeCertManager == null ? null : acmeCertManager.createSSLContext())
             .addShutdownHook(true)
             .addHandler((req, resp) -> {
                 log.info("Recieved " + req + " from " + req.remoteAddress());
@@ -65,6 +73,14 @@ public class App {
             })
             .addHandler(ResourceMimeTypes.resourceHandler())
             .start();
+
+        if (acmeCertManager != null) {
+            try {
+                acmeCertManager.start(server);
+            } catch (Exception e) {
+                log.error("Error doing acme stuff", e);
+            }
+        }
 
         log.info("Started at " + server.uri());
 
