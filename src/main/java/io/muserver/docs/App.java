@@ -29,7 +29,7 @@ public class App {
 
         ViewRenderer renderer = getTemplateLoader(isLocal);
 
-        AcmeCertManager acmeCertManager = AcmeCertManagerBuilder.letsEncryptStaging()
+        AcmeCertManager acmeCertManager = AcmeCertManagerBuilder.letsEncrypt()
             .withConfigDir(new File("letsencrypt"))
             .withDomain("muserver.io")
             .disable(isLocal) // when local, a no-op manager is returned
