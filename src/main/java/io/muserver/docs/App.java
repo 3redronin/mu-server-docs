@@ -1,9 +1,9 @@
 package io.muserver.docs;
 
 import io.muserver.*;
+import io.muserver.acme.AcmeCertManager;
+import io.muserver.acme.AcmeCertManagerBuilder;
 import io.muserver.docs.handlers.*;
-import io.muserver.docs.samples.AcmeCertManager;
-import io.muserver.docs.samples.AcmeCertManagerBuilder;
 import io.muserver.docs.samples.ResourceMimeTypes;
 import io.muserver.docs.samples.ServerSentEventsExample;
 import org.jtwig.JtwigModel;
@@ -29,20 +29,21 @@ public class App {
 
         ViewRenderer renderer = getTemplateLoader(isLocal);
 
-        AcmeCertManager acmeCertManager = isLocal ? null : AcmeCertManagerBuilder.letsEncryptStaging()
+        AcmeCertManager acmeCertManager = AcmeCertManagerBuilder.letsEncryptStaging()
             .withConfigDir(new File("letsencrypt"))
             .withDomain("muserver.io")
+            .disable(isLocal) // when local, a no-op manager is returned
             .build();
 
         MuServer server = muServer()
             .withHttpPort(8080)
             .withHttpsPort(8443)
             .withHttpsConfig(acmeCertManager == null ? null : acmeCertManager.createSSLContext())
-            .addShutdownHook(true)
             .addHandler((req, resp) -> {
                 log.info("Recieved " + req + " from " + req.remoteAddress());
                 return false;
             })
+            .addHandler(acmeCertManager == null ? null : acmeCertManager.createHandler())
             .addHandler(Method.GET, "/", new HomeHandler(renderer))
             .addHandler(Method.GET, "/download", new VanillaHandler(renderer, "download", "Download Mu Server"))
             .addHandler(Method.GET, "/mutils", new MutilsHandler(renderer))
@@ -74,13 +75,16 @@ public class App {
             .addHandler(ResourceMimeTypes.resourceHandler())
             .start();
 
-        if (acmeCertManager != null) {
-            try {
-                acmeCertManager.start(server);
-            } catch (Exception e) {
-                log.error("Error doing acme stuff", e);
-            }
+        try {
+            acmeCertManager.start(server);
+        } catch (Exception e) {
+            log.error("Error doing acme stuff", e);
         }
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            acmeCertManager.stop();
+            server.stop();
+        }));
 
         log.info("Started at " + server.uri());
 
