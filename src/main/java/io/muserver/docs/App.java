@@ -38,12 +38,12 @@ public class App {
         MuServer server = muServer()
             .withHttpPort(8080)
             .withHttpsPort(8443)
-            .withHttpsConfig(acmeCertManager == null ? null : acmeCertManager.createSSLContext())
+            .withHttpsConfig(acmeCertManager.createSSLContext())
             .addHandler((req, resp) -> {
                 log.info("Recieved " + req + " from " + req.remoteAddress());
                 return false;
             })
-            .addHandler(acmeCertManager == null ? null : acmeCertManager.createHandler())
+            .addHandler(acmeCertManager.createHandler())
             .addHandler(Method.GET, "/", new HomeHandler(renderer))
             .addHandler(Method.GET, "/download", new VanillaHandler(renderer, "download", "Download Mu Server"))
             .addHandler(Method.GET, "/mutils", new MutilsHandler(renderer))
@@ -75,11 +75,7 @@ public class App {
             .addHandler(ResourceMimeTypes.resourceHandler())
             .start();
 
-        try {
-            acmeCertManager.start(server);
-        } catch (Exception e) {
-            log.error("Error doing acme stuff", e);
-        }
+        acmeCertManager.start(server);
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             acmeCertManager.stop();
