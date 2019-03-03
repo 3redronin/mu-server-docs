@@ -6,6 +6,7 @@ import io.muserver.acme.AcmeCertManagerBuilder;
 import io.muserver.docs.handlers.*;
 import io.muserver.docs.samples.ResourceMimeTypes;
 import io.muserver.docs.samples.ServerSentEventsExample;
+import io.muserver.handlers.HttpsRedirectorBuilder;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
 import org.jtwig.environment.EnvironmentConfiguration;
@@ -17,6 +18,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.concurrent.TimeUnit;
 
 import static io.muserver.MuServerBuilder.muServer;
 
@@ -44,6 +46,11 @@ public class App {
                 return false;
             })
             .addHandler(acmeCertManager.createHandler())
+            .addHandler(
+                HttpsRedirectorBuilder.toHttpsPort(443)
+                    .withHSTSExpireTime(365, TimeUnit.DAYS)
+                    .includeSubDomains(true)
+            )
             .addHandler(Method.GET, "/", new HomeHandler(renderer))
             .addHandler(Method.GET, "/download", new VanillaHandler(renderer, "download", "Download Mu Server"))
             .addHandler(Method.GET, "/mutils", new MutilsHandler(renderer))
