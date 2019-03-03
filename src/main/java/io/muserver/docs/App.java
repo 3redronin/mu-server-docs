@@ -4,6 +4,7 @@ import io.muserver.*;
 import io.muserver.acme.AcmeCertManager;
 import io.muserver.acme.AcmeCertManagerBuilder;
 import io.muserver.docs.handlers.*;
+import io.muserver.docs.samples.JaxRSDocumentationExample;
 import io.muserver.docs.samples.JaxRSExample;
 import io.muserver.docs.samples.ResourceMimeTypes;
 import io.muserver.docs.samples.ServerSentEventsExample;
@@ -25,6 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import static io.muserver.ContextHandlerBuilder.context;
 import static io.muserver.MuServerBuilder.muServer;
 
 public class App {
@@ -86,6 +88,7 @@ public class App {
                 resp.write("The ID is: " + id);
             })
             .addHandler(createRestHandler())
+            .addHandler(context("jaxrsdocs").addHandler(JaxRSDocumentationExample.createRestHandler()))
             .addHandler(ResourceMimeTypes.resourceHandler())
             .start();
 

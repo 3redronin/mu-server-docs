@@ -19,6 +19,10 @@
     <li><a href="/jaxrsexample/users/4">/jaxrsexample/users/4</a> (returns a 404)</li>
 </ul>
 
+<p>Note that the <code>RestHandlerBuilder.restHandler(resources)</code> method takes an array
+    of JAX-RS objects. It is recommended that if you have multiple resources to expose that you
+    create a single RestHandler with multiple resources attached.</p>
+
 <h2>Differences with common implementations</h2>
 
 <p>The JAX-RS implementation that comes with Mu Server is intentionally only a subset of the full spec.
@@ -80,4 +84,44 @@
     described above. To test this, copy the <a href="/openapi.json">OpenAPI JSON URL</a>
     and paste it into the text box at the <a href="https://petstore.swagger.io/">Swagger Petstore Example</a>.</p>
 
+<p>In order to provide more detail in your documentation, you can apply the {{ javadoc("io.muserver.rest.Description") |
+    raw }}
+    annotation to your JAX RS classes, methods, and parameters. Methods can also describe return values
+    by specifying an {{ javadoc("io.muserver.rest.ApiResponse") | raw }} annotation.</p>
+
+<p>To give a general introduction to your API, you can also specify extra API Info via the
+    <code>withOpenApiDocument</code>
+    on the {{ javadoc("io.muserver.rest.RestHandlerBuilder") | raw }} and set various settings
+    by using the {{ javadoc("io.muserver.openapi.OpenAPIObjectBuilder") | raw }}'s <code>openAPIObject()</code>
+    method. The following example demonstrates some of these features:</p>
+
+{{ source("JaxRSDocumentationExample.java") | raw }}
+
+<p>This results in <a href="/jaxrsdocs/api.html">this simple HTML view</a> and <a href="/jaxrsdocs/openapi.json">this
+    OpenAPI JSON</a>.</p>
+
+<p>Note: Mu Server does not support the Swagger annotations defined in the <code>io.swagger.annotations</code> package.
+</p>
+
+<h2>Filters and Security</h2>
+
+<p>Request and response filters can be added with the <code>addRequestFilter</code> and <code>addResponseFilter</code>
+    methods on the {{ javadoc("io.muserver.rest.RestHandlerBuilder") | raw }}.</p>
+
+<p>One use-case for this is for security. Mu-Server comes with a simple BasicAuth filter which
+    can be controlled by implementing Authenticator and Authorizer interfaces. See
+    <a href="https://github.com/3redronin/mu-server-docs/blob/master/src/main/java/io/muserver/docs/samples/JaxRSBasicAuth.java">JaxRSBasicAuth.java</a>
+    for a full example.</p>
+
+<h2>Custom readers, writers, and exception handlers</h2>
+
+<p>The following methods on the {{ javadoc("io.muserver.rest.RestHandlerBuilder") | raw }} can
+be used:</p>
+<ul>
+    <li><code>addCustomReader</code> which registers an object that can deserialise request bodies into custom classes.</li>
+    <li><code>addCustomWriter</code> which registers an object that can write custom classes to responses.</li>
+    <li><code>addCustomParamConverter</code> which registers a class that convert method parameter string values to and from a custom class.</li>
+    <li><code>addExceptionMapper</code> which registers a mapping from an exception type to a specific response.</li>
+</ul>
+<p>See the {{ javadoc("io.muserver.rest.RestHandlerBuilder") | raw }} javadoc for more details.</p>
 {% endblock %}
