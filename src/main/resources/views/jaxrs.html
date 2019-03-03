@@ -1,0 +1,83 @@
+{% extends "template.html" %}
+{% block main %}
+
+<p>JAX-RS is a standard way to declaratively define REST services in Java. Mu Server has a built-in
+    sub-set of JAX-RS 2.1 which allows a simple way to declare and expose REST APIs.</p>
+
+<h2>A basic example</h2>
+
+<p>In this example, there is an in-memory data structure holding user information. There is a single
+    URL defined that allows a lookup for a user based on their ID and returns the data as JSON:</p>
+
+{{ source("JaxRSExample.java") | raw }}
+
+<p>You can try out some of the URLs here:</p>
+<ul>
+    <li><a href="/jaxrsexample/users/1">/jaxrsexample/users/1</a></li>
+    <li><a href="/jaxrsexample/users/2">/jaxrsexample/users/2</a></li>
+    <li><a href="/jaxrsexample/users/3">/jaxrsexample/users/3</a></li>
+    <li><a href="/jaxrsexample/users/4">/jaxrsexample/users/4</a> (returns a 404)</li>
+</ul>
+
+<h2>Differences with common implementations</h2>
+
+<p>The JAX-RS implementation that comes with Mu Server is intentionally only a subset of the full spec.
+    The main ways it differs from common implementations is in how it handles the construction of your
+    resource classes.</p>
+
+<p>Specifically, when creating a rest server, you pass instantiated instances of your resources to the
+    constructor, which means <em>Mu Server will not instantiate any of your objects</em>. This allows you
+    to create your objects in whatever way you desire, and makes it very easy to use constructor-based
+    dependency injection, as in the example above.</p>
+
+<p>Mu Server also does not support Jackson for automatic serialisation and deserialisation of objects,
+    however you can specify your own converters if required.</p>
+
+<p>See the <a href="https://github.com/3redronin/mu-server/blob/master/src/main/java/io/muserver/rest/README.md">Mu
+    Server spec implementation page</a> for full details of what is and isn't implemented.</p>
+
+<h2>CORS Configuration</h2>
+
+<p>If browsers are connecting to your REST API from another domain, you will need to grant access
+    to the URLs that the UI runs from. This can be achieved with the
+    {{ javadoc("io.muserver.rest.CORSConfigBuilder") | raw }} class. The following example allows
+    UIs to access the REST URL from the swagger petstore site or from any localhost URL:</p>
+
+<pre><code class="language-java">RestHandlerBuilder.restHandler(resources)
+    .withCORS(
+        CORSConfigBuilder.corsConfig()
+            .withAllowedOrigins("https://petstore.swagger.io")
+            .withAllowedOriginRegex("http(s)?://localhost:[0-9]+")
+    )</code></pre>
+
+<p>The javadoc has information on more advanced options such as allowing credentials, specifying
+    allowed headers, and settings for preflight OPTIONS requests.</p>
+
+<h2>Documentation</h2>
+
+<p>Mu Server has built-in support for generating <a href="https://www.openapis.org/">OpenAPI</a>
+    specifications for your REST APIs. This means a JSON file describing your API can be optionally
+    exposed on your web server and then UIs such as <a href="https://swagger.io/">Swagger</a> can
+    be used to visualise and test your API.</p>
+
+<p>While Swagger is not built in, a very simple HTML documentation page can also be automatically
+    exposed.</p>
+
+<p>To expose documentation, use the documentation-related methods on the
+    {{ javadoc("io.muserver.rest.RestHandlerBuilder") | raw }} class:</p>
+
+<pre><code class="language-java">RestHandlerBuilder.restHandler(resources)
+    .withOpenApiJsonUrl("/openapi.json")
+    .withOpenApiHtmlUrl("/api.html")</code></pre>
+
+<p>You can see what those look like at the following links:</p>
+<ul>
+    <li><a href="/api.html">Simple readonly HTML Documentation</a></li>
+    <li><a href="/openapi.json">OpenAPI JSON</a></li>
+</ul>
+
+<p>If hosting a swagger UI at a different endpoint, you will need to add CORS configuration as
+    described above. To test this, copy the <a href="/openapi.json">OpenAPI JSON URL</a>
+    and paste it into the text box at the <a href="https://petstore.swagger.io/">Swagger Petstore Example</a>.</p>
+
+{% endblock %}
