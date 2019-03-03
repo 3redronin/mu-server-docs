@@ -1,0 +1,131 @@
+{% extends "template.html" %}
+{% block main %}
+
+<p><a href="https://letsencrypt.org/">Let's Encrypt</a> is a certificate authority that will grant
+    you free SSL certificates if you can prove you own a domain name. The protocol for granting a
+    cert in this way is called the ACME protocol, and with an optional Mu Server add-on you can
+    automate SSL certificate creation and renewal with any ACME-based certificate authority.</p>
+
+<h2>Step one: configure your domain</h2>
+
+<p>Assuming you have a domain such as <code>your-domain.example.org</code> you need to config
+    the DNS settings of that domain to point to your server.</p>
+
+<h2>Step two: use the mu-acme library to integrate the ACME server</h2>
+
+<p>Note that the ACME integration is built on top of the <a href="https://github.com/shred/acme4j">acme4j</a>
+    library, which uses other dependencies such as <a href="https://www.bouncycastle.org/java.html">Bouncy Castle</a>.
+    The mu-acme dependency brings in all the extra dependencies needed.</p>
+
+<pre><code class="language-markup">&lt;dependency&gt;
+    &lt;groupId&gt;io.muserver&lt;/groupId&gt;
+    &lt;artifactId&gt;mu-server&lt;/artifactId&gt;
+    &lt;version&gt;{{version}}&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;io.muserver&lt;/groupId&gt;
+    &lt;artifactId&gt;mu-acme&lt;/artifactId&gt;
+    &lt;version&gt;{{acmeversion}}&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+
+<p>Note: the <a href="https://github.com/3redronin/mu-acme">mu-acme source code</a> and issue tracker is on Github.</p>
+
+<h2>Step three: configure the ACME Cert Manager</h2>
+
+<p>In your startup code, you need to create a cert manager telling it which ACME service to use,
+where to write the certs and other files, and which domain name you require.</p>
+
+<p>The following example uses the Let's Encrypt staging server and starts a simple Hello World
+web server. If this is deployed on a server that the <code>your-domain.example.org</code>
+domain resolves to, then a free SSL cert will be acquired and automatically renewed every
+three months.</p>
+
+{{ source("AcmeExample.java") | raw }}
+
+<h2>More details</h2>
+
+<p>The AcmeCertManager needs to know the address of an ACME server. Convenience methods for the
+Let's Encrypt staging and production services are predefined, but any ACME service can be
+used:</p>
+
+<pre><code class="language-java">AcmeCertManagerBuilder.acmeCertManager()
+    .withAcmeServerURI(URI.create("ACME server URI"));</code></pre>
+
+<p>The config dir is where mu-acme will write various files. It is recommended that you back up
+this directory and keep it secure as it contains your ACME user key, domain private key, and
+the actual server certificate.</p>
+
+<p>With the cert manager built, you can start a server. Note that most ACME providers require you
+to have an HTTP port open on port 80. You can directly open port 80 like in the example above
+or use something like IP Tables to redirect port 80 to another port.</p>
+
+<p>The cert manager will provide the SSL context. The first time you start the server, there is
+no cert available, and a self-signed cert is temporarily used until one is acquired (which is
+typically within a few seconds). On subsequent server restarts, the cert from the <code>configDir</code>
+is used.</p>
+
+<p>The first handler you add to your server should be the handler from the cert manager. This is
+used by the library to prove that you own the domain and will not have any other effect.</p>
+
+<p>Finally, after starting the server, you need to start the cert manager. This will start a periodic
+check of the cert validity. If the cert is due to expire within 3 days, then a new cert is acquired
+and Mu Server will start using the new cert. No restart or manual intervention required.</p>
+
+<h3>HSTS and redirects</h3>
+
+<p>Mu Server provides a handler which can redirect all traffic to HTTPS and set HSTS headers.
+Just add the following handler AFTER the acme handler when building the server:</p>
+
+<pre><code class="language-java">.addHandler(certManager.createHandler())
+.addHandler(
+    HttpsRedirectorBuilder.toHttpsPort(443)
+        .withHSTSExpireTime(365, TimeUnit.DAYS)
+        .includeSubDomains(true)
+)</code></pre>
+
+<h2>Running locally</h2>
+
+<p>The <code>AcmeCertManagerBuilder</code> has a <code>disable(boolean)</code> method.
+    If you pass true to this method
+    when building the manager, then a no-op manager will be returned. You can then use the cert
+    manager as if it was a real one, however no certs will be requested and a self-signed cert
+    will be used.</p>
+
+<h2>Packaging into an uber jar</h2>
+
+<p>If packaged as an uber jar, you will need to exclude some files.
+    The following is an example using the <code>maven-shade-plugin</code>:</p>
+
+<pre><code class="language-markup">&lt;plugin&gt;
+    &lt;groupId&gt;org.apache.maven.plugins&lt;&#x2F;groupId&gt;
+    &lt;artifactId&gt;maven-shade-plugin&lt;&#x2F;artifactId&gt;
+    &lt;version&gt;2.4.3&lt;&#x2F;version&gt;
+    &lt;executions&gt;
+        &lt;execution&gt;
+            &lt;phase&gt;package&lt;&#x2F;phase&gt;
+            &lt;goals&gt;
+                &lt;goal&gt;shade&lt;&#x2F;goal&gt;
+            &lt;&#x2F;goals&gt;
+            &lt;configuration&gt;
+                &lt;transformers&gt;
+                    &lt;transformer implementation=&quot;org.apache.maven.plugins.shade.resource.ManifestResourceTransformer&quot;&gt;
+                        &lt;mainClass&gt;org.example.yourapp.App&lt;&#x2F;mainClass&gt;
+                    &lt;&#x2F;transformer&gt;
+                &lt;&#x2F;transformers&gt;
+                &lt;filters&gt;
+                    &lt;filter&gt;
+                        &lt;artifact&gt;*:*&lt;&#x2F;artifact&gt;
+                        &lt;excludes&gt;
+                            &lt;exclude&gt;META-INF&#x2F;*.SF&lt;&#x2F;exclude&gt;
+                            &lt;exclude&gt;META-INF&#x2F;*.DSA&lt;&#x2F;exclude&gt;
+                            &lt;exclude&gt;META-INF&#x2F;*.RSA&lt;&#x2F;exclude&gt;
+                        &lt;&#x2F;excludes&gt;
+                    &lt;&#x2F;filter&gt;
+                &lt;&#x2F;filters&gt;
+            &lt;&#x2F;configuration&gt;
+        &lt;&#x2F;execution&gt;
+    &lt;&#x2F;executions&gt;
+&lt;&#x2F;plugin&gt;</code></pre>
+
+
+{% endblock %}

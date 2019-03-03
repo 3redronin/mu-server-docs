@@ -26,7 +26,6 @@ public class App {
     private static final Logger log = LoggerFactory.getLogger(App.class);
 
     public static void main(String[] args) throws Exception {
-
         boolean isLocal = args.length == 1 && args[0].equals("local");
 
         ViewRenderer renderer = getTemplateLoader(isLocal);
@@ -59,6 +58,7 @@ public class App {
             .addHandler(Method.GET, "/resources/mime-types", new MimeTypesHandler(renderer))
             .addHandler(Method.GET, "/statistics", new StatisticsHandler(renderer))
             .addHandler(Method.GET, "/contexts", new VanillaHandler(renderer, "contexts", "Path Contexts"))
+            .addHandler(Method.GET, "/letsencrypt", new LetsEncryptHandler(renderer))
             .addHandler(Method.GET, "/uploads", new VanillaHandler(renderer, "upload", "File Uploads"))
             .addHandler(Method.GET, "/sse", new VanillaHandler(renderer, "sse", "Server Sent Events"))
             .addHandler(Method.GET, "/sse", new VanillaHandler(renderer, "sse", "Server Sent Events"))
