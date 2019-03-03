@@ -6,6 +6,9 @@
     cert in this way is called the ACME protocol, and with an optional Mu Server add-on you can
     automate SSL certificate creation and renewal with any ACME-based certificate authority.</p>
 
+<p>Note that unlike many Let's Encrypt integrations, you do not need to install any cert-bots or
+    pre-configure your server in anyway. Instead, just configure DNS and deploy your code.</p>
+
 <h2>Step one: configure your domain</h2>
 
 <p>Assuming you have a domain such as <code>your-domain.example.org</code> you need to config
@@ -33,48 +36,48 @@
 <h2>Step three: configure the ACME Cert Manager</h2>
 
 <p>In your startup code, you need to create a cert manager telling it which ACME service to use,
-where to write the certs and other files, and which domain name you require.</p>
+    where to write the certs and other files, and which domain name you require.</p>
 
 <p>The following example uses the Let's Encrypt staging server and starts a simple Hello World
-web server. If this is deployed on a server that the <code>your-domain.example.org</code>
-domain resolves to, then a free SSL cert will be acquired and automatically renewed every
-three months.</p>
+    web server. If this is deployed on a server that the <code>your-domain.example.org</code>
+    domain resolves to, then a free SSL cert will be acquired and automatically renewed every
+    three months.</p>
 
 {{ source("AcmeExample.java") | raw }}
 
 <h2>More details</h2>
 
 <p>The AcmeCertManager needs to know the address of an ACME server. Convenience methods for the
-Let's Encrypt staging and production services are predefined, but any ACME service can be
-used:</p>
+    Let's Encrypt staging and production services are predefined, but any ACME service can be
+    used:</p>
 
 <pre><code class="language-java">AcmeCertManagerBuilder.acmeCertManager()
     .withAcmeServerURI(URI.create("ACME server URI"));</code></pre>
 
 <p>The config dir is where mu-acme will write various files. It is recommended that you back up
-this directory and keep it secure as it contains your ACME user key, domain private key, and
-the actual server certificate.</p>
+    this directory and keep it secure as it contains your ACME user key, domain private key, and
+    the actual server certificate.</p>
 
 <p>With the cert manager built, you can start a server. Note that most ACME providers require you
-to have an HTTP port open on port 80. You can directly open port 80 like in the example above
-or use something like IP Tables to redirect port 80 to another port.</p>
+    to have an HTTP port open on port 80. You can directly open port 80 like in the example above
+    or use something like IP Tables to redirect port 80 to another port.</p>
 
 <p>The cert manager will provide the SSL context. The first time you start the server, there is
-no cert available, and a self-signed cert is temporarily used until one is acquired (which is
-typically within a few seconds). On subsequent server restarts, the cert from the <code>configDir</code>
-is used.</p>
+    no cert available, and a self-signed cert is temporarily used until one is acquired (which is
+    typically within a few seconds). On subsequent server restarts, the cert from the <code>configDir</code>
+    is used.</p>
 
 <p>The first handler you add to your server should be the handler from the cert manager. This is
-used by the library to prove that you own the domain and will not have any other effect.</p>
+    used by the library to prove that you own the domain and will not have any other effect.</p>
 
 <p>Finally, after starting the server, you need to start the cert manager. This will start a periodic
-check of the cert validity. If the cert is due to expire within 3 days, then a new cert is acquired
-and Mu Server will start using the new cert. No restart or manual intervention required.</p>
+    check of the cert validity. If the cert is due to expire within 3 days, then a new cert is acquired
+    and Mu Server will start using the new cert. No restart or manual intervention required.</p>
 
 <h3>HSTS and redirects</h3>
 
 <p>Mu Server provides a handler which can redirect all traffic to HTTPS and set HSTS headers.
-Just add the following handler AFTER the acme handler when building the server:</p>
+    Just add the following handler AFTER the acme handler when building the server:</p>
 
 <pre><code class="language-java">.addHandler(certManager.createHandler())
 .addHandler(
