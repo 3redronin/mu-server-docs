@@ -32,7 +32,7 @@
         <dependency>
             <groupId>io.muserver</groupId>
             <artifactId>mu-acme</artifactId>
-            <version>0.0.4</version>
+            <version>RELEASE</version>
         </dependency>
 
         <dependency>
