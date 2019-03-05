@@ -2,22 +2,29 @@ package io.muserver.docs.samples;
 
 import io.muserver.Method;
 import io.muserver.MuServer;
+import io.muserver.SSLCipherFilter;
 import io.muserver.SSLContextBuilder;
 
-import javax.net.ssl.SSLContext;
 import java.io.File;
+import java.util.List;
+import java.util.Set;
 
 import static io.muserver.MuServerBuilder.muServer;
 
 public class HttpsWithCert {
     public static void main(String[] args) {
 
-        SSLContext sslContext = SSLContextBuilder.sslContext()
+        SSLContextBuilder sslContext = SSLContextBuilder.sslContext()
             .withKeystoreType("JKS")
             .withKeystorePassword("Very5ecure")
             .withKeyPassword("ActuallyNotSecure")
             .withKeystore(new File("src/main/java/io/muserver/docs/samples/HttpsCert.jks"))
-            .build();
+            .withProtocols("TLSv1.2")
+            .withCipherFilter(new SSLCipherFilter() {
+                public List<String> selectCiphers(Set<String> supportedCiphers, List<String> defaultCiphers) {
+                    return defaultCiphers;
+                }
+            });
 
         MuServer server = muServer()
             .withHttpsPort(10443)

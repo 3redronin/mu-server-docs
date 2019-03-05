@@ -8,11 +8,13 @@ on HTTPS port 9443 with a simple handler:</p>
 
 <h2>Signed certificates</h2>
 
-<p>To use a signed certificate, you need to create an <code>SSLContext</code> and pass it to the <code>withHttpsConfig</code>
+<p>To use a signed certificate, you need to create an <code>SSLContextBuilder</code> and pass it to the <code>withHttpsConfig</code>
     method on the {{ javadoc("io.muserver.MuServerBuilder") | raw }} class.</p>
 
 <p>The {{ javadoc("io.muserver.SSLContextBuilder") | raw }} has a number of useful ways to create a context, for
 example you can load a cert from the file system, classpath, or an <code>InputStream</code>.</p>
+
+<p>You can also specify which TLS protocols and ciphers you would like to use.</p>
 
 {{ source("HttpsWithCert.java") | raw }}
 
