@@ -2,7 +2,7 @@
 {% block main %}
 
 <p>It's often useful to be able to start a server with a self-signed cert. The following code starts a web-server
-on HTTPS port 9443 with a simple handler:</p>
+    on HTTPS port 9443 with a simple handler:</p>
 
 {{ source("HttpsSelfSignedCert.java") | raw }}
 
@@ -12,7 +12,7 @@ on HTTPS port 9443 with a simple handler:</p>
     method on the {{ javadoc("io.muserver.MuServerBuilder") | raw }} class.</p>
 
 <p>The {{ javadoc("io.muserver.SSLContextBuilder") | raw }} has a number of useful ways to create a context, for
-example you can load a cert from the file system, classpath, or an <code>InputStream</code>.</p>
+    example you can load a cert from the file system, classpath, or an <code>InputStream</code>.</p>
 
 <p>You can also specify which TLS protocols and ciphers you would like to use.</p>
 
@@ -21,18 +21,18 @@ example you can load a cert from the file system, classpath, or an <code>InputSt
 <h2>Changing certs at runtime</h2>
 
 <p>To perform a hot change of an HTTPS certificate, construct a new SSLContext and change it using the MuServer
-server reference:</p>
+    server reference:</p>
 
 <pre><code class="language-java">server.changeSSLContext(sslContext);</code></pre>
 
 <h2>HSTS Handler</h2>
 
 <p>HTTP Strict-Transport-Security instructs browsers to only access your website via HTTPS. This is achieved
-by setting the <code>Strict-Transport-Security</code> response header.</p>
+    by setting the <code>Strict-Transport-Security</code> response header.</p>
 
 <p>For convenience, the {{ javadoc("io.muserver.handlers.HttpsRedirectorBuilder") | raw }} class can be used
-to generate a handler to do this for you. Just tell it the HTTPS port to redirect to, and the amount of time
-the directive is valid for.</p>
+    to generate a handler to do this for you. Just tell it the HTTPS port to redirect to, and the amount of time
+    the directive is valid for.</p>
 
 {{ source("HSTSExample.java") | raw }}
 
@@ -41,7 +41,26 @@ the directive is valid for.</p>
 <h2>Let's Encrypt integration</h2>
 
 <p>Getting free, automatically renewed certificates with Let's Encrypt and other ACME-based Certificate
-Authorities is even simpler than providing your own SSL config.</p>
+    Authorities is even simpler than providing your own SSL config.</p>
 <p>See the <a href="/letsencrypt">Let's Encrypt integration documentation</a> for details.</p>
+
+<h2>Better TLS with OpenSSL</h2>
+
+<p>Mu Server is based on Netty, and Netty recommends that OpenSSL is used due to it being faster and
+    having JDK-independent ciphers. In order to support OpenSSL, please follow the
+    <a href="https://netty.io/wiki/forked-tomcat-native.html">netty-tcnative</a> wiki page.</p>
+
+<p>If running on a modern Linux distribution, it may be enough to add the following dependency:</p>
+
+<pre><code class="language-markup">&lt;dependency&gt;
+    &lt;groupId&gt;io.netty&lt;&#x2F;groupId&gt;
+    &lt;artifactId&gt;netty-tcnative-boringssl-static&lt;&#x2F;artifactId&gt;
+    &lt;version&gt;2.0.22.Final&lt;&#x2F;version&gt;
+    &lt;classifier&gt;linux-x86_64&lt;&#x2F;classifier&gt;
+    &lt;scope&gt;runtime&lt;&#x2F;scope&gt;
+&lt;&#x2F;dependency&gt;</code></pre>
+
+<p>To see an SSL report for Mu Server using OpenSSL, go to the <a
+        href="https://www.ssllabs.com/ssltest/analyze.html?d=muserver.io">SSL Labs SSL Report for muserver.io</a>.</p>
 
 {% endblock %}
