@@ -57,6 +57,8 @@ public class App {
                     .withHSTSExpireTime(365, TimeUnit.DAYS)
                     .includeSubDomains(true)
             )
+            .addHandler(isLocal ? null : new ViewCacheHandler("/", "/download", "/https", "/jaxrs", "/resources",
+                "/resources/mime-types", "/contexts", "/letsencrypt", "/uploads", "/sse", "/routes"))
             .addHandler(Method.GET, "/", new HomeHandler(renderer))
             .addHandler(Method.GET, "/download", new VanillaHandler(renderer, "download", "Download Mu Server"))
             .addHandler(Method.GET, "/mutils", new MutilsHandler(renderer))
@@ -68,7 +70,6 @@ public class App {
             .addHandler(Method.GET, "/contexts", new VanillaHandler(renderer, "contexts", "Path Contexts"))
             .addHandler(Method.GET, "/letsencrypt", new LetsEncryptHandler(renderer))
             .addHandler(Method.GET, "/uploads", new VanillaHandler(renderer, "upload", "File Uploads"))
-            .addHandler(Method.GET, "/sse", new VanillaHandler(renderer, "sse", "Server Sent Events"))
             .addHandler(Method.GET, "/sse", new VanillaHandler(renderer, "sse", "Server Sent Events"))
             .addHandler(Method.GET, "/sse/counter", (request, response, pathParams) -> {
                 SsePublisher publisher = SsePublisher.start(request, response);
