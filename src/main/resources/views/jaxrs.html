@@ -34,11 +34,24 @@
     to create your objects in whatever way you desire, and makes it very easy to use constructor-based
     dependency injection, as in the example above.</p>
 
-<p>Mu Server also does not support Jackson for automatic serialisation and deserialisation of objects,
-    however you can specify your own converters if required.</p>
-
 <p>See the <a href="https://github.com/3redronin/mu-server/blob/master/src/main/java/io/muserver/rest/README.md">Mu
     Server spec implementation page</a> for full details of what is and isn't implemented.</p>
+
+<h2>Serialisation with Jackson JAX-RS</h2>
+
+<p>To support JSON serialisation of response bodies and deserialisation of request bodies, you need to add
+the <a href="https://github.com/FasterXML/jackson-jaxrs-providers">Jackson JAX-RS provider</a> dependency:</p>
+
+<pre><code class="language-markup">&lt;dependency&gt;
+    &lt;groupId&gt;com.fasterxml.jackson.jaxrs&lt;/groupId&gt;
+    &lt;artifactId&gt;jackson-jaxrs-json-provider&lt;/artifactId&gt;
+    &lt;version&gt;2.9.0&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+
+<p>You can then register a body reader and/or writer on the <code>RestHandlerBuilder</code>. In the following
+example the <code>User</code> class is automatically converted to JSON:</p>
+
+{{ source("JacksonJaxRSExample.java") | raw }}
 
 <h2 id="cors">CORS Configuration</h2>
 
