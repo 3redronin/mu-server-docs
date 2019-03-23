@@ -3,6 +3,7 @@ package io.muserver.docs.samples;
 import io.muserver.*;
 
 import javax.ws.rs.core.MediaType;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +11,18 @@ import java.util.Map;
 
 public class HeaderExampleHandler implements RouteHandler {
     public void handle(MuRequest request, MuResponse response, Map<String,String> pathParams) {
+
+        // Sending headers on the response:
+
+        // Set a response header value:
+        response.headers().set("X-Example-Time", new Date().toString());
+
+        // Or add multiple values:
+        response.headers().add("X-List", "Xavier");
+        response.headers().add("X-List", "Wolf guy");
+
+
+        // Getting headers from the request:
 
         // Returns null if there is no parameter with that value
         String userAgent = request.headers().get("User-Agent");
