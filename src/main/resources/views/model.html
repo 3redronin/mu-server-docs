@@ -14,7 +14,7 @@ which returns a {{ javadoc("io.muserver.RequestParameters") | raw }} object.</p>
 <p><strong>Try it:</strong> <a href="/model/query?something=hello&amp;something=something%20else&amp;another=more">Run
 the above code in your browser.</a></p>
 
-<h2>Form data</h2>
+<h2 id="form">Form data</h2>
 
 <p>Calling <code>request.form()</code> returns a {{ javadoc("io.muserver.RequestParameters") | raw }} object
 so all values are the same as for query strings:</p>
@@ -47,7 +47,27 @@ available, including the ability to parse certain complex headers. See the
 
 <h2>Request bodies</h2>
 
-<p>Documentation coming soon</p>
+<p>While <a href="#form">form data</a> and <a href="/uploads">uploads</a> can be accessed via the request object, there are other ways to
+read request bodies.</p>
+
+<p>Calling <code>request.readBodyAsString()</code> returns the request body as a string. This is
+convenient if you are expecting a small text upload, however for binary or large uploads it is better to
+stream the data.</p>
+
+<p>The <code>inputStream()</code> method on the request object is an <code>Optional</code> value which
+has a readable input stream if the client sent a body:</p>
+
+<pre><code class="language-java">Optional&lt;InputStream&gt; inputStreamOption = request.inputStream();
+if (inputStreamOption.isPresent()) {
+    InputStream inputStream = inputStreamOption.get();
+    // read the stream
+}</code></pre>
+
+<p>Request bodies can also be <a href="/async">read asynchronously</a>.</p>
+
+<p>The content type of the request data can be found by calling <code>request.headers().contentType()</code>
+which returns a <a href="https://docs.oracle.com/javaee/7/api/javax/ws/rs/core/MediaType.html">MediaType</a> object
+    which has <code>getType()</code> and <code>getSubtype()</code> methods.</p>
 
 <h2>Response bodies</h2>
 

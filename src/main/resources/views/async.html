@@ -1,0 +1,14 @@
+{% extends "template.html" %}
+{% block main %}
+
+<p>Mu Server optionally provides non-blocking reading of requests and writing of responses. Any handler
+can become an async handler by invoking the following method which returns a
+    {{ javadoc("io.muserver.AsyncHandle") | raw }}:</p>
+
+<pre><code class="language-java">AsyncHandle handle = request.handleAsync();</code></pre>
+
+<p>Calling the <code>complete()</code> method on that handle marks the response as complete.</p>
+
+<p>More documentation to follow.</p>
+
+{% endblock %}
