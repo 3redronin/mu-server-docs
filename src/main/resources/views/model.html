@@ -1,0 +1,50 @@
+{% extends "template.html" %}
+{% block main %}
+
+<h2>Requests</h2>
+
+<p>Whether accessing querystring parameters, form data or headers, a number of convenient
+methods exist to get the values, or return defaults, or convert to numbers or some other types.</p>
+
+<h3>Query Strings</h3>
+
+<p>These can all be accessed from the Request object by calling <code>request.query()</code>
+which returns a {{ javadoc("io.muserver.RequestParameters") | raw }} object.</p>
+
+{{ source("QueryStringExampleHandler.java") | raw }}
+
+<p><strong>Try it:</strong> <a href="/model/query?something=hello&amp;something=something%20else&amp;another=more">Run
+the above code in your browser.</a></p>
+
+<h3>Form data</h3>
+
+<p>Calling <code>request.form()</code> returns a {{ javadoc("io.muserver.RequestParameters") | raw }} object
+so all values are the same as for query strings:</p>
+
+{{ source("FormDataExampleHandler.java") | raw }}
+
+<p><strong>Try it:</strong> post some data to the server:</p>
+<form action="/model/forms" method="post">
+    <label>something <input type="text" name="something"></label>
+    <label>numberValue <input type="number" name="numberValue"></label>
+    <label><input type="checkbox" name="checkboxValue"> checkboxValue</label>
+    <input type="submit" value="Submit">
+</form>
+
+<h4>Uploads</h4>
+
+<p>Accessing the fields in multi-part form data is as above. To access uploaded files,
+see <a href="/uploads">the Uploads documentation</a>.</p>
+
+<h3>Headers</h3>
+
+<p>Request headers share most of the same getters as the query string and form data, however more options are
+available, including the ability to parse certain complex headers. See the
+{{ javadoc("io.muserver.Headers") | raw }} javadoc for more details.</p>
+
+{{ source("HeaderExampleHandler.java") | raw }}
+
+<p><strong>Try it:</strong> <a href="/model/headers">Run
+    the above code in your browser.</a></p>
+
+{% endblock %}

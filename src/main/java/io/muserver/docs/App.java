@@ -4,10 +4,7 @@ import io.muserver.*;
 import io.muserver.acme.AcmeCertManager;
 import io.muserver.acme.AcmeCertManagerBuilder;
 import io.muserver.docs.handlers.*;
-import io.muserver.docs.samples.JaxRSDocumentationExample;
-import io.muserver.docs.samples.JaxRSExample;
-import io.muserver.docs.samples.ResourceMimeTypes;
-import io.muserver.docs.samples.ServerSentEventsExample;
+import io.muserver.docs.samples.*;
 import io.muserver.handlers.HttpsRedirectorBuilder;
 import io.muserver.rest.CORSConfigBuilder;
 import io.muserver.rest.RestHandlerBuilder;
@@ -60,6 +57,10 @@ public class App {
             .addHandler(isLocal ? null : new ViewCacheHandler("/", "/download", "/https", "/jaxrs", "/resources",
                 "/resources/mime-types", "/contexts", "/letsencrypt", "/uploads", "/sse", "/routes"))
             .addHandler(Method.GET, "/", new HomeHandler(renderer))
+            .addHandler(Method.GET, "/model", new VanillaHandler(renderer, "model", "Request and Response model"))
+            .addHandler(Method.GET, "/model/query", new QueryStringExampleHandler())
+            .addHandler(Method.GET, "/model/headers", new HeaderExampleHandler())
+            .addHandler(Method.POST, "/model/forms", new FormDataExampleHandler())
             .addHandler(Method.GET, "/download", new VanillaHandler(renderer, "download", "Download Mu Server"))
             .addHandler(Method.GET, "/mutils", new MutilsHandler(renderer))
             .addHandler(Method.GET, "/https", new VanillaHandler(renderer, "https", "HTTPS Configuration"))
