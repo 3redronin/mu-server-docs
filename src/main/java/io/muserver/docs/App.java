@@ -61,6 +61,7 @@ public class App {
             .addHandler(Method.GET, "/model", new VanillaHandler(renderer, "model", "Request and Response model"))
             .addHandler(Method.GET, "/model/query", new QueryStringExampleHandler())
             .addHandler(Method.GET, "/model/headers", new HeaderExampleHandler())
+            .addHandler(Method.GET, "/model/cookie", new CookieExampleHandler())
             .addHandler(Method.POST, "/model/forms", new FormDataExampleHandler())
             .addHandler(Method.GET, "/download", new VanillaHandler(renderer, "download", "Download Mu Server"))
             .addHandler(Method.GET, "/mutils", new MutilsHandler(renderer))

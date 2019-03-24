@@ -2,22 +2,22 @@
 {% block main %}
 
 <p>Whether accessing querystring parameters, form data or headers, a number of convenient
-methods exist to get the values, or return defaults, or convert to numbers or some other types.</p>
+    methods exist to get the values, or return defaults, or convert to numbers or some other types.</p>
 
 <h2>Query Strings</h2>
 
 <p>These can all be accessed from the Request object by calling <code>request.query()</code>
-which returns a {{ javadoc("io.muserver.RequestParameters") | raw }} object.</p>
+    which returns a {{ javadoc("io.muserver.RequestParameters") | raw }} object.</p>
 
 {{ source("QueryStringExampleHandler.java") | raw }}
 
 <p><strong>Try it:</strong> <a href="/model/query?something=hello&amp;something=something%20else&amp;another=more">Run
-the above code in your browser.</a></p>
+    the above code in your browser.</a></p>
 
 <h2 id="form">Form data</h2>
 
 <p>Calling <code>request.form()</code> returns a {{ javadoc("io.muserver.RequestParameters") | raw }} object
-so all values are the same as for query strings:</p>
+    so all values are the same as for query strings:</p>
 
 {{ source("FormDataExampleHandler.java") | raw }}
 
@@ -32,30 +32,58 @@ so all values are the same as for query strings:</p>
 <h3>Uploads</h3>
 
 <p>Accessing the fields in multi-part form data is as above. To access uploaded files,
-see <a href="/uploads">the Uploads documentation</a>.</p>
+    see <a href="/uploads">the Uploads documentation</a>.</p>
 
 <h2>Headers</h2>
 
 <p>Request headers share most of the same getters as the query string and form data, however more options are
-available, including the ability to parse certain complex headers. See the
-{{ javadoc("io.muserver.Headers") | raw }} javadoc for more details.</p>
+    available, including the ability to parse certain complex headers. See the
+    {{ javadoc("io.muserver.Headers") | raw }} javadoc for more details.</p>
 
 {{ source("HeaderExampleHandler.java") | raw }}
 
 <p><strong>Try it:</strong> <a href="/model/headers">Run
     the above code in your browser.</a></p>
 
+<h2>Cookies</h2>
+
+<p>Use the {{ javadoc("io.muserver.CookieBuilder") | raw }} class to create a new cookie and send
+    it to the client with <code>response.addCookie(Cookie)</code>.</p>
+
+<p>Cookies can be read with <code>request.cookie(String name)</code> which returns an
+    <code>Optional&lt;String&gt;</code> with the cookie value as the value if present:</p>
+
+{{ source("CookieExampleHandler.java") | raw }}
+
+<p><strong>Try it:</strong> <a href="/model/cookie?action=create">Create a cookie</a> and
+    <a href="/model/cookie?action=view">view the cookie</a> and then <a href="/model/cookie?action=delete">delete the cookie</a>.</p>
+
+<p>When creating cookies, it is recommended to enable Secure and HTTPOnly to prevent a number of common
+    attacks. The CookieBuilder's <code>newSecureCookie()</code> method creates a build with these two
+    values set.</p>
+
+<p>It's important to note that cookie names and values can only use a limited subset of ASCII characters, so
+    you cannot send arbitrary data (such as JSON) as a cookie value without encoding it first. One option to
+    allow arbitrary data is to URL Encode the value. The <code>withUrlEncodedValue</code> method can be used
+    in place of the <code>withValue</code> method to achieve this (note the consumer
+    of the cookie needs to URL decode the value when accessing it.)</p>
+
+<p>If a max age is not set, then the cookie will be a "session" cookie which means browsers may keep
+    the cookie until the user closes their browser (or not, depending on the browser). To create a persistent
+    cookie, use the <code>withMaxAgeInSeconds</code> with a positive number.</p>
+
 <h2>Request bodies</h2>
 
-<p>While <a href="#form">form data</a> and <a href="/uploads">uploads</a> can be accessed via the request object, there are other ways to
-read request bodies.</p>
+<p>While <a href="#form">form data</a> and <a href="/uploads">uploads</a> can be accessed via the request object, there
+    are other ways to
+    read request bodies.</p>
 
 <p>Calling <code>request.readBodyAsString()</code> returns the request body as a string. This is
-convenient if you are expecting a small text upload, however for binary or large uploads it is better to
-stream the data.</p>
+    convenient if you are expecting a small text upload, however for binary or large uploads it is better to
+    stream the data.</p>
 
 <p>The <code>inputStream()</code> method on the request object is an <code>Optional</code> value which
-has a readable input stream if the client sent a body:</p>
+    has a readable input stream if the client sent a body:</p>
 
 <pre><code class="language-java">Optional&lt;InputStream&gt; inputStreamOption = request.inputStream();
 if (inputStreamOption.isPresent()) {
@@ -66,7 +94,7 @@ if (inputStreamOption.isPresent()) {
 <p>Request bodies can also be <a href="/async">read asynchronously</a>.</p>
 
 <p>The content type of the request data can be found by calling <code>request.headers().contentType()</code>
-which returns a <a href="https://docs.oracle.com/javaee/7/api/javax/ws/rs/core/MediaType.html">MediaType</a> object
+    which returns a <a href="https://docs.oracle.com/javaee/7/api/javax/ws/rs/core/MediaType.html">MediaType</a> object
     which has <code>getType()</code> and <code>getSubtype()</code> methods.</p>
 
 <h2>Response bodies</h2>
