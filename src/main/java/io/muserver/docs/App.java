@@ -148,7 +148,7 @@ public class App {
         return new ViewRenderer() {
             @Override
             public void render(MuResponse response, String relativePath, JtwigModel model) {
-                response.contentType(ContentTypes.TEXT_HTML);
+                response.contentType("text/html;charset=utf-8");
                 JtwigTemplate template;
                 if (isLocal) {
                     template = JtwigTemplate.fileTemplate(new File(viewBase, relativePath + ".html"), config);
