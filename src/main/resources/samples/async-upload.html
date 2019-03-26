@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Async upload demo</title>
+</head>
+<body>
+<h1>Async upload demo</h1>
+
+<p>The file uploaded will be processed by <code>AsyncRequestBodyExample.java</code> asynchronously with the
+results streamed to the output. Try uploading a very large file.</p>
+
+<form action="/upload" method="post" enctype="multipart/form-data">
+    <label>Select a file
+        <input type="file" name="your-file" required>
+    </label>
+    <input type="submit" value="Upload">
+</form>
+
+</body>
+</html>

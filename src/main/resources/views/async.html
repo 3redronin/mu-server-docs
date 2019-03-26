@@ -2,13 +2,37 @@
 {% block main %}
 
 <p>Mu Server optionally provides non-blocking reading of requests and writing of responses. Any handler
-can become an async handler by invoking the following method which returns a
+    can become an async handler by invoking the following method which returns a
     {{ javadoc("io.muserver.AsyncHandle") | raw }}:</p>
 
 <pre><code class="language-java">AsyncHandle handle = request.handleAsync();</code></pre>
 
 <p>Calling the <code>complete()</code> method on that handle marks the response as complete.</p>
 
-<p>More documentation to follow.</p>
+<h2>Writing responses asynchronously</h2>
+
+<p>With an <code>AsyncHandle</code>, you can write byte buffers using one of two non-blocking methods,
+    depending on whether you prefer a future or a callback to be notified when the write has completed:</p>
+
+<ul>
+    <li><code>Future&lt;Void&gt; write(ByteBuffer data)</code></li>
+    <li><code>void write(ByteBuffer data, WriteCallback callback)</code></li>
+</ul>
+
+<p><strong>Tip:</strong> to convert a string to a ByteBuffer, use
+    <code class="language-java">Mutils.toByteBuffer(String)</code></p>
+
+
+<h2 id="request-body">Reading request bodies asynchronously</h2>
+
+<p>If you expect a request body, it can be read asynchronously by adding a
+    {{ javadoc("io.muserver.RequestBodyListener") | raw }} with the AsyncHandle's
+    <code>setReadListener</code> method:</p>
+
+{{ source("AsyncRequestBodyExample.java") | raw }}
+
+<p>Note that if you do not need non-blocking request reading, the <a href="/model#requests">blocking
+    request body readers</a> can still be used by async handlers.</p>
+
 
 {% endblock %}
