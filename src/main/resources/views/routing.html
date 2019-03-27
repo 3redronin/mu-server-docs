@@ -1,7 +1,15 @@
 {% extends "template.html" %}
 {% block main %}
 
-<p>One way to route requests with a handler is by using the <code>addHandler(Method, String, RouteHandler)</code>
+<p>When a request comes in to the server, it loops through each handler in the order it was added until
+    it finds one that can handle the request. By implementing the {{ javadoc("io.muserver.MuHandler") | raw }}
+    you can add various types of filters and handlers to your request pipeline.</p>
+
+{{ source("FilterAndStateExample.java") | raw }}
+
+<h2>Routing with path parameters</h2>
+
+<p>Another way to route requests with a handler is by using the <code>addHandler(Method, String, RouteHandler)</code>
     method on the {{ javadoc("io.muserver.MuServerBuilder") | raw }}.</p>
 
 <p>The path template parameter can be accessed in the <code>pathParams</code> in the handler, and the path template
@@ -17,7 +25,7 @@
     <li><a href="/routes/numbers/hello">/routes/numbers/hello</a> (returns 404 as it's not a number)</li>
 </ul>
 
-<h2>Routing without parameters</h2>
+<h2 id="path-routing">Routing without parameters</h2>
 
 <p>A more flexible way to route is to example the request and programmatically decide whether a handler
     should handle the request or not.</p>
@@ -28,9 +36,9 @@
 
 {{ source("RoutingWithoutPathParams.java") | raw }}
 
-<p>When a request is received by Mu Server, it loops through the handlers in the order they are
-    added to the server builder until a suitable handler is found. Because of this, handlers that return
-    <code>false</code>
-    can be used as filters, or request log writers, or can set default response headers.</p>
+<h2>Annotation-based routing</h2>
+
+<p>An alternative to the above methods is to declare paths using the <code>@Path</code> annotation.
+See the <a href="/jaxrs">JAX-RS documentation</a> for more info.</p>
 
 {% endblock %}

@@ -79,7 +79,7 @@ public class App {
                 new Thread(() -> ServerSentEventsExample.count(publisher)).start();
             })
 
-            .addHandler(Method.GET, "/routes", new VanillaHandler(renderer, "routing", "Routing with path parameters"))
+            .addHandler(Method.GET, "/routes", new VanillaHandler(renderer, "routing", "Handlers, Routers and Filters"))
             .addHandler(Method.GET, "/routes/noparam", (req, resp, pathParams) -> {
                 resp.write("No parameters");
             })

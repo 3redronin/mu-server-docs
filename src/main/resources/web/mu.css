@@ -67,13 +67,13 @@ footer {
     margin: 60px auto 50px auto;
     max-width: 1000px;
     border-top: #209CEE solid 1px;
+    text-align: center;
 }
 
 footer .yapping {
     margin-top: 50px;
-    font-size: x-small;
+    font-size: small;
     font-style: italic;
-    text-align: center;
 }
 
 pre {
