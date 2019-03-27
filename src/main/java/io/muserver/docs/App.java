@@ -19,6 +19,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -37,6 +38,7 @@ public class App {
         AcmeCertManager acmeCertManager = AcmeCertManagerBuilder.letsEncrypt()
             .withConfigDir(new File("letsencrypt"))
             .withDomain("muserver.io")
+            .withDomain("www.muserver.io")
             .disable(isLocal) // when local, a no-op manager is returned
             .build();
 
@@ -54,6 +56,7 @@ public class App {
                     .withHSTSExpireTime(365, TimeUnit.DAYS)
                     .includeSubDomains(true)
             )
+            .addHandler(new WWWRemover())
             .addHandler(isLocal ? null : new ViewCacheHandler("/", "/download", "/https", "/jaxrs", "/resources",
                 "/resources/mime-types", "/contexts", "/letsencrypt", "/uploads", "/sse", "/routes"))
             .addHandler(Method.GET, "/", new HomeHandler(renderer))
@@ -173,4 +176,14 @@ public class App {
 
     }
 
+    private static class WWWRemover implements MuHandler {
+        @Override
+        public boolean handle(MuRequest req, MuResponse resp) throws Exception {
+            if (req.uri().getHost().equals("www.muserver.io")) {
+                resp.redirect(new URI("https", "muserver.io", req.uri().getRawPath(), null));
+                return true;
+            }
+            return false;
+        }
+    }
 }
