@@ -22,6 +22,15 @@
 <p><strong>Tip:</strong> to convert a string to a ByteBuffer, use
     <code class="language-java">Mutils.toByteBuffer(String)</code></p>
 
+<p>In the following example, when a request for a JPG is made, the file is opened and segments of the file
+    are read asynchronously. When some bytes are read from the file, they are passed on to the response. The
+    <code>write</code> method with the {{ javadoc("io.muserver.WriteCallback") | raw }} is used so that after
+    the bytes from the byte-buffer have been written to the response, another request to read more data is made.</p>
+
+{{ source("AsyncWritingExample.java") | raw }}
+
+<p><strong>Note:</strong> the file handler described on the <a href="/resources">static resources</a> page is
+    uses the above approach so it's recommended you use that if you need to serve files.</p>
 
 <h2 id="request-body">Reading request bodies asynchronously</h2>
 
