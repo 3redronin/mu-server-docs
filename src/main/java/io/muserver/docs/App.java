@@ -54,6 +54,7 @@ public class App {
             .addHandler(
                 HttpsRedirectorBuilder.toHttpsPort(443)
                     .withHSTSExpireTime(365, TimeUnit.DAYS)
+                    .withHSTSPreload(true)
                     .includeSubDomains(true)
             )
             .addHandler(new WWWRemover())
