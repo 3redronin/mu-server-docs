@@ -55,12 +55,42 @@
 <pre><code class="language-markup">&lt;dependency&gt;
     &lt;groupId&gt;io.netty&lt;&#x2F;groupId&gt;
     &lt;artifactId&gt;netty-tcnative-boringssl-static&lt;&#x2F;artifactId&gt;
-    &lt;version&gt;2.0.22.Final&lt;&#x2F;version&gt;
+    &lt;version&gt;2.0.23.Final&lt;&#x2F;version&gt;
     &lt;classifier&gt;linux-x86_64&lt;&#x2F;classifier&gt;
     &lt;scope&gt;runtime&lt;&#x2F;scope&gt;
 &lt;&#x2F;dependency&gt;</code></pre>
 
+<h2>Accessing SSL Settings</h2>
+
+<p>The <code>sslInfo()</code> method on the {{ javadoc("io.muserver.MuServer") | raw }} class returns an
+    {{ javadoc("io.muserver.SSLInfo") | raw }} object that can be used to get the actual values in use. In a handler,
+    this can be accessed with <code class="language-java">request.server().sslInfo()</code> and the following
+    table shows the settings from this website:</p>
+
+<table>
+    <thead>
+    <tr>
+        <th>Property</th>
+        <th>Value</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td><code>sslInfo.providerName()</code></td>
+        <td>{{ sslProvider }}</td>
+    </tr>
+    <tr>
+        <td><code>sslInfo.protocols()</code></td>
+        <td>{{ sslProtocols }}</td>
+    </tr>
+    <tr>
+        <td><code>sslInfo.ciphers()</code></td>
+        <td>{{ sslCiphers }}</td>
+    </tr>
+    </tbody>
+</table>
+
 <p>To see an SSL report for Mu Server using OpenSSL, go to the <a
-        href="https://www.ssllabs.com/ssltest/analyze.html?d=muserver.io">SSL Labs SSL Report for muserver.io</a>.</p>
+    href="https://www.ssllabs.com/ssltest/analyze.html?d=muserver.io">SSL Labs SSL Report for muserver.io</a>.</p>
 
 {% endblock %}
