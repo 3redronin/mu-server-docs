@@ -15,8 +15,20 @@ public class JavaDocLink extends SimpleJtwigFunction {
         String c = request.get(0).toString();
         int i = c.lastIndexOf('.');
         String pack = c.substring(0, i);
+        String artifact;
+        switch (pack) {
+            case "io.muserver":
+                artifact = "mu-server";
+                break;
+            case "io.muserver.murp":
+                artifact = "murp";
+                break;
+            default:
+                throw new RuntimeException("Unrecognised package: " + pack);
+        }
+
         String name = c.substring(i + 1);
-        String url = "https://www.javadoc.io/page/io.muserver/mu-server/latest/" + pack.replace(".", "/") + "/" + name + ".html";
+        String url = "https://www.javadoc.io/page/io.muserver/" + artifact + "/latest/" + pack.replace(".", "/") + "/" + name + ".html";
         return "<a href=\"" + url + "\">" + Mutils.htmlEncode(name) + "</a>";
 
     }

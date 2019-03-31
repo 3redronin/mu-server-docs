@@ -14,4 +14,10 @@ public class JavaDocLinkTest {
             link.execute(new MockJtwigRequest("io.muserver.Mutils")));
     }
 
+    @Test
+    public void murpIsSupported() {
+        assertEquals("<a href=\"https://www.javadoc.io/page/io.muserver/murp/latest/io/muserver/murp/ReverseProxyBuilder.html\">ReverseProxyBuilder</a>",
+            link.execute(new MockJtwigRequest("io.muserver.murp.ReverseProxyBuilder")));
+    }
+
 }

@@ -34,6 +34,11 @@
             <artifactId>mu-acme</artifactId>
             <version>RELEASE</version>
         </dependency>
+        <dependency>
+            <groupId>io.muserver</groupId>
+            <artifactId>murp</artifactId>
+            <version>RELEASE</version>
+        </dependency>
 
         <dependency>
             <groupId>org.jtwig</groupId>

@@ -79,7 +79,7 @@ public class ViewCacheHandlerTest {
         assertThat(resp.body().string(), is("This is the original value"));
         assertThat(resp.header("Date"), is(notNullValue()));
         assertThat(resp.header("Content-Length"), is("26"));
-        assertThat(resp.header("Content-Type"), is("text/plain; charset=utf-8"));
+        assertThat(resp.header("Content-Type"), is("text/plain;charset=utf-8"));
         assertThat(resp.header("Last-Modified"), is(notNullValue()));
         assertThat(resp.header("Cache-Control"), is("must-revalidate, max-age=600"));
     }

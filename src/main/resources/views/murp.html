@@ -1,0 +1,41 @@
+{% extends "template.html" %}
+{% block main %}
+
+<p>A reverse proxy simply receives requests from a client and forwards them to another
+    server. If you need to proxy requests to other serves, then you may consider using
+    <a href="https://github.com/3redronin/murp">Murp: the Mu Reverse Proxy</a> which is described below.</p>
+
+<h2>Step one: add the Murp dependency</h2>
+
+<pre><code class="language-markup">&lt;dependency&gt;
+    &lt;groupId&gt;io.muserver&lt;/groupId&gt;
+    &lt;artifactId&gt;mu-server&lt;/artifactId&gt;
+    &lt;version&gt;{{version}}&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;io.muserver&lt;/groupId&gt;
+    &lt;artifactId&gt;murp&lt;/artifactId&gt;
+    &lt;version&gt;{{murpversion}}&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+
+<p><strong>Warning:</strong> Murp has a dependency on Jetty Client which brings in some Jetty
+    dependencies. If your project already has direct or indirect dependencies on Jetty, check
+    that the versions of the <code>jetty-*</code> libraries are all the same version.</p>
+
+<h2>Step two: create a Mu Server and add the reverse proxy as a handler</h2>
+
+<p>Murp does not start a server for you, instead you need to create your own server which allows you to configure
+    it however you want (e.g. with HTTPS). The reverse proxy is just added like any other handler, which means you
+    can add handlers before it (perhaps to add or remove custom headers) or after it (if the URI mapping function
+    returns <code>null</code> then the next handler will be invoked).</p>
+
+<p>The reverse proxy is configured with the {{ javadoc("io.muserver.murp.ReverseProxyBuilder") | raw }} which has
+    only one required configuration option: <code>withUriMapper</code> which takes a {{ javadoc("io.muserver.murp.UriMapper") | raw }}.
+    The URI mapper is how you convert an incoming request URI to the target URI.</p>
+
+<p>In the following example, a target server is started on HTTP which simply replies with the requested URI and headers.
+    The reverse proxy is started on HTTPS and just blindly forwards all requests to the target server.</p>
+
+{{ source("ReverseProxyExample.java") | raw }}
+
+{% endblock %}
