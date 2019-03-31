@@ -17,14 +17,12 @@ public class JavaDocLink extends SimpleJtwigFunction {
         String pack = c.substring(0, i);
         String artifact;
         switch (pack) {
-            case "io.muserver":
-                artifact = "mu-server";
-                break;
             case "io.muserver.murp":
                 artifact = "murp";
                 break;
             default:
-                throw new RuntimeException("Unrecognised package: " + pack);
+                artifact = "mu-server";
+                break;
         }
 
         String name = c.substring(i + 1);
