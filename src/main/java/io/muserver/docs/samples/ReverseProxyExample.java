@@ -39,6 +39,7 @@ public class ReverseProxyExample {
                     })
                     .sendLegacyForwardedHeaders(true) // Adds X-Forwarded-*
                     .withViaName("myreverseproxy")
+                    .proxyHostHeader(false)
             )
             .start();
 

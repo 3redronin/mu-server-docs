@@ -30,12 +30,26 @@
     returns <code>null</code> then the next handler will be invoked).</p>
 
 <p>The reverse proxy is configured with the {{ javadoc("io.muserver.murp.ReverseProxyBuilder") | raw }} which has
-    only one required configuration option: <code>withUriMapper</code> which takes a {{ javadoc("io.muserver.murp.UriMapper") | raw }}.
+    only one required configuration option: <code>withUriMapper</code> which takes a {{
+    javadoc("io.muserver.murp.UriMapper") | raw }}.
     The URI mapper is how you convert an incoming request URI to the target URI.</p>
 
 <p>In the following example, a target server is started on HTTP which simply replies with the requested URI and headers.
     The reverse proxy is started on HTTPS and just blindly forwards all requests to the target server.</p>
 
 {{ source("ReverseProxyExample.java") | raw }}
+
+<h3 id="hostheader">The Host header</h3>
+
+<p>There are certain headers that reverse proxies do not forward, called <em>Hop by Hop Headers</em>.
+    However, by default the <code>Host</code> header is supposed to be proxied from the client to
+    the target server, which is the default in Murp.</p>
+
+<p>However if proxying requests from the browser to another HTTPS website, you may get
+    errors related to invalid Host headers, or related to SNI. This is because the Host
+    header does not match the header that the target website matches.</p>
+
+<p>In these cases, you can instruct Murp to <strong>not</strong> forward the <code>Host</code>
+    header by calling <code>.proxyHostHeader(false)</code> on the ReverseProxyBuilder.</p>
 
 {% endblock %}
