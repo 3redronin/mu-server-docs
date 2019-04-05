@@ -52,4 +52,25 @@
 <p>In these cases, you can instruct Murp to <strong>not</strong> forward the <code>Host</code>
     header by calling <code>.proxyHostHeader(false)</code> on the ReverseProxyBuilder.</p>
 
+<h3>Timeouts</h3>
+
+<p>There are several types of time outs when working with reverse proxies:</p>
+
+<ul>
+    <li><em>Name resolution</em> - the lookup of the address of the target domain name</li>
+    <li><em>Connection timeout</em> - the time taken to establish a connection to the target</li>
+    <li><em>Idle timeout</em> - after the response has started, this is the amount of time allowed without receiving
+        any bytes from the target. Because there is no way to reliably detect disconnections over HTTP, this value
+        is needed to kill zombie connections.
+    </li>
+    <li><em>Total timeout</em> - the maximum allowed time of the full response.</li>
+</ul>
+
+<p>All of these except the total timeout are defined on the HTTP client. The following example shows
+how to configure each of them:</p>
+
+{{ source("ReverseProxyTimeoutsExample.java") | raw }}
+
+<p>If a timeout occurs before any headers are sent back to the client, then a <code>504</code> status code is sent to the client.</p>
+
 {% endblock %}
