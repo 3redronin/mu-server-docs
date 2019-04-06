@@ -39,6 +39,10 @@
 
 {{ source("ReverseProxyExample.java") | raw }}
 
+<p>Note that further customization of the proxied request and response can be done by adding listeners before the
+request is sent to the target with <code class="language-java">ReverseProxyBuilder.withRequestInterceptor(RequestInterceptor)</code> and before the response
+is sent to the client with <code class="language-java">ReverseProxyBuilder.withResponseInterceptor(ResponseInterceptor)</code>.</p>
+
 <h3 id="hostheader">The Host header</h3>
 
 <p>There are certain headers that reverse proxies do not forward, called <em>Hop by Hop Headers</em>.

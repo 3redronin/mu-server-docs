@@ -40,9 +40,12 @@ public class ReverseProxyExample {
                     .sendLegacyForwardedHeaders(true) // Adds X-Forwarded-*
                     .withViaName("myreverseproxy")
                     .proxyHostHeader(false)
+                    .addProxyCompleteListener((clientRequest, clientResponse, targetUri, durationMillis) -> {
+                        System.out.println("Proxied " + clientRequest + " to " + targetUri +
+                            " and returned " + clientResponse.status() + " in " + durationMillis + "ms");
+                    })
             )
             .start();
-
 
         System.out.println("Reverse proxy started at " + reverseProxy.uri());
         System.out.println("Example URLs: " + reverseProxy.uri().resolve("/blah") + " / "
