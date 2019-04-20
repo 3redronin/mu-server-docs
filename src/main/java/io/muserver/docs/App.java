@@ -31,6 +31,8 @@ public class App {
     private static final Logger log = LoggerFactory.getLogger(App.class);
 
     public static void main(String[] args) throws Exception {
+        Toggles.http2 = !"1.8".equals(System.getProperty("java.specification.version"));
+
         boolean isLocal = args.length == 1 && args[0].equals("local");
 
         ViewRenderer renderer = getTemplateLoader(isLocal);

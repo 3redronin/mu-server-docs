@@ -23,7 +23,7 @@ public class ResourceMimeTypes {
         boolean useGzip = false;
         resourceTypes.put("dan",
             new ResourceType("text/plain",
-                new Headers()
+                Headers.http2Headers()
                     .add("cache-control", "max-age=300")
                     .add("x-custom-header", "danbo"),
                 useGzip, asList("dan")
