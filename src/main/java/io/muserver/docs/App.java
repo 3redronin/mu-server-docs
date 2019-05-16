@@ -25,13 +25,13 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static io.muserver.ContextHandlerBuilder.context;
+import static io.muserver.Http2ConfigBuilder.http2EnabledIfAvailable;
 import static io.muserver.MuServerBuilder.muServer;
 
 public class App {
     private static final Logger log = LoggerFactory.getLogger(App.class);
 
     public static void main(String[] args) throws Exception {
-        Toggles.http2 = !"1.8".equals(System.getProperty("java.specification.version"));
 
         boolean isLocal = args.length == 1 && args[0].equals("local");
 
@@ -46,7 +46,8 @@ public class App {
 
         MuServer server = muServer()
             .withHttpPort(8080)
-            .withHttpsPort(8443)
+            .withHttpsPort(11443)
+            .withHttp2Config(http2EnabledIfAvailable())
             .withHttpsConfig(acmeCertManager.createSSLContext())
             .addHandler((req, resp) -> {
                 log.info("Recieved " + req + " from " + req.remoteAddress());
