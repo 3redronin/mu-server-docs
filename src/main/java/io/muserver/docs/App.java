@@ -46,7 +46,7 @@ public class App {
 
         MuServer server = muServer()
             .withHttpPort(8080)
-            .withHttpsPort(11443)
+            .withHttpsPort(8443)
             .withHttp2Config(http2EnabledIfAvailable())
             .withHttpsConfig(acmeCertManager.createSSLContext())
             .addHandler((req, resp) -> {
