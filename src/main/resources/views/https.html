@@ -87,6 +87,14 @@
         <td><code>sslInfo.ciphers()</code></td>
         <td>{{ sslCiphers }}</td>
     </tr>
+    <tr>
+        <td><code>sslInfo.certificates()</code></td>
+        <td><ul>
+            {% for cert in certs %}
+<li>{{ cert.getSubjectDN }} - from {{ cert.getNotBefore }} to {{ cert.getNotAfter }}</li>
+            {% endfor %}
+        </ul></td>
+    </tr>
     </tbody>
 </table>
 

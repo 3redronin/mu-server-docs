@@ -25,6 +25,7 @@ public class HttpsHandler implements RouteHandler {
                 .with("sslProvider", sslInfo.providerName())
                 .with("sslProtocols", String.join(", ", sslInfo.protocols()))
                 .with("sslCiphers", String.join(", ", sslInfo.ciphers()))
+                .with("certs", sslInfo.certificates())
         );
     }
 
