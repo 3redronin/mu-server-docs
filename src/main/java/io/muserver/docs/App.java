@@ -70,6 +70,7 @@ public class App {
             .addHandler(Method.GET, "/model/headers", new HeaderExampleHandler())
             .addHandler(Method.GET, "/model/cookie", new CookieExampleHandler())
             .addHandler(Method.POST, "/model/forms", new FormDataExampleHandler())
+            .addHandler(Method.GET, "/http2", new VanillaHandler(renderer, "http2", "HTTP/2 Support"))
             .addHandler(Method.GET, "/download", new VanillaHandler(renderer, "download", "Download Mu Server"))
             .addHandler(Method.GET, "/mutils", new MutilsHandler(renderer))
             .addHandler(Method.GET, "/https", new HttpsHandler(renderer))

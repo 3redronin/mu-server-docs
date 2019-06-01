@@ -1,0 +1,12 @@
+{% extends "template.html" %}
+{% block main %}
+
+<p>HTTP/2 is supported for Java 9 and above. It is off by default, but can be turned on with the
+    {{ javadoc("io.muserver.Http2ConfigBuilder") | raw }} class. The <code>http2EnabledIfAvailable()</code>
+    method can be used to detect if Java 9 or later is in use, in which case it will be enabled.</p>
+
+{{ source("Http2Example.java") | raw }}
+
+<p>Note that HTTP/2 is only supported on HTTPS.</p>
+
+{% endblock %}
