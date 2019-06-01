@@ -30,7 +30,7 @@
     resource classes.</p>
 
 <p>Specifically, when creating a rest server, you pass instantiated instances of your resources to the
-    constructor, which means <em>Mu Server will not instantiate any of your objects</em>. This allows you
+    Mu Server REST builder, which means <em>Mu Server will not instantiate any of your objects</em>. This allows you
     to create your objects in whatever way you desire, and makes it very easy to use constructor-based
     dependency injection, as in the example above.</p>
 
@@ -39,8 +39,8 @@
 
 <h2>Serialisation with Jackson JAX-RS</h2>
 
-<p>To support JSON serialisation of response bodies and deserialisation of request bodies, you need to add
-the <a href="https://github.com/FasterXML/jackson-jaxrs-providers">Jackson JAX-RS provider</a> dependency:</p>
+<p>To support automatic JSON serialisation of response bodies and deserialisation of request bodies, you can add
+    the <a href="https://github.com/FasterXML/jackson-jaxrs-providers">Jackson JAX-RS provider</a> dependency:</p>
 
 <pre><code class="language-markup">&lt;dependency&gt;
     &lt;groupId&gt;com.fasterxml.jackson.jaxrs&lt;/groupId&gt;
@@ -49,7 +49,7 @@ the <a href="https://github.com/FasterXML/jackson-jaxrs-providers">Jackson JAX-R
 &lt;/dependency&gt;</code></pre>
 
 <p>You can then register a body reader and/or writer on the <code>RestHandlerBuilder</code>. In the following
-example the <code>User</code> class is automatically converted to JSON:</p>
+    example the <code>User</code> class is automatically converted to JSON:</p>
 
 {{ source("JacksonJaxRSExample.java") | raw }}
 
@@ -77,7 +77,7 @@ example the <code>User</code> class is automatically converted to JSON:</p>
     exposed on your web server and then UIs such as <a href="https://swagger.io/">Swagger</a> can
     be used to visualise and test your API.</p>
 
-<p>While Swagger is not built in, a very simple HTML documentation page can also be automatically
+<p>While the Swagger UI is not built in, a very simple HTML documentation page can also be automatically
     exposed.</p>
 
 <p>To expose documentation, use the documentation-related methods on the
@@ -129,12 +129,22 @@ example the <code>User</code> class is automatically converted to JSON:</p>
 <h2>Custom readers, writers, and exception handlers</h2>
 
 <p>The following methods on the {{ javadoc("io.muserver.rest.RestHandlerBuilder") | raw }} can
-be used:</p>
+    be used:</p>
 <ul>
-    <li><code>addCustomReader</code> which registers an object that can deserialise request bodies into custom classes.</li>
+    <li><code>addCustomReader</code> which registers an object that can deserialise request bodies into custom classes.
+    </li>
     <li><code>addCustomWriter</code> which registers an object that can write custom classes to responses.</li>
-    <li><code>addCustomParamConverter</code> which registers a class that convert method parameter string values to and from a custom class.</li>
+    <li><code>addCustomParamConverter</code> which registers a class that convert method parameter string values to and
+        from a custom class.
+    </li>
     <li><code>addExceptionMapper</code> which registers a mapping from an exception type to a specific response.</li>
 </ul>
 <p>See the {{ javadoc("io.muserver.rest.RestHandlerBuilder") | raw }} javadoc for more details.</p>
+
+<h2>File uploads on Form parameters</h2>
+
+<p>For <code>multipart/form-data</code> requests, the <code>@FormParam</code> method parameter annotation can be used
+    with {{ javadoc("io.muserver.UploadedFile") | raw }} objects, including <code>List&lt;UploadedFile&gt;</code> for
+    multiple uploads of the same name.</p>
+
 {% endblock %}
