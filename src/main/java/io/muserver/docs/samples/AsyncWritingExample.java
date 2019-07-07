@@ -56,18 +56,19 @@ public class AsyncWritingExample {
             if (bytesRead != -1) {
 
                 // Write the jpg bytes from the buffer to the response channel
-                asyncHandle.write(buffer, new WriteCallback() {
+                asyncHandle.write(buffer, new DoneCallback() {
 
-                    public void onSuccess() {
-                        // Clear the buffer, and then start reading the next segment of data
-                        buffer.clear();
-                        bytesSent += bytesRead;
-                        channel.read(buffer, bytesSent, null, FileChannelToResponsePump.this);
-                    }
-
-                    public void onFailure(Throwable reason) {
-                        // client probably disconnected... no big deal
-                        asyncHandle.complete();
+                    @Override
+                    public void onComplete(Throwable errorIfFailed) throws Exception {
+                        if (errorIfFailed == null) {
+                            // Clear the buffer, and then start reading the next segment of data
+                            buffer.clear();
+                            bytesSent += bytesRead;
+                            channel.read(buffer, bytesSent, null, FileChannelToResponsePump.this);
+                        } else {
+                            // client probably disconnected so stop reading and close the request
+                            asyncHandle.complete();
+                        }
                     }
 
                 });

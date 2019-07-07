@@ -1,0 +1,28 @@
+{% extends "template.html" %}
+{% block main %}
+
+<p>Websockets give you a bi-directional communication channel between a client and a server.</p>
+
+<p>To publish, create a {{ javadoc("io.muserver.WebSocketHandlerBuilder") | raw }} and add it as a normal handler. That
+builder requires that you pass it a {{ javadoc("io.muserver.MuWebSocketFactory") | raw }} which allows you to inspect
+    the websocket upgrade request and either reject it (by returning null) or by creating a
+    {{ javadoc("io.muserver.MuWebSocket") | raw }}.</p>
+
+<p>From your websocket factory, it's highly recommended that you return a web socket by extending
+    {{ javadoc("io.muserver.BaseWebSocket") | raw }} as it will provide some useful default implementation (e.g.
+    handling closing sockets, pings, and pongs) and it also provides the <code>session()</code> method which
+    is the way to send messages to the client.
+</p>
+
+<p>The following example creates a websocket handler at <code>/echo-socket</code> which simply echos any text messages
+    it receives back to the client:</p>
+
+{{ source("WebSocketExample.java") | raw }}
+
+<p>This page connects to the endpoint above and sends messages, and listens for responses:</p>
+
+{{ source("websocket.html") | raw }}
+
+<p>Note: if you are only sending from the server to the client, consider using <a href="/sse">Server Sent Events (SSE)</a> instead.</p>
+
+{% endblock %}

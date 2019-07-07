@@ -34,13 +34,13 @@ public class AsyncRequestBodyExample {
 
             asyncHandle.setReadListener(new RequestBodyListener() {
 
-                public void onDataReceived(ByteBuffer buffer) {
+                public void onDataReceived(ByteBuffer buffer, DoneCallback doneCallback) {
                     int dataSize = buffer.remaining();
                     String message = "Received " + dataSize + " bytes - total so far is "
                         + total.addAndGet(dataSize) + " of " + expectedSize + " bytes\n";
                     // Note: do not call any blocking response writing methods from a data-received
                     // callback. Instead use the async writer on the handle.
-                    asyncHandle.write(Mutils.toByteBuffer(message));
+                    asyncHandle.write(Mutils.toByteBuffer(message), doneCallback);
                     System.out.print(message);
                 }
 

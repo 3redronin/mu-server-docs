@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Websocket Example</title>
+</head>
+<body>
+
+<main>
+    <p>Run <code>WebSocketExample.java</code> and then load this page. This simply echos back
+        any messages you send. Send <code>close</code> to close the socket from the server.</p>
+    <form>
+        <fieldset>
+            <label>Message: <input type="text" id="message" required></label>
+            <input type="submit">
+            <input type="button" value="Close connection" id="close">
+        </fieldset>
+    </form>
+
+    <p>Status: <span class="status">Connecting...</span></p>
+    <ul class="received"></ul>
+</main>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const $ = document.querySelector.bind(document);
+
+        const status = $('.status');
+        const socket = new WebSocket('ws://' + location.host + '/echo-socket');
+
+        socket.addEventListener('open', () => {
+            status.textContent = 'Connected';
+        });
+        socket.addEventListener('error', event => {
+            status.textContent = 'Error! ' + event;
+        });
+        socket.addEventListener('close', event => {
+            status.textContent = 'Closed: ' + event.code + ' ' + event.reason +
+                ' (' + (event.wasClean ? '' : 'not ') + 'clean)';
+            $('fieldset').setAttribute('disabled', 'disabled')
+        });
+        socket.addEventListener('message', event => {
+            const li = $('.received').appendChild(document.createElement('li'));
+            li.textContent = event.data;
+        });
+        $('#close').addEventListener('click', () => {
+            socket.close(1000, 'Client closed');
+        });
+        $('form').addEventListener('submit', e => {
+            e.preventDefault();
+            const mb = $('#message');
+            socket.send(mb.value);
+            mb.value = '';
+            mb.focus();
+        });
+    });
+</script>
+
+
+</body>
+</html>

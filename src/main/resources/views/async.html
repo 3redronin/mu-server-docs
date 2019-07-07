@@ -16,7 +16,7 @@
 
 <ul>
     <li><code>Future&lt;Void&gt; write(ByteBuffer data)</code></li>
-    <li><code>void write(ByteBuffer data, WriteCallback callback)</code></li>
+    <li><code>void write(ByteBuffer data, DoneCallback callback)</code></li>
 </ul>
 
 <p><strong>Tip:</strong> to convert a string to a ByteBuffer, use
@@ -24,7 +24,7 @@
 
 <p>In the following example, when a request for a JPG is made, the file is opened and segments of the file
     are read asynchronously. When some bytes are read from the file, they are passed on to the response. The
-    <code>write</code> method with the {{ javadoc("io.muserver.WriteCallback") | raw }} is used so that after
+    <code>write</code> method with the {{ javadoc("io.muserver.DoneCallback") | raw }} is used so that after
     the bytes from the byte-buffer have been written to the response, another request to read more data is made.</p>
 
 {{ source("AsyncWritingExample.java") | raw }}

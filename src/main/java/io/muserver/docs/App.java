@@ -82,6 +82,7 @@ public class App {
             .addHandler(Method.GET, "/letsencrypt", new LetsEncryptHandler(renderer))
             .addHandler(Method.GET, "/murp", new MurpHandler(renderer))
             .addHandler(Method.GET, "/uploads", new VanillaHandler(renderer, "upload", "File Uploads"))
+            .addHandler(Method.GET, "/websockets", new VanillaHandler(renderer, "websocket", "Web Sockets"))
             .addHandler(Method.GET, "/sse", new VanillaHandler(renderer, "sse", "Server Sent Events"))
             .addHandler(Method.GET, "/sse/counter", (request, response, pathParams) -> {
                 SsePublisher publisher = SsePublisher.start(request, response);
