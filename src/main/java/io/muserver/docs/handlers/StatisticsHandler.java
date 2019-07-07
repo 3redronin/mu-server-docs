@@ -28,6 +28,9 @@ public class StatisticsHandler implements RouteHandler {
                 .with("completedRequests", formatter.format(stats.completedRequests()))
                 .with("bytesUploaded", formatter.format(stats.bytesRead()))
                 .with("bytesDownloaded", formatter.format(stats.bytesSent()))
+                .with("invalidHttpRequests", formatter.format(stats.invalidHttpRequests()))
+                .with("failedToConnect", formatter.format(stats.failedToConnect()))
+                .with("rejectedDueToOverload", formatter.format(stats.rejectedDueToOverload()))
         );
     }
 }

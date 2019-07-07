@@ -24,6 +24,18 @@
         <th>Bytes downloaded</th>
         <td style="text-align:right">{{bytesDownloaded}}</td>
     </tr>
+    <tr>
+        <th>Invalid requests</th>
+        <td style="text-align:right">{{invalidHttpRequests}}</td>
+    </tr>
+    <tr>
+        <th>SSL connection errors</th>
+        <td style="text-align:right">{{failedToConnect}}</td>
+    </tr>
+    <tr>
+        <th>Rejected requests</th>
+        <td style="text-align:right">{{rejectedDueToOverload}}</td>
+    </tr>
 </table>
 
 {% endblock %}
