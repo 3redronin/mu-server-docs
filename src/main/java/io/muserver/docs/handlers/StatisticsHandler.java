@@ -25,6 +25,8 @@ public class StatisticsHandler implements RouteHandler {
             renderer.model()
                 .with("title", "Server Statistics")
                 .with("activeConnections", formatter.format(stats.activeConnections()))
+                .with("completedConnections", formatter.format(stats.completedConnections()))
+                .with("activeRequests", formatter.format(stats.activeRequests().size()))
                 .with("completedRequests", formatter.format(stats.completedRequests()))
                 .with("bytesUploaded", formatter.format(stats.bytesRead()))
                 .with("bytesDownloaded", formatter.format(stats.bytesSent()))
