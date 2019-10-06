@@ -19,7 +19,7 @@ public class HttpsWithCert {
             .withKeystorePassword("Very5ecure")
             .withKeyPassword("ActuallyNotSecure")
             .withKeystore(new File("src/main/java/io/muserver/docs/samples/HttpsCert.jks"))
-            .withProtocols("TLSv1.2")
+            .withProtocols("TLSv1.2", "TLSv1.3")
             .withCipherFilter(new SSLCipherFilter() {
                 public List<String> selectCiphers(Set<String> supportedCiphers, List<String> defaultCiphers) {
                     return defaultCiphers;
