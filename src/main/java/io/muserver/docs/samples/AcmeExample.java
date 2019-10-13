@@ -18,7 +18,7 @@ public class AcmeExample {
         MuServer server = MuServerBuilder.muServer()
             .withHttpPort(80)
             .withHttpsPort(443)
-            .withHttpsConfig(certManager.createSSLContext())
+            .withHttpsConfig(certManager.createHttpsConfig())
             .addHandler(certManager.createHandler())
             .addHandler(Method.GET, "/", (req, resp, path) -> {
                 resp.write("Hello, world");

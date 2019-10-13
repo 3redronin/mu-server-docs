@@ -8,10 +8,11 @@
 
 <h2>Signed certificates</h2>
 
-<p>To use a signed certificate, you need to create an <code>SSLContextBuilder</code> and pass it to the <code>withHttpsConfig</code>
+<p>To use a signed certificate, you need to create an {{ javadoc("io.muserver.HttpsConfigBuilder") | raw }}
+    and pass it to the <code>withHttpsConfig</code>
     method on the {{ javadoc("io.muserver.MuServerBuilder") | raw }} class.</p>
 
-<p>The {{ javadoc("io.muserver.SSLContextBuilder") | raw }} has a number of useful ways to create a context, for
+<p>The {{ javadoc("io.muserver.HttpsConfigBuilder") | raw }} has a number of useful ways to create a context, for
     example you can load a cert from the file system, classpath, or an <code>InputStream</code>.</p>
 
 <p>You can also specify which TLS protocols and ciphers you would like to use.</p>
@@ -20,10 +21,10 @@
 
 <h2>Changing certs at runtime</h2>
 
-<p>To perform a hot change of an HTTPS certificate, construct a new SSLContext and change it using the MuServer
-    server reference:</p>
+<p>To perform a hot change of an HTTPS certificate, construct a new <code>HttpsConfigBuilder</code> and change it
+    using the MuServer server reference:</p>
 
-<pre><code class="language-java">server.changeSSLContext(sslContext);</code></pre>
+<pre><code class="language-java">server.changeHttpsConfig(httpsConfig);</code></pre>
 
 <h2>HSTS Handler</h2>
 

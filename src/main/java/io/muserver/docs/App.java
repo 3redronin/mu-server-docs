@@ -48,7 +48,7 @@ public class App {
             .withHttpPort(8080)
             .withHttpsPort(8443)
             .withHttp2Config(http2EnabledIfAvailable())
-            .withHttpsConfig(acmeCertManager.createSSLContext())
+            .withHttpsConfig(acmeCertManager.createHttpsConfig())
             .addHandler((req, resp) -> {
                 log.info("Recieved " + req + " from " + req.remoteAddress());
                 return false;

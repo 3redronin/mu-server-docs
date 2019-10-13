@@ -1,9 +1,9 @@
 package io.muserver.docs.samples;
 
+import io.muserver.HttpsConfigBuilder;
 import io.muserver.Method;
 import io.muserver.MuServer;
 import io.muserver.SSLCipherFilter;
-import io.muserver.SSLContextBuilder;
 
 import java.io.File;
 import java.util.List;
@@ -14,7 +14,7 @@ import static io.muserver.MuServerBuilder.muServer;
 public class HttpsWithCert {
     public static void main(String[] args) {
 
-        SSLContextBuilder sslContext = SSLContextBuilder.sslContext()
+        HttpsConfigBuilder httpsConfig = HttpsConfigBuilder.httpsConfig()
             .withKeystoreType("JKS")
             .withKeystorePassword("Very5ecure")
             .withKeyPassword("ActuallyNotSecure")
@@ -28,7 +28,7 @@ public class HttpsWithCert {
 
         MuServer server = muServer()
             .withHttpsPort(10443)
-            .withHttpsConfig(sslContext)
+            .withHttpsConfig(httpsConfig)
             .addHandler(Method.GET, "/", (req, resp, pp) -> resp.write("This is HTTPS"))
             .start();
 
