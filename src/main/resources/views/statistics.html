@@ -46,4 +46,18 @@
     </tr>
 </table>
 
+<h2 id="connectionInfo">Connection info</h2>
+
+<p>You can access all the existing connections to your server by calling <code>server.activeConnections()</code>
+    which returns a set of {{ javadoc("io.muserver.HttpConnection") | raw }} objects. This allows you to see
+    which HTTP protocols are in use, which TLS versions are used, the ciphers used, etc. This can be useful
+    when analysing which TLS settings will not impact your users.</p>
+
+<p>The {{ javadoc("io.muserver.MuRequest") | raw }} object also gives you access to the current connection via
+    the <code>connection()</code> method. For example, you are accessing this web page over
+    <strong>{{ connection.protocol }}</strong> using <strong>{{ connection.httpsProtocol }}</strong> with the
+    <strong>{{ connection.cipher }}</strong> cipher. This connection, started at <strong>{{ connection.startTime }}</strong>
+    has served <strong>{{ connection.completedRequests }}</strong> requests.
+</p>
+
 {% endblock %}

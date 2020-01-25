@@ -64,7 +64,7 @@
 <h2>Accessing SSL Settings</h2>
 
 <p>The <code>sslInfo()</code> method on the {{ javadoc("io.muserver.MuServer") | raw }} class returns an
-    {{ javadoc("io.muserver.SSLInfo") | raw }} object that can be used to get the actual values in use. In a handler,
+    {{ javadoc("io.muserver.SSLInfo") | raw }} object that can be used to get the actual values your server supports. In a handler,
     this can be accessed with <code class="language-java">request.server().sslInfo()</code> and the following
     table shows the settings from this website:</p>
 
@@ -98,6 +98,9 @@
     </tr>
     </tbody>
 </table>
+
+<p>To see which TLS versions and ciphers your users are connecting with, you can refer to <a
+    href="/statistics#connectionInfo">the connection info exposed by Mu Server</a>.</p>
 
 <p>To see an SSL report for Mu Server using OpenSSL, go to the <a
     href="https://www.ssllabs.com/ssltest/analyze.html?d=muserver.io">SSL Labs SSL Report for muserver.io</a>.</p>

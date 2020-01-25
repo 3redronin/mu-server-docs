@@ -33,6 +33,7 @@ public class StatisticsHandler implements RouteHandler {
                 .with("invalidHttpRequests", formatter.format(stats.invalidHttpRequests()))
                 .with("failedToConnect", formatter.format(stats.failedToConnect()))
                 .with("rejectedDueToOverload", formatter.format(stats.rejectedDueToOverload()))
+                .with("connection", request.connection())
         );
     }
 }
