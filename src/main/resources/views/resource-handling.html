@@ -30,9 +30,16 @@ the <code>/web</code> classpath path on the <code>/static/</code> path:</p>
 <h2>Mime Types and Headers</h2>
 
 <p>Mu Server comes with some opinionated response headers. For example, Javascript and CSS files are served with
-a short-lived cache value, while HTML pages have no cache.</p>
+a short-lived cache value, while HTML pages have no cache, and most text files are served with <code>utf-8</code>
+encoding.</p>
 
-<p>You can browse tjava he <a href="/resources/mime-types">full list of mime types and headers</a>.</p>
+<p>You can browse the <a href="/resources/mime-types">full list of mime types and headers</a>.</p>
+
+<p>To customize response headers on a request-by-request basis, a {{ javadoc("io.muserver.handlers.ResourceCustomizer") | raw }}
+can be used. For example, if you have a convention that any javascript files that end with the extension <code>.immutable.js</code>
+should never be downloaded twice, then you can set an aggressive cache control header for these files like so:</p>
+
+{{ source("ResourceHandlingWithCustomization.java") | raw }}
 
 <p>You can also customize headers based on file extensions. For example, perhaps you have <code>.dan</code> files
 that do not have any mime type or headers configured by default. To set custom headers for <code>.dan</code> files,
