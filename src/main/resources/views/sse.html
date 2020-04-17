@@ -40,6 +40,7 @@ for an async version that has callbacks.</p>
         source.addEventListener('error', e => {
             console.log('error', e);
             status.textContent = 'Error';
+            source.close();
         });
 
         source.addEventListener('message', e => {
