@@ -1,33 +1,33 @@
 package io.muserver.docs;
 
+import com.mitchellbosecke.pebble.extension.Function;
+import com.mitchellbosecke.pebble.template.EvaluationContext;
+import com.mitchellbosecke.pebble.template.PebbleTemplate;
 import io.muserver.Mutils;
-import org.jtwig.functions.FunctionRequest;
-import org.jtwig.functions.SimpleJtwigFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-public class SourceCodeInjector extends SimpleJtwigFunction {
-    private static final Logger log = LoggerFactory.getLogger(SourceCodeInjector.class);
+public class SourceCodeInjectorFunction implements Function {
+    private static final Logger log = LoggerFactory.getLogger(SourceCodeInjectorFunction.class);
     private final boolean isLocal;
 
-    public SourceCodeInjector(boolean isLocal) {
+    public SourceCodeInjectorFunction(boolean isLocal) {
         this.isLocal = isLocal;
     }
 
-    @Override
-    public String name() {
-        return "source";
-    }
 
     @Override
-    public Object execute(FunctionRequest request) {
+    public Object execute(Map<String, Object> args, PebbleTemplate self, EvaluationContext context, int lineNumber) {
         try {
-            String name = request.get(0).toString();
+            String name = (String) args.get("filename");
             String ext = name.substring(name.lastIndexOf('.') + 1);
             String dir = (ext.equals("java")) ? "src/main/java/io/muserver/docs/samples" : "src/main/resources/samples";
             InputStream in;
@@ -56,5 +56,10 @@ public class SourceCodeInjector extends SimpleJtwigFunction {
             log.error("Error rendering source code", e);
             return "Error";
         }
+    }
+
+    @Override
+    public List<String> getArgumentNames() {
+        return Collections.singletonList("filename");
     }
 }

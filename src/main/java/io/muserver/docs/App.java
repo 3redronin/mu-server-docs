@@ -8,17 +8,10 @@ import io.muserver.docs.samples.*;
 import io.muserver.handlers.HttpsRedirectorBuilder;
 import io.muserver.rest.CORSConfigBuilder;
 import io.muserver.rest.RestHandlerBuilder;
-import org.jtwig.JtwigModel;
-import org.jtwig.JtwigTemplate;
-import org.jtwig.environment.EnvironmentConfiguration;
-import org.jtwig.environment.EnvironmentConfigurationBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,7 +28,7 @@ public class App {
 
         boolean isLocal = args.length == 1 && args[0].equals("local");
 
-        ViewRenderer renderer = getTemplateLoader(isLocal);
+        ViewRenderer renderer = ViewRenderer.create(isLocal);
 
         AcmeCertManager acmeCertManager = AcmeCertManagerBuilder.letsEncrypt()
             .withConfigDir(new File("letsencrypt"))
@@ -130,57 +123,6 @@ public class App {
             )
             .withOpenApiJsonUrl("/openapi.json")
             .withOpenApiHtmlUrl("/api.html");
-    }
-
-    private static ViewRenderer getTemplateLoader(boolean isLocal) throws IOException {
-        File viewBase;
-        EnvironmentConfigurationBuilder builder = EnvironmentConfigurationBuilder.configuration()
-            .escape().withInitialEngine("html")
-            .and()
-            .functions().add(new SourceCodeInjector(isLocal)).add(new JavaDocLink())
-            .and();
-        if (isLocal) {
-            viewBase = new File("src/main/resources/views").getCanonicalFile();
-            if (!viewBase.isDirectory()) {
-                throw new RuntimeException("Could not find " + Mutils.fullPath(viewBase));
-            }
-            builder = builder
-                .parser().withoutTemplateCache()
-                .and();
-
-        } else {
-            viewBase = null;
-        }
-        EnvironmentConfiguration config = builder.build();
-
-        String muVersion = MuServer.artifactVersion();
-
-        return new ViewRenderer() {
-            @Override
-            public void render(MuResponse response, String relativePath, JtwigModel model) {
-                response.contentType("text/html;charset=utf-8");
-                JtwigTemplate template;
-                if (isLocal) {
-                    template = JtwigTemplate.fileTemplate(new File(viewBase, relativePath + ".html"), config);
-                } else {
-                    template = JtwigTemplate.classpathTemplate("/views/" + relativePath + ".html", config);
-                }
-                try (OutputStream out = new BufferedOutputStream(response.outputStream(), 4096)) {
-                    template.render(model, out);
-                } catch (IOException e) {
-                    log.info("Error closing stream: " + e.getMessage());
-                }
-            }
-
-            @Override
-            public JtwigModel model() {
-                return new JtwigModel()
-                    .with("version", muVersion)
-                    .with("isLocal", isLocal);
-            }
-        };
-
-
     }
 
     private static class WWWRemover implements MuHandler {
