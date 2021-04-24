@@ -83,9 +83,9 @@
     <a href="/model/cookie?action=view">view the cookie</a> and then <a href="/model/cookie?action=delete">delete the
         cookie</a>.</p>
 
-<p>When creating cookies, it is recommended to enable Secure and HTTPOnly to prevent a number of common
-    attacks. The CookieBuilder's <code>newSecureCookie()</code> method creates a build with these two
-    values set.</p>
+<p>When creating cookies, it is recommended to set <code>SameSite</code> to <code>Strict</code>, and enable
+    <code>Secure</code> and <code>HTTPOnly</code> to prevent a number of common
+    attacks. The CookieBuilder's <code>newSecureCookie()</code> method creates a build with these values set.</p>
 
 <p>It's important to note that cookie names and values can only use a limited subset of ASCII characters, so
     you cannot send arbitrary data (such as JSON) as a cookie value without encoding it first. One option to

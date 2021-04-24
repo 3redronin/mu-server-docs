@@ -27,6 +27,7 @@ public class CookieExampleHandler implements RouteHandler {
                     .withPath("/model") // only send over /model/*
                     .secure(false) // only send over HTTPS
                     .httpOnly(true) // disable JavaScript access
+                    .withSameSite("Lax") // Strict, Lax, or None
                     .build();
 
                 response.addCookie(newCookie);
