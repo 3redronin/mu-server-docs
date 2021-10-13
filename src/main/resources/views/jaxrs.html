@@ -160,6 +160,18 @@
     <a href="https://github.com/3redronin/mu-server-docs/blob/master/src/main/java/io/muserver/docs/samples/JaxRSBasicAuth.java">JaxRSBasicAuth.java</a>
     for a full example.</p>
 
+<p>You can access a {{ javadoc("javax.ws.rs.container.ResourceInfo") | raw }} or the current
+    {{ javadoc("io.muserver.MuRequest") | raw }} by looking up the properties on the context:</p>
+
+<pre class="language-java"><code class="language-java">@Override
+public void filter(ContainerRequestContext requestContext) {
+    ResourceInfo resourceInfo = (ResourceInfo)
+            requestContext.getProperty(MuRuntimeDelegate.RESOURCE_INFO_PROPERTY);
+    MuRequest muRequest = (MuRequest)
+            requestContext.getProperty(MuRuntimeDelegate.MU_REQUEST_PROPERTY);
+    // do stuff
+}</code></pre>
+
 <h2>Custom readers, writers, and exception handlers</h2>
 
 <p>The following methods on the {{ javadoc("io.muserver.rest.RestHandlerBuilder") | raw }} can
