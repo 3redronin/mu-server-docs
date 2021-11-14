@@ -172,6 +172,12 @@ public void filter(ContainerRequestContext requestContext) {
     // do stuff
 }</code></pre>
 
+<h2>Reader and Writer interceptors</h2>
+
+<p>Use the <code>addReaderInterceptor</code> and <code>addWriterInterceptor</code> in order to intercept
+request and response bodies respectively. To get <code>ResourceInfo</code> or the <code>MuRequest</code>
+you can access the properties on the interceptor context in the same way as for filters described above.</p>
+
 <h2>Custom readers, writers, and exception handlers</h2>
 
 <p>The following methods on the {{ javadoc("io.muserver.rest.RestHandlerBuilder") | raw }} can
