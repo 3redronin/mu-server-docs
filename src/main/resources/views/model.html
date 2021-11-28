@@ -12,6 +12,7 @@
     <li><a href="#uploads">Uploads</a></li>
     <li><a href="#headers">Headers</a></li>
     <li><a href="#cookies">Cookies</a></li>
+    <li><a href="#matrix">Matrix parameters</a></li>
     <li><a href="#requests">Request bodies</a></li>
     <li><a href="#responses">Responses</a></li>
     <li><a href="#response-bodies">Response Bodies</a>
@@ -96,6 +97,19 @@
 <p>If a max age is not set, then the cookie will be a "session" cookie which means browsers may keep
     the cookie until the user closes their browser (or not, depending on the browser). To create a persistent
     cookie, use the <code>withMaxAgeInSeconds</code> with a positive number.</p>
+
+<h2 id="matrix">Matrix Parameters</h2>
+
+<p>URL paths can have attributes associated with each segment of the path. For example, in the following URL, there
+are 3 path segments (<code>search</code>, <code>hotels</code>, and <code>suites</code>). The <code>hotels</code> segment
+has 2 attributes: <code>rating</code> which has two values (<code>4</code> and <code>5</code>) and <code>hasPool</code>,
+whereas the <code>suites</code> segment just has a single attribute.</p>
+
+<p><code>/search/hotels;rating=5;rating=4;hasPool=true/suites;beds=2</code></p>
+
+<p>The following example shows how to locate a segment and extract the parameters for that segment:</p>
+
+{{ source("MatrixParameterExampleHandler.java") | raw }}
 
 <h2 id="requests">Request bodies</h2>
 

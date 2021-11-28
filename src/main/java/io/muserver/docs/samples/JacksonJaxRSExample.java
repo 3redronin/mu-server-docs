@@ -46,7 +46,7 @@ public class JacksonJaxRSExample {
         @Produces("text/plain")
         public String postUser(User user) {
             return "I got a user with isActive=" + user.isActive
-                + " and name " + user.name + " and age + " + user.age;
+                + " and name " + user.name + " and age " + user.age;
         }
 
     }
