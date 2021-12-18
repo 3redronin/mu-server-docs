@@ -20,6 +20,7 @@ else
   ls -la
   pkill 'java' || echo "Nothing killed"
 
+  java -version
   nohup java -jar $1 &
 
   tail -f logs/mudocs.log
