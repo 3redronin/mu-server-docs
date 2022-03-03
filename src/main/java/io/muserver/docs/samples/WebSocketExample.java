@@ -16,7 +16,7 @@ public class WebSocketExample {
                         public MuWebSocket create(MuRequest request, Headers responseHeaders) {
                             return new BaseWebSocket() {
                                 @Override
-                                public void onText(String message, DoneCallback onComplete) {
+                                public void onText(String message, boolean isLast, DoneCallback onComplete) {
                                     session().sendText("Received " + message, onComplete);
                                 }
                             };
