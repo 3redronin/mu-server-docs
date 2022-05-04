@@ -13,6 +13,7 @@ import static io.muserver.MuServerBuilder.httpServer;
 public class UploadExample {
     public static void main(String[] args) {
         MuServer server = httpServer()
+            .withMaxRequestSize(1_000_000_000 /* 1GB */)
             .addHandler(Method.POST, "/upload", (request, response, pathParams) -> {
 
                 UploadedFile file = request.uploadedFile("your-file");
