@@ -24,11 +24,11 @@ public class MimeTypesHandler implements RouteHandler {
                 .with("title", "Mime Types")
                 .with("types", ResourceType.getResourceTypes().stream()
                     .map(rt -> {
-                        String extensions = rt.extensions.isEmpty() ? "(default)" : String.join("<br>", rt.extensions);
-                        String headers = rt.headers.entries().stream()
+                        String extensions = rt.extensions().isEmpty() ? "(default)" : String.join("<br>", rt.extensions);
+                        String headers = rt.headers().entries().stream()
                             .map(e -> e.getKey() + ": " + e.getValue())
                             .collect(Collectors.joining("<br>"));
-                        return new TypeModel(rt.mimeType.toString(), extensions, rt.gzip ? "Yes" : "No", headers);
+                        return new TypeModel(rt.mimeType().toString(), extensions, rt.gzip() ? "Yes" : "No", headers);
                     })
                     .sorted(Comparator.comparing(t -> t.mimeType))
                     .collect(Collectors.toList())
@@ -38,10 +38,10 @@ public class MimeTypesHandler implements RouteHandler {
     }
 
     private static class TypeModel {
-        final String mimeType;
-        final String extensions;
-        final String gzip;
-        final String headers;
+        public final String mimeType;
+        public final String extensions;
+        public final String gzip;
+        public final String headers;
 
         private TypeModel(String mimeType, String extensions, String gzip, String headers) {
             this.mimeType = mimeType;
