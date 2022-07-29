@@ -92,7 +92,7 @@
         <td><code>sslInfo.certificates()</code></td>
         <td><ul>
             {% for cert in certs %}
-<li>{{ cert.getSubjectDN }} - from {{ cert.getNotBefore }} to {{ cert.getNotAfter }}</li>
+                <li>{{ cert }}</li>
             {% endfor %}
         </ul></td>
     </tr>

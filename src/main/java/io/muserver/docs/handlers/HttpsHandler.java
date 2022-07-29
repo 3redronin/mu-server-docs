@@ -7,6 +7,7 @@ import io.muserver.SSLInfo;
 import io.muserver.docs.ViewRenderer;
 
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class HttpsHandler implements RouteHandler {
     private final ViewRenderer renderer;
@@ -25,7 +26,7 @@ public class HttpsHandler implements RouteHandler {
                 .with("sslProvider", sslInfo.providerName())
                 .with("sslProtocols", String.join(", ", sslInfo.protocols()))
                 .with("sslCiphers", String.join(", ", sslInfo.ciphers()))
-                .with("certs", sslInfo.certificates())
+                .with("certs", sslInfo.certificates().stream().map(cert -> cert.getSubjectX500Principal() + " - from " + cert.getNotBefore() + " to " + cert.getNotAfter()).collect(Collectors.toList()))
         );
     }
 
