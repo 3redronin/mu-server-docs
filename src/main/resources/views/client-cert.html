@@ -40,7 +40,7 @@ Anyone with these files will be able to generate client certificates on your beh
 <p>The pass phrase entered on the first step will be needed in the next step and in the future when certificates are signed. Next step
 is to convert the certificate to PKCS12 format so that we can easily load it in Java.</p>
 
-<pre><code>openssl pkcs12 -export -inkey ca.key -in ca.cer -out ca.p12</code></pre>
+<pre class="bash"><code>openssl pkcs12 -export -inkey ca.key -in ca.cer -out ca.p12</code></pre>
 
 <p>You may be asked for a pass phrase for <code>ca.key</code> (which you created in step one) and then for another
 password which will be the password for the <code>PKCS12</code> file. In this example, <code>password</code> was
