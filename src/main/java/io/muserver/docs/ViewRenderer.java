@@ -1,23 +1,22 @@
 package io.muserver.docs;
 
-import com.mitchellbosecke.pebble.PebbleEngine;
-import com.mitchellbosecke.pebble.extension.AbstractExtension;
-import com.mitchellbosecke.pebble.extension.Filter;
-import com.mitchellbosecke.pebble.extension.Function;
-import com.mitchellbosecke.pebble.loader.ClasspathLoader;
-import com.mitchellbosecke.pebble.loader.FileLoader;
-import com.mitchellbosecke.pebble.template.PebbleTemplate;
+import io.pebbletemplates.pebble.PebbleEngine;
+import io.pebbletemplates.pebble.extension.AbstractExtension;
+import io.pebbletemplates.pebble.extension.Filter;
+import io.pebbletemplates.pebble.extension.Function;
+import io.pebbletemplates.pebble.loader.ClasspathLoader;
+import io.pebbletemplates.pebble.loader.FileLoader;
+import io.pebbletemplates.pebble.template.EvaluationContext;
+import io.pebbletemplates.pebble.template.PebbleTemplate;
 import io.muserver.ContentTypes;
 import io.muserver.MuResponse;
 import io.muserver.MuServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.InputStream;
 import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public interface ViewRenderer {
     void render(MuResponse response, String relativePath, Map<String,Object> model);
@@ -49,6 +48,7 @@ public interface ViewRenderer {
                     Map<String,Function> fs = new HashMap<>();
                     fs.put("javadoc", new JavaDocLinkFunction(isLocal));
                     fs.put("source", new SourceCodeInjectorFunction(isLocal));
+                    fs.put("artifactVersion", new ArtifactVersionFunction());
                     return fs;
                 }
             })
@@ -92,5 +92,42 @@ class ViewRendererImpl implements ViewRenderer {
         model.put("version", muVersion);
         model.put("isLocal", isLocal);
         return model;
+    }
+}
+
+class ArtifactVersionFunction implements Function {
+
+    @Override
+    public Object execute(Map<String, Object> args, PebbleTemplate self, EvaluationContext context, int lineNumber) {
+        String groupId = (String) args.get("groupId");
+        String artifactId = (String) args.get("artifactId");
+        return version(groupId, artifactId);
+    }
+
+    @Override
+    public List<String> getArgumentNames() {
+        return Arrays.asList("groupId", "artifactId");
+    }
+
+
+    static String version(String groupId, String artifactId) {
+        String v;
+        try {
+            Properties props = new Properties();
+            InputStream in = MuServer.class.getResourceAsStream("/META-INF/maven/" + groupId + "/" + artifactId + "/pom.properties");
+            if (in == null) {
+                v = "RELEASE";
+            } else {
+                try {
+                    props.load(in);
+                } finally {
+                    in.close();
+                }
+                v = props.getProperty("version");
+            }
+        } catch (Exception ex) {
+            v = "RELEASE";
+        }
+        return v;
     }
 }
