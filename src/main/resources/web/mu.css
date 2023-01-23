@@ -85,3 +85,7 @@ pre {
 li, p, pre code {
     line-height: 1.5;
 }
+
+pre.bash {
+    white-space: pre-wrap;
+}

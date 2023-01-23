@@ -105,4 +105,13 @@
 <p>To see an SSL report for Mu Server using OpenSSL, go to the <a
     href="https://www.ssllabs.com/ssltest/analyze.html?d=muserver.io">SSL Labs SSL Report for muserver.io</a>.</p>
 
+<h2>Mutual TLS with Client certificates</h2>
+
+<p>To allow authentication with client certificates, create a Trust Manager and pass it to
+    <code>withClientCertificateTrustManager(TrustManager)</code> on the
+    {{ javadoc("io.muserver.HttpsConfigBuilder") | raw }}. You can then access the client cert (if sent and valid)
+    with the <code>MuRequest.connnection().clientCertificate()</code> method from any handler.
+</p>
+<p>See <a href="/client-certs">the Mutual TLS documentation</a> for a full example.</p>
+
 {% endblock %}

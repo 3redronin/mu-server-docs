@@ -1,0 +1,113 @@
+{% extends "template.html" %}
+{% block main %}
+
+<p>Mutual TLS (where both the client and server have certificates that each validate) can be enabled
+by setting the <code>withClientCertificateTrustManager(TrustManager)</code> setting on the
+    {{ javadoc("io.muserver.HttpsConfigBuilder") | raw }}.</p>
+
+<p>You may want to do this if you want to authenticate your users using certificates that you sign.</p>
+
+<p>This page will describe one way of how client certificates can be created and signed which are subsequently validated by
+mu-server. For information on setting up server-side TLS, see the <a href="/https">HTTPS config</a> documentation.</p>
+
+<h2>High level overview</h2>
+
+<p>You, the server owner, control who has access to your service by signing client certificates for clients. In
+other words, you need to become your own certificate authority.</p>
+
+<p>Clients that want to access your service create a certificate request, which you can then sign and return to the client.</p>
+
+<p>When the client makes a call to your web service, they include their signed certificate with the request to the
+HTTPS endpoint of your service. It is often referred to as &quot;mutual&quot; TLS because while the client
+verifies the TLS certificate of the server (as is normal for any HTTPS request) the server also verifies the
+certificate sent by the client was signed by your certificate authority.</p>
+
+<p>Assuming the certificate is valid, then the server can assume that the client is who they say they are (or, like
+any secret-based authentication scheme, the client may be an attacker who has stolen the legitimate client's certificate).</p>
+
+<p>The next section shows how to create a Certificate Authority, generate and sign client certificates, and make
+it work with mu-server.</p>
+
+<h2>Step by step instructions</h2>
+
+<p>First you need to create a Certificate Authority key and certificate which will let you sign certificates and
+then later verify that if was you that signed the certificate. One way to do this is using <code>openssl</code>
+from the command line. The following will create files called <code>ca.key</code>, <code>ca.cert</code> and <code>ca.p12</code>.
+Anyone with these files will be able to generate client certificates on your behalf so these must be stored securely.</p>
+
+<pre class="bash"><code>openssl req -newkey rsa:4096 -keyform PEM -keyout ca.key -x509 -days 3650 -outform PEM -out ca.cer</code></pre>
+
+<p>The pass phrase entered on the first step will be needed in the next step and in the future when certificates are signed. Next step
+is to convert the certificate to PKCS12 format so that we can easily load it in Java.</p>
+
+<pre><code>openssl pkcs12 -export -inkey ca.key -in ca.cer -out ca.p12</code></pre>
+
+<p>You may be asked for a pass phrase for <code>ca.key</code> (which you created in step one) and then for another
+password which will be the password for the <code>PKCS12</code> file. In this example, <code>password</code> was
+used for both.</p>
+
+<p>We now need a mu-server created that loads this certificate into a <code>javax.net.ssl.TrustManager</code>
+object so that client certificates can be verified. Assuming the files are on the classpath, the following
+example creates the Trust Manager, passes it to the HTTPS config builder, and starts the server with a
+single handler that inspects the certificate.</p>
+
+{{ source("ClientCert.java") | raw }}
+
+<p>We now have a server that can verify and inspect client certificates.</p>
+
+<h2>Creating a client certificate</h2>
+
+<p>This is a two-step process:</p>
+<ol>
+    <li>Create a certificate signing request - this should be performed by the client</li>
+    <li>Sign the request with the certificate authority store</li>
+</ol>
+
+
+<h3>Create a request</h3>
+
+<p>The following command will create a private key that the client should keep secret:</p>
+
+<pre class="bash"><code>openssl genrsa -out client.key 4096</code></pre>
+
+<p>The following creates a certificate request using that key:</p>
+
+<pre class="bash"><code>openssl req -new -key client.key -out client.req</code></pre>
+
+<p>Only the <code>client.req</code> file should be shared with the service owner for them to sign.</p>
+
+<h3>Sign the request</h3>
+
+<p>The client should send <code>client.req</code> to the service owner. You can now use your
+<code>ca.cer</code> and <code>ca.key</code> files to create a signed certificate <code>client.cer</code>
+which they pass back to the client.</p>
+
+<pre class="bash"><code>openssl x509 -req -in client.req -CA ca.cer -CAkey ca.key -set_serial 101 -extensions client -days 365 -outform PEM -out client.cer</code></pre>
+
+<p>If the client wants the certificate in PKCS12 format, it can be converted to create <code>client.p12</code>:</p>
+
+<pre class="bash"><code>openssl pkcs12 -export -inkey client.key -in client.cer -out client.p12</code></pre>
+
+<h2>Send requests with the certificate</h2>
+
+<p>This is outside of the scope of this article as every client may do this differently. In general though, if
+<code>client.p12</code> is registered with the user's browser then the browser can send the certificate with the
+request.</p>
+
+<p>For a Java example where OkHttpClient is used, you can refer to
+    <a href="https://github.com/3redronin/mu-server/blob/master/src/test/java/io/muserver/ClientCertTest.java">Mu Server's client cert test</a>
+which creates a client that uses a p12 certificate to make requests with.</p>
+
+<p>In the following example on Windows, the <code>client.p12</code> certificate was double-clicked on to register
+it in the Windows certificate store, and when loading the above server code the browser asks which certificate
+to send:</p>
+
+<p><img src="/samples/certificate-selection.png" alt="Prompt in Microsoft Edge asking which client certificate to send" title="" style="max-width: 600px"></p>
+
+<p>The handler in the example above can then access various properties from the certificate which has been verified
+as being signed by the server's certificate authority:</p>
+
+<p><img src="/samples/certificate-info.png" alt="Prompt in Microsoft Edge asking which client certificate to send" title="" style="max-width: 600px"></p>
+
+
+{% endblock %}
