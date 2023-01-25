@@ -214,7 +214,7 @@
         <h2>0.71.2</h2>
         <ul>
             <li class="added">Added support for JAX-RS <code>Response.variant</code> and
-                <codes>Response.variants</codes>. Also, <code>selectVariant</code> allows <code>qs</code> parameters to
+                <code>Response.variants</code>. Also, <code>selectVariant</code> allows <code>qs</code> parameters to
                 specify server-preferred types and uses same sorting algorithm as the JAX-RS method matching algorithm</li>
             <li class="fix">Made <code>JaxRSResponse</code> set (rather than add) headers which should only ever have
                 one value, such as <code>content-language</code></li>
@@ -407,16 +407,82 @@
         <h2>0.60.1</h2>
         <p class="note">This includes changes from the unpublished 0.60.0 version.</p>
         <ul>
-            <li>Non-alphanumeric unreserved characters (<code>`~_-.`</code>) are not percent encoded when passed to handlers.
+            <li>Major changes to the way IO is working under the hood to fix several back-pressure related bugs and
+            to make transferring of data in requests and responses more efficient.</li>
+            <li>Allow form parameter uploads to be larger than the java heap size (when uploads are streamed to
+            disk for example)</li>
+            <li>Non-alphanumeric unreserved characters (<code>~_-.</code>) are not percent encoded when passed to handlers.
                 This allows non-urlencoded route declarations such as <code>/~home</code></li>
-
+            <li>Added <code>image/avif</code> as a supported mime type</li>
+            <li class="fix">Fixed encoding issue where multibyte characters split over http chunks in result bodies
+                would be corrupted when reading the body as a complete string</li>
+            <li class="fix">If a connection dies between submitting it to the executor and the execution starting,
+                then it should be considered rejected due to overload.</li>
+            <li class="fix">Moved the websocket onConnection handler to only after an upgrade is successful</li>
+            <li class="fix">Fixing disconnection-during-upgrade race condition on websockets</li>
+            <li class="fix">Fixed oversized request bodies to be rejected correctly for various body readers</li>
+            <li class="fix">The web socket session end state is ERROR or TIME_OUT when the API user doesn't close the socket</li>
+            <li>Made JAX-RS string response size calculation more memory efficient</li>
+            <li><code>File</code> objects can be <code>@FormParam</code> parameters in JAX RS methods</li>
         </ul>
     </div>
 
+    <div class="release minor">
+        <h2>0.56.5</h2>
+        <ul>
+            <li>Rate limit buckets are now exposed in the server interface so you can see how many requests
+                are in progress for each bucket</li>
+        </ul>
+    </div>
 
+    <div class="release minor">
+        <h2>0.56.4</h2>
+        <ul>
+            <li>Upgraded to Netty 4.1.56</li>
+        </ul>
+    </div>
+
+    <div class="release minor">
+        <h2>0.56.3</h2>
+        <ul>
+            <li>In JAX-RS, if a sub-resource locator method throws a web application exception, then use that for the client response</li>
+        </ul>
+    </div>
+
+    <div class="release minor">
+        <h2>0.56.2</h2>
+        <ul>
+            <li>Better cancelling of in-flight requests when idle timeout hits in HTTP 1</li>
+        </ul>
+    </div>
+
+    <p class="note">0.56.1 contained changes in test code only.</p>
+
+    <div class="release major">
+        <h2>0.56.0</h2>
+        <ul>
+            <li class="fix">Fix: don't send 408s if the full request has been read</li>
+        </ul>
+    </div>
+
+    <div class="release minor">
+        <h2>0.55.6</h2>
+        <ul>
+            <li class="fix">Fixed bug where PKCS12 certs with no SANs could through a Null pointer exception on startup</li>
+        </ul>
+    </div>
+
+    <div class="release minor">
+        <h2>0.55.5</h2>
+        <ul>
+            <li class="added">Added support for reading and writing <code>LocalDate</code>, <code>LocalDateTime</code>,
+                <code>LocalTime</code>, <code>OffsetDateTime</code>, <code>OffsetTime</code>, <code>ZonedDateTime</code>
+                <code>Year</code> and <code>YearMonth</code>
+                objects in JAX RS methods. For example you can use parameters such as <code>@QueryParam("date") LocalDate date</code></li>
+        </ul>
+    </div>
 
 </div>
-
 
 
 {% endblock %}
