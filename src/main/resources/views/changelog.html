@@ -15,13 +15,15 @@
 <div class="changelog">
 
     <div class="release minor">
-        <h2>0.73.1</h2>
+        <h2>0.73.3</h2>
         <ul>
             <li class="added">Added getters to <code>MuServerBuilder</code>, <code>ResourceHandlerBuilder</code>,
             <code>RestHandlerBuilder</code> and <code>Http2ConfigBuilder</code> to expose the current values
             on those builders.</li>
         </ul>
     </div>
+
+    <p class="note">0.73.1 and 0.73.2 were not released.</p>
 
     <div class="release major">
         <h2>0.73.0</h2>
@@ -185,8 +187,11 @@
         </ul>
     </div>
 
-    <div class="release minor">
+    <div class="release major">
         <h2>0.72.1</h2>
+        <p class="note">Versions from 0.71.4 to 0.72.0 included a change to enabled OCSP staping which was subsequently
+            rolled back due to <a href="https://github.com/3redronin/mu-server/pull/34#issuecomment-997322911">the
+                reasons described here</a> so this 0.72.1 release includes changes from 0.71.x.</p>
         <ul>
             <li><code>Headers.toString()</code> no longer prints the values of <code>cookie</code>,
                 <code>set-cookie</code> or <code>authorization</code> headers in order to reduce the chance of accidentally
@@ -197,9 +202,218 @@
         </ul>
     </div>
 
-    <p class="note">Versions from 0.71.4 to 0.72.0 included a change to enabled OCSP staping which was subsequently
-        rolled back due to <a href="https://github.com/3redronin/mu-server/pull/34#issuecomment-997322911">the
-        reasons described here</a>.</p>
+
+    <div class="release minor">
+        <h2>0.71.3</h2>
+        <ul>
+            <li class="deps">Updated to Netty 4.1.71</li>
+        </ul>
+    </div>
+
+    <div class="release minor">
+        <h2>0.71.2</h2>
+        <ul>
+            <li class="added">Added support for JAX-RS <code>Response.variant</code> and
+                <codes>Response.variants</codes>. Also, <code>selectVariant</code> allows <code>qs</code> parameters to
+                specify server-preferred types and uses same sorting algorithm as the JAX-RS method matching algorithm</li>
+            <li class="fix">Made <code>JaxRSResponse</code> set (rather than add) headers which should only ever have
+                one value, such as <code>content-language</code></li>
+        </ul>
+    </div>
+
+    <div class="release minor">
+        <h2>0.71.1</h2>
+        <ul>
+            <li class="fix">Bug fix: in JAX-RS, when <code>SPLIT_ON_COMMA</code> is on and an empty string is given an empty list
+                (rather than a list with an empty string) is returned for collection parameters</li>
+        </ul>
+    </div>
+
+    <div class="release major">
+        <h2>0.71.0</h2>
+        <ul>
+            <li>Older versions of Mu Server's JAX-RS implementation automatically split string collection query string
+            parameter values on commas, which while convenient was against the spec. This behaviour is now optional but
+            by default the only way to specify multiple query string parameters is by having multiple name-value pairs
+            of the parameter. In order to prevent this being a breaking change, upon starting the server if it is
+            detected that your server may be affected then the server will not start and you will be forced to set
+            the value of this with the <code>RestHandlerBuilder#withCollectionParameterStrategy</code> method.</li>
+            <li class="fix">Fix: Allow JAX-RS filters to change URI information and headers referenced by
+                <code>QueryParam</code> and <code>HeaderParam</code> annotations in resource methods</li>
+            <li class="fix">Fix: Correct annotations are passed to custom message body readers and writers</li>
+            <li class="fix">Cookies can be injected as JAX-RS parameters like so: <code>@CookieParam Cookie
+                cookie</code></li>
+            <li class="fix">Added support for path segments and matrix parameters in JAX-RS methods</li>
+            <li class="added">Allow custom annotations to be used on HTTP methods in JAX-RS (as long as they are supported by Mu Server).</li>
+
+        </ul>
+    </div>
+
+    <p class="note">The 0.70.x releases contained a breaking change that was reverted in 0.71.0 and so these
+    releases should be skipped and ignored.</p>
+
+    <div class="release minor">
+        <h2>0.62.5</h2>
+        <ul>
+            <li class="added">Allow JAX-RS request precondition evaluation</li>
+            <li class="added">JAX-RS Content negotiation now supported</li>
+            <li class="fix">Allow jax-rs <code>Request</code> objects to be injected to methods with the <code>@Context</code> annotation</li>
+        </ul>
+    </div>
+
+    <p class="note">0.62.3 and 0.62.4 were not released.</p>
+
+    <div class="release minor">
+        <h2>0.62.2</h2>
+        <ul>
+            <li class="added">JAX-RS entity reader interceptors can now be registered on a
+                <code>RestHandlerBuilder</code></li>
+        </ul>
+    </div>
+
+    <div class="release major">
+        <h2>0.62.1</h2>
+        <p class="note">This includes changes in the 0.62.0 release which was not published.</p>
+        <ul>
+            <li class="added">In OpenAPI JSON, custom schemas are now exposed in the <code>/components/schemas</code>
+                section of the JSON (although it is not currently referenced elsewhere).</li>
+            <li class="deps">Upgraded to Netty 4.1.70</li>
+            <li class="added">Path params in sub resource locators are now documented in OpenAPI JSON documents</li>
+        </ul>
+    </div>
+
+    <div class="release minor">
+        <h2>0.61.15</h2>
+        <ul>
+            <li>Allow JAX-RS filters to retrieve the Mu Request and <code>ResourceInfo</code> objects from properties.
+            Example: <code>ResourceInfo resourceInfo = (ResourceInfo) requestContext.getProperty(MuRuntimeDelegate.RESOURCE_INFO_PROPERTY);</code>
+            (or use <code>MuRuntimeDelegate.MU_REQUEST_PROPERTY</code> to get the Mu Request).</li>
+            <li class="deps">Upgraded to Netty 4.1.69</li>
+        </ul>
+    </div>
+
+    <p class="note">0.61.14 was not released</p>
+
+    <div class="release minor">
+        <h2>0.61.13</h2>
+        <ul>
+            <li class="fix">Made it so when downloading a fixed-size file from the file system, but the file is being
+                written to, then only the number of bytes that were there when the download was started will be sent
+                (such that the <code>content-length</code> header won't clash with the response body size).</li>
+        </ul>
+    </div>
+
+    <div class="release minor">
+        <h2>0.61.12</h2>
+        <ul>
+            <li class="deps">Upgraded to Netty 4.1.66</li>
+        </ul>
+    </div>
+
+    <p class="note">0.61.11 was not released</p>
+
+    <div class="release minor">
+        <h2>0.61.10</h2>
+        <ul>
+            <li class="fix">Fix: fixed bug where in certain issues HTTP2 data frames could be out of order</li>
+        </ul>
+    </div>
+
+    <div class="release minor">
+        <h2>0.61.9</h2>
+        <ul>
+            <li class="fix">Fixed bug in HTTP2 back pressure handling where frames waiting in a queue when writing is
+            paused due to back pressure could be skipped.</li>
+        </ul>
+    </div>
+
+    <p class="note">0.61.6, 0.61.7 and 0.61.8 were not released.</p>
+
+    <div class="release minor">
+        <h2>0.61.5</h2>
+        <ul>
+            <li class="fix">Fixed bug where during certain HTTP2 back pressure scenarios, the publishing of frames
+            may be unduly delayed.</li>
+        </ul>
+    </div>
+
+    <p class="note">0.61.4 was not released.</p>
+
+    <div class="release minor">
+        <h2>0.61.3</h2>
+        <ul>
+            <li class="fix">Fixed bug where a 408 Request Timeout may be sent even when a request body is being sent
+                data faster than the request timeout.</li>
+        </ul>
+    </div>
+
+    <div class="release minor">
+        <h2>0.61.2</h2>
+        <ul>
+            <li class="fix">Fixed the completion state of request bodies which would not be marked as &quot;complete&quot;
+            in certain situations.</li>
+            <li class="fix">Fixed bug where serving static resources from multiple classpath jars would not work.</li>
+        </ul>
+    </div>
+
+    <div class="release major">
+        <h2>0.61.1</h2>
+        <p class="note">This includes changes from the unpublished 0.61.0 release</p>
+        <ul>
+            <li class="fix">Fixed memory leaks when using HTTP2</li>
+        </ul>
+    </div>
+
+    <div class="release minor">
+        <h2>0.60.8</h2>
+        <ul>
+            <li class="fix">When a JAX-RS filter uses <code>abortWith(Response)</code> an exception mapper is no
+                longer invoked with that Response mapped in a <code>WebApplicationException</code>.</li>
+            <li class="fix">Fixed bug where a response thrown in a post-match filter that didn't have a
+                <code>content-type</code> set was throwing a Server exception.</li>
+            <li class="deps">Upgraded to Netty 4.1.63</li>
+        </ul>
+    </div>
+
+    <p class="note">0.60.7 was not released.</p>
+
+
+    <div class="release minor">
+        <h2>0.60.6</h2>
+        <ul>
+            <li>Upgraded to Netty 4.1.62</li>
+        </ul>
+    </div>
+
+    <p class="note">0.60.5 and 0.60.4 were not released.</p>
+
+    <div class="release minor">
+        <h2>0.60.3</h2>
+        <ul>
+            <li>JAX RS input streams are now closed even if the consumer doesn't. This prevents JAXRS requests that
+                have unclosed input stream readers from hanging.</li>
+        </ul>
+    </div>
+
+    <div class="release minor">
+        <h2>0.60.2</h2>
+        <ul>
+            <li>Allow fixed-length request body uploads that are greater than around 2.6gb
+                (or to be specific, where the request size is greater than <code>Integer.MAX_VALUE</code> bytes)</li>
+        </ul>
+    </div>
+
+    <div class="release major">
+        <h2>0.60.1</h2>
+        <p class="note">This includes changes from the unpublished 0.60.0 version.</p>
+        <ul>
+            <li>Non-alphanumeric unreserved characters (<code>`~_-.`</code>) are not percent encoded when passed to handlers.
+                This allows non-urlencoded route declarations such as <code>/~home</code></li>
+
+        </ul>
+    </div>
+
+
 
 </div>
 
