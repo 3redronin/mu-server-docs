@@ -1,0 +1,208 @@
+{% extends "template.html" %}
+{% block head %}
+<style>
+    .minor h2 {
+        font-size: larger;
+    }
+    .note {
+        font-size: smaller;
+        font-style: italic;
+    }
+</style>
+{% endblock %}
+{% block main %}
+
+<div class="changelog">
+
+    <div class="release minor">
+        <h2>0.73.1</h2>
+        <ul>
+            <li class="added">Added getters to <code>MuServerBuilder</code>, <code>ResourceHandlerBuilder</code>,
+            <code>RestHandlerBuilder</code> and <code>Http2ConfigBuilder</code> to expose the current values
+            on those builders.</li>
+        </ul>
+    </div>
+
+    <div class="release major">
+        <h2>0.73.0</h2>
+        <ul>
+            <li class="added">Add support for <a href="/client-certs">Mutual TLS / client certificates</a></li>
+        </ul>
+    </div>
+
+    <div class="release minor">
+        <h2>0.72.22</h2>
+        <ul>
+            <li class="added">Pre-constructed KeyStore objects can now be passed to the HttpsBuilder</li>
+            <li class="added">When reading binary data from a web socket, the binary data can optionally be held and
+                released at a later time via a new callback</li>
+            <li class="deps">Updated to Netty 4.1.87</li>
+            <li class="added">Added <code>Mutils.pathAndQuery(URI)</code> method to quickly get the path with
+            querystring from a URI.</li>
+        </ul>
+    </div>
+
+    <div class="release minor">
+        <h2>0.72.21</h2>
+        <ul>
+            <li class="deps">Updated to Netty 4.1.86</li>
+        </ul>
+    </div>
+
+    <div class="release minor">
+        <h2>0.72.21</h2>
+        <ul>
+            <li class="fix">mp4 files are now served with the <code>video/mp4</code> content type</li>
+            <li class="added"><code>javax.ws.rs.ext.RuntimeDelegate.createHeaderDelegate</code> now supports
+                <code>java.util.Date</code></li>
+            <li class="added">Added <code>io.muserver.rest.CORSConfigBuilder.toHandler</code> so that CORS handlers can
+                be more conveniently created from CORS config.</li>
+        </ul>
+    </div>
+
+    <p class="note">There were no releases for 0.72.18, 0.72.19, and 0.72.20.</p>
+
+    <div class="release minor">
+        <h2>0.72.17</h2>
+        <ul>
+            <li class="fix">Unmatched CORS responses will no longer put "null" as an allowed origin as per
+                <a href="https://w3c.github.io/webappsec-cors-for-developers/#avoid-returning-access-control-allow-origin-null">https://w3c.github.io/webappsec-cors-for-developers/#avoid-returning-access-control-allow-origin-null</a></li>
+            <li class="deps">Updated to Netty 4.1.82</li>
+        </ul>
+    </div>
+
+    <div class="release minor">
+        <h2>0.72.16</h2>
+        <ul>
+            <li class="deps">Updated to Netty 4.1.78</li>
+        </ul>
+    </div>
+
+    <div class="release minor">
+        <h2>0.72.15</h2>
+        <ul>
+            <li class="fix">Fixed <code>UriBuilder.uri()</code> method to handle encoded paths and query string values</li>
+        </ul>
+    </div>
+
+    <div class="release minor">
+        <h2>0.72.14</h2>
+        <ul>
+            <li class="added">Added support for converting comma-separated <code>X-Forwarded-*</code> headers to
+                <code>Forwarded</code> headers</li>
+            <li class="added">Added <code>MuRequest.clientIP()</code> to get an IP address taking into account forwarded headers.</li>
+        </ul>
+    </div>
+
+    <div class="release minor">
+        <h2>0.72.13</h2>
+        <ul>
+            <li class="fix">Bug fix: When a write fails, don't try to update the response state if the response state is already in an end state.</li>
+        </ul>
+    </div>
+
+    <div class="release minor">
+        <h2>0.72.12</h2>
+        <ul>
+            <li class="fix">Bug fix: Made it so unhandled exception handlers that stream custom errors get closed when completed.</li>
+        </ul>
+    </div>
+
+    <div class="release minor">
+        <h2>0.72.11</h2>
+        <ul>
+            <li class="fix">Bug fix: Made async SSE publishers (which includes jax-rs <code>SseSinks</code>) detect
+                client disconnections and mark the publisher as closed</li>
+        </ul>
+    </div>
+
+    <div class="release minor">
+        <h2>0.72.10</h2>
+        <ul>
+            <li class="added">Allow collections of <code>UploadedFile</code> objects in JAX-RS method parameters to be
+                wildcard types, primarily to make it work with Kotlin lists</li>
+            <li>Changed default idle timeout from 5 mins to 10 mins as it appeared to be a little too aggressive for some use cases</li>
+            <li>Upgraded to Netty 4.1.77</li>
+        </ul>
+    </div>
+
+    <div class="release minor">
+        <h2>0.72.9</h2>
+        <ul>
+            <li class="deps">Updated to Netty 4.1.75</li>
+        </ul>
+    </div>
+
+    <div class="release minor">
+        <h2>0.72.8</h2>
+        <ul>
+            <li class="added">Added <code>MuServerBuilder.withExceptionHandler</code> to allow custom exception handlers</li>
+        </ul>
+    </div>
+    <div class="release minor">
+        <h2>0.72.7</h2>
+        <ul>
+            <li class="added">Added ability to send partial websocket messages</li>
+        </ul>
+    </div>
+
+    <div class="release minor">
+        <h2>0.72.6</h2>
+        <ul>
+            <li>In web socket listeners, Continuation frames are no longer aggregated; instead an <code>isLast</code>
+                parameter has been added to <code>onBinary</code> and <code>onText</code>. This is non-breaking to
+                existing implementations in that they will just ignore the <code>isLast</code> flag. The existing
+                callback functions are marked as deprecated and so implementers should move to the versions with the
+                <code>isLast</code> parameter.</li>
+            <li>Added a few <code>toString()</code> methods to various classes just to make logging and debugging a bit nicer</li>
+        </ul>
+    </div>
+
+    <div class="release minor">
+        <h2>0.72.5</h2>
+        <ul>
+            <li><a href="https://github.com/3redronin/mu-server/issues/36">#36</a> Allow JAX-RS resources to implement interfaces with default implementations</li>
+            <li class="fix">Fixed bug where a request body input stream closed twice would cause an exception</li>
+        </ul>
+    </div>
+
+
+    <div class="release minor">
+        <h2>0.72.4</h2>
+        <ul>
+            <li class="fix">Fixed bug where request bodies that exceeded the maximum upload limit could leak memory for a time</li>
+            <li>Improved the back pressure of HTTP/2 connections when request bodies are being uploaded</li>
+        </ul>
+    </div>
+
+    <p class="note">There was no releases for 0.72.3.</p>
+
+    <div class="release minor">
+        <h2>0.72.2</h2>
+        <ul>
+            <li class="fix">HEAD responses that set no content-length no longer set a content-length of 0 (there should
+                be no content-length header)</li>
+        </ul>
+    </div>
+
+    <div class="release minor">
+        <h2>0.72.1</h2>
+        <ul>
+            <li><code>Headers.toString()</code> no longer prints the values of <code>cookie</code>,
+                <code>set-cookie</code> or <code>authorization</code> headers in order to reduce the chance of accidentally
+                logging potentially sensitive information (the header names are still printed however the value printed
+                will be <code>(hidden)</code>). To customize (or disable) value redaction,
+                <code>Headers.toString(Collection&lt;String&gt; toSuppress)</code> can be used.</li>
+            <li class="deps">Updated to Netty 4.1.72</li>
+        </ul>
+    </div>
+
+    <p class="note">Versions from 0.71.4 to 0.72.0 included a change to enabled OCSP staping which was subsequently
+        rolled back due to <a href="https://github.com/3redronin/mu-server/pull/34#issuecomment-997322911">the
+        reasons described here</a>.</p>
+
+</div>
+
+
+
+{% endblock %}
