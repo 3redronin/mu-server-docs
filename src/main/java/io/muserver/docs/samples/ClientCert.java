@@ -3,11 +3,11 @@ package io.muserver.docs.samples;
 import io.muserver.HttpsConfigBuilder;
 import io.muserver.Method;
 import io.muserver.MuServer;
-import sun.security.x509.X500Name;
 
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
+import javax.security.auth.x500.X500Principal;
 import java.io.InputStream;
 import java.security.KeyStore;
 import java.security.cert.Certificate;
@@ -43,11 +43,10 @@ public class ClientCert {
                 Optional<Certificate> certificate = req.connection().clientCertificate();
                 if (certificate.isPresent() && certificate.get() instanceof X509Certificate) {
                     X509Certificate clientCert = (X509Certificate) certificate.get();
-                    X500Name subject = (X500Name) clientCert.getSubjectDN();
+                    X500Principal subject = clientCert.getSubjectX500Principal();
 
                     resp.sendChunk("Client cert received\n" +
-                        "\nCommon name: " + subject.getCommonName() +
-                        "\nOrganisation: " + subject.getOrganization() +
+                        "\nName: " + subject.getName() +
                         "\nValid dates: " + clientCert.getNotBefore() + " to " + clientCert.getNotAfter() +
                         "\n\n"
                     );

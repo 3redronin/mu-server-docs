@@ -15,6 +15,15 @@
 <div class="changelog">
 
     <div class="release minor">
+        <h2>0.73.4</h2>
+        <ul>
+            <li class="deps">Downgraded to Netty 4.1.84 (from 4.1.87) because versions 4.1.85 to 4.1.87 have a memory
+            leak issue when reading request bodies.</li>
+            <li class="fix">JAX-RS responses over HTTP2 will ignore <code>connection</code> headers, as per HTTP2 spec.</li>
+        </ul>
+    </div>
+
+    <div class="release minor">
         <h2>0.73.3</h2>
         <ul>
             <li class="added">Added getters to <code>MuServerBuilder</code>, <code>ResourceHandlerBuilder</code>,
@@ -52,7 +61,7 @@
     </div>
 
     <div class="release minor">
-        <h2>0.72.21</h2>
+        <h2>0.72.20</h2>
         <ul>
             <li class="fix">mp4 files are now served with the <code>video/mp4</code> content type</li>
             <li class="added"><code>javax.ws.rs.ext.RuntimeDelegate.createHeaderDelegate</code> now supports
@@ -62,7 +71,7 @@
         </ul>
     </div>
 
-    <p class="note">There were no releases for 0.72.18, 0.72.19, and 0.72.20.</p>
+    <p class="note">There were no releases for 0.72.18, and 0.72.19.</p>
 
     <div class="release minor">
         <h2>0.72.17</h2>
