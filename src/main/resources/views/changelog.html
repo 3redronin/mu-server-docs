@@ -15,6 +15,14 @@
 <div class="changelog">
 
     <div class="release minor">
+        <h2>0.73.6</h2>
+        <ul>
+            <li class="deps">Upgraded to Netty 4.1.91</li>
+            <li class="fix">Bug fix: when a request path starts with <code>//</code> the request gets redirected with
+                the extra slash removed, rather than the previous behaviour where the first path segment would be ignored.</li>
+        </ul>
+    </div>
+    <div class="release minor">
         <h2>0.73.5</h2>
         <ul>
             <li class="deps">Upgraded to Netty 4.1.89</li>
