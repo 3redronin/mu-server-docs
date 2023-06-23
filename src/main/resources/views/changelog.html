@@ -14,6 +14,17 @@
 
 <div class="changelog">
 
+    <div class="release major">
+        <h2>0.74.0</h2>
+        <ul>
+            <li class="deps">Upgraded to Netty 4.1.94</li>
+            <li class="fix">Bug fix: when no rate limiters are specified, <code>MuServer.rateLimiters()</code>
+                returns an empty list (instead of throwing an exception).</li>
+            <li class="fix">OpenAPI JSON does not write values when no values are specified, allowing
+            clients to apply their own defaults. Fixes a bug where <code>explode</code> was incorrectly set sometimes
+            causing queries from UIs such as swagger to add commas into array values rather than having multiple parameters.</li>
+        </ul>
+    </div>
     <div class="release minor">
         <h2>0.73.6</h2>
         <ul>
