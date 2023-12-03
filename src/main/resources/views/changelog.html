@@ -8,11 +8,44 @@
         font-size: smaller;
         font-style: italic;
     }
+    .breaking {
+        color: red;
+    }
 </style>
 {% endblock %}
 {% block main %}
 
 <div class="changelog">
+
+    <div class="release">
+        <h2>1.0.0</h2>
+        <p><strong class="breaking">Breaking changes:</strong> this is the first major release of mu-server. There is no
+            new functionality since the previous version except to remove all methods, parameters and classes that were
+            marked with <code>@Deprecated</code> in the <code>0.x</code> versions.</p>
+        <p>If you have been using deprecated methods, you may wish to:</p>
+        <ol>
+            <li>Use mu-server version <code>0.74.3</code></li>
+            <li>Follow all the deprecation warnings. The javadoc will explain how to fix each deprecation warning.</li>
+            <li>Upgrade to the latest version</li>
+        </ol>
+        <p><em>Tip for maven users: </em> to download sources for all dependencies, run <code>mvn dependency:sources</code></p>
+        <p>Change list:</p>
+        <ul>
+            <li>Removed deprecated features</li>
+            <li class="deps">Upgraded to Netty 4.1.101</li>
+        </ul>
+    </div>
+
+    <hr>
+
+    <div class="release minor">
+        <h2>0.74.3</h2>
+        <ul>
+            <li class="deps">Upgraded to Netty 4.1.100</li>
+            <li class="fix">When an exception is encountered when writing a jax-rs response entity and the response has not started,
+                clear the added headers so that the exception handler can add its own headers without clashing.</li>
+        </ul>
+    </div>
 
     <div class="release minor">
         <h2>0.74.1</h2>

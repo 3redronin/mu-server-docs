@@ -23,6 +23,8 @@ else
   java -version
   nohup java -jar $1 &
 
-  tail -f logs/mudocs.log
+  sleep 5
+
+  cat logs/mudocs.log
 
 fi

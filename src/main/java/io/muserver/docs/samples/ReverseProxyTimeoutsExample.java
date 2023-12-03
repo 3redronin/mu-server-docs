@@ -1,11 +1,11 @@
 package io.muserver.docs.samples;
 
 import io.muserver.MuServer;
-import io.muserver.murp.HttpClientBuilder;
 import io.muserver.murp.ReverseProxyBuilder;
 import io.muserver.murp.UriMapper;
 
 import java.net.URI;
+import java.time.Duration;
 
 import static io.muserver.MuServerBuilder.httpServer;
 
@@ -18,10 +18,8 @@ public class ReverseProxyTimeoutsExample {
                     .proxyHostHeader(false)
                     .withTotalTimeout(20000) // 20 seconds
                     .withHttpClient(
-                        HttpClientBuilder.httpClient()
-                            .withAddressResolutionTimeoutMillis(15000) // 15 seconds
-                            .withConnectTimeoutMillis(15000) // 15 seconds
-                            .withIdleTimeoutMillis(60000) // 60 seconds
+                        ReverseProxyBuilder.createHttpClientBuilder(false)
+                            .connectTimeout(Duration.ofSeconds(15))
                             .build()
                     )
             )
