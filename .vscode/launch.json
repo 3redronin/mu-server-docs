@@ -1,0 +1,13 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "App - Run Local",
+      "request": "launch",
+      "mainClass": "io.muserver.docs.App",
+      "args": "local",
+      "projectName": "docs"
+    },
+  ]
+}
