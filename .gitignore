@@ -4,3 +4,6 @@ dependency-reduced-pom.xml
 *.iml
 /.idea/
 /logs/
+*.ipr
+*.iws
+.vscode/settings.json
