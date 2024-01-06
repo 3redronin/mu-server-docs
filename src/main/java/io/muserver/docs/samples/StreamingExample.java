@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.sql.*;
+import org.json.*;
 
 public class StreamingExample {
     public static void main(String[] args) {
@@ -38,19 +39,19 @@ public class StreamingExample {
                         Connection connection = DriverManager.getConnection(url);
                         Statement statement = connection.createStatement();
                         ResultSet rs = statement.executeQuery("SELECT orderkey, orderstatus FROM orders");
-                    ) {
                         OutputStreamWriter writer = new OutputStreamWriter(os);
+                    ) {
                         writer.write("[\n");
 
                         int count = 0;
                         while (rs.next()) {
-                            if (count > 0) {
+                            if (count > 0)
                                 writer.write(",\n");
-                            }
-                            String jsonR = new StringBuilder()
-                                .append("{\"orderkey\":" + rs.getInt("orderkey"))
-                                .append(",\"orderstatus \":\"" + rs.getString("orderstatus") + "\"}").toString();
-                            writer.write(jsonR);
+                        
+                            JSONObject json = new JSONObject()
+                                .put("orderkey", rs.getInt("orderkey"))
+                                .put("orderstatus", rs.getString("orderstatus"));
+                            writer.write(json.toString());
                             count++;
                         }
 
