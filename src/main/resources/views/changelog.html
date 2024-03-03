@@ -18,10 +18,20 @@
 <div class="changelog">
 
     <div class="release minor">
+        <h2>1.0.5</h2>
+        <ul>
+            <li class="deps">Upgraded to Netty 4.1.107</li>
+            <li>No longer throw an <code>IllegalStateException</code> when setting the status on an errored response, as
+            the exception will be thrown later in a more intuitive place when IO is attempted</li>
+            <li>Allow custom <code>SecurityContext</code> implementations to be declared in jax-rs method parameters.</li>
+        </ul>
+    </div>
+
+    <div class="release minor">
         <h2>1.0.4</h2>
         <ul>
             <li class="fix">Fixed bug (<a href="https://github.com/3redronin/mu-server/issues/45">issue #45</a>)
-                where `server.sslInfo().certificates()` would fail to get cert info after the SSL certs are changed at runtime</li>
+                where <code>server.sslInfo().certificates()</code> would fail to get cert info after the SSL certs are changed at runtime</li>
         </ul>
     </div>
     <div class="release minor">
