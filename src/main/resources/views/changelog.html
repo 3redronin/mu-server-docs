@@ -18,6 +18,24 @@
 <div class="changelog">
 
     <div class="release minor">
+        <h2>1.0.7</h2>
+        <ul>
+            <li>Improved performance when publishing a large string in an SSE message which has no line breaks. See <a
+                href="https://github.com/3redronin/mu-server/pull/47">pull request 47</a>.</li>
+            <li class="fix">Bug fix (<a href="https://github.com/3redronin/mu-server/issues/46">issue #46</a>): removed invalid header character in <code>ContentTypes.WEB_APP_MANIFEST</code>
+                which caused those files to fail to load.</li>
+        </ul>
+    </div>
+
+    <div class="release minor">
+        <h2>1.0.6</h2>
+        <ul>
+            <li class="fix">Bug fix: corrected encoding of ampersands inside querystring values when the ContextHandler
+                redirects from <code>/contextName</code> to <code>/contextName/</code> with a querystring.</li>
+        </ul>
+    </div>
+
+    <div class="release minor">
         <h2>1.0.5</h2>
         <ul>
             <li class="deps">Upgraded to Netty 4.1.107</li>
