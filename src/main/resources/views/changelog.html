@@ -18,6 +18,15 @@
 <div class="changelog">
 
     <div class="release minor">
+        <h2>1.0.8</h2>
+        <ul>
+            <li><strong>Bug fix:</strong> in a JAX-RS handler, <code>UriInfo.resolve(URI)</code> is now
+            relative to the base URI and <code>UriInfo.getPathParameters()</code> now correctly returns
+            <code>@PathParam</code> values.</li>
+        </ul>
+    </div>
+
+    <div class="release minor">
         <h2>1.0.7</h2>
         <ul>
             <li>Improved performance when publishing a large string in an SSE message which has no line breaks. See <a
