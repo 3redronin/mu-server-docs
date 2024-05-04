@@ -18,6 +18,22 @@
 <div class="changelog">
 
     <div class="release minor">
+        <h2>1.1.2</h2>
+        <ul>
+            <li class="deps">Upgraded to Netty 4.1.109</li>
+        </ul>
+    </div>
+
+    <div class="release minor">
+        <h2>1.1.1</h2>
+        <ul>
+            <li>Stop returning <code>Access-Control-Allow-Origin: &quot;null&quot;</code> when CORS
+            is not allowed for an origin, as per <a
+                    href="https://w3c.github.io/webappsec-cors-for-developers/#avoid-returning-access-control-allow-origin-null">this recommendation</a>.</li>
+        </ul>
+    </div>
+
+    <div class="release minor">
         <h2>1.1.0</h2>
         <ul>
             <li><strong>Bug fix:</strong> in a JAX-RS handler, <code>UriInfo.resolve(URI)</code> is now
