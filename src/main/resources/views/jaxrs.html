@@ -2,7 +2,7 @@
 {% block main %}
 
 <p>JAX-RS is a standard way to declaratively define REST services in Java. Mu Server has a built-in
-    sub-set of JAX-RS 2.1 which allows a simple way to declare and expose REST APIs.</p>
+    sub-set of JAX-RS 3.0 which allows a simple way to declare and expose REST APIs.</p>
 
 <h2>A basic example</h2>
 
@@ -23,6 +23,9 @@
     of JAX-RS objects. It is recommended that if you have multiple resources to expose that you
     create a single RestHandler with multiple resources attached.</p>
 
+<p>Note that Mu Server 2.0 switched from the <code>javax.ws.rs</code> to the <code>jakarta.ws.rs</code> package
+    for JAX-RS classes.</p>
+
 <h2>Differences with common implementations</h2>
 
 <p>The JAX-RS implementation that comes with Mu Server is intentionally only a subset of the full spec.
@@ -37,15 +40,15 @@
 <p>See the <a href="https://github.com/3redronin/mu-server/blob/master/src/main/java/io/muserver/rest/README.md">Mu
     Server spec implementation page</a> for full details of what is and isn't implemented.</p>
 
-<h2>Serialisation with Jackson JAX-RS</h2>
+<h2 id="jackson">Serialisation with Jackson JAX-RS</h2>
 
 <p>To support automatic JSON serialisation of response bodies and deserialisation of request bodies, you can add
-    the <a href="https://github.com/FasterXML/jackson-jaxrs-providers">Jackson JAX-RS provider</a> dependency:</p>
+    the <a href="https://github.com/FasterXML/jackson-jakarta-rs-providers">Jackson JAX-RS provider</a> dependency:</p>
 
 <pre><code class="language-markup">&lt;dependency&gt;
-    &lt;groupId&gt;com.fasterxml.jackson.jaxrs&lt;/groupId&gt;
-    &lt;artifactId&gt;jackson-jaxrs-json-provider&lt;/artifactId&gt;
-    &lt;version&gt;{{ artifactVersion(groupId="com.fasterxml.jackson.jaxrs", artifactId="jackson-jaxrs-json-provider") }}&lt;/version&gt;
+    &lt;groupId&gt;com.fasterxml.jackson.jakarta.rs&lt;/groupId&gt;
+    &lt;artifactId&gt;jackson-jakarta-rs-json-provider&lt;/artifactId&gt;
+    &lt;version&gt;{{ artifactVersion(groupId="com.fasterxml.jackson.jakarta.rs", artifactId="jackson-jakarta-rs-json-provider") }}&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 
 <p>You can then register a body reader and/or writer on the <code>RestHandlerBuilder</code>. In the following
@@ -160,7 +163,7 @@
     <a href="https://github.com/3redronin/mu-server-docs/blob/master/src/main/java/io/muserver/docs/samples/JaxRSBasicAuth.java">JaxRSBasicAuth.java</a>
     for a full example.</p>
 
-<p>You can access a {{ javadoc("javax.ws.rs.container.ResourceInfo") | raw }} or the current
+<p>You can access a {{ javadoc("jakarta.ws.rs.container.ResourceInfo") | raw }} or the current
     {{ javadoc("io.muserver.MuRequest") | raw }} by looking up the properties on the context:</p>
 
 <pre class="language-java"><code class="language-java">@Override

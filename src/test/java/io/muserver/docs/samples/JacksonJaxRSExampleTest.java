@@ -1,6 +1,6 @@
 package io.muserver.docs.samples;
 
-import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
+import com.fasterxml.jackson.jakarta.rs.json.JacksonJsonProvider;
 import io.muserver.MuServer;
 import io.muserver.MuServerBuilder;
 import io.muserver.rest.RestHandlerBuilder;
@@ -20,8 +20,8 @@ public class JacksonJaxRSExampleTest {
     private final MuServer server = MuServerBuilder.httpServer()
         .addHandler(
             RestHandlerBuilder.restHandler(new JacksonJaxRSExample.UserResource())
-                .addCustomWriter(new JacksonJaxbJsonProvider())
-                .addCustomReader(new JacksonJaxbJsonProvider())
+                .addCustomWriter(new JacksonJsonProvider())
+                .addCustomReader(new JacksonJsonProvider())
         )
         .start();
     private final HttpClient client = HttpClient.newHttpClient();

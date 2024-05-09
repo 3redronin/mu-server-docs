@@ -5,7 +5,7 @@ import io.muserver.MuServerBuilder;
 import io.muserver.rest.RestHandlerBuilder;
 import org.json.JSONObject;
 
-import javax.ws.rs.*;
+import jakarta.ws.rs.*;
 import java.util.HashMap;
 import java.util.Map;
 

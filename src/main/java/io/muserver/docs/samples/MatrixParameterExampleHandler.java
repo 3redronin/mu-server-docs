@@ -6,7 +6,7 @@ import io.muserver.RouteHandler;
 import io.muserver.rest.PathMatch;
 import io.muserver.rest.UriPattern;
 
-import javax.ws.rs.core.PathSegment;
+import jakarta.ws.rs.core.PathSegment;
 import java.util.Map;
 
 // Run RequestExample.java to test this

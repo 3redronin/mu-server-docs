@@ -17,6 +17,35 @@
 
 <div class="changelog">
 
+    <div class="release">
+        <h2 id="2.0.0">2.0.0</h2>
+        <p><strong class="breaking">Breaking change:</strong> JAX-RS now uses the <code>jakarta.ws.rs-api 3.0.0</code>
+        dependency, meaning <strong>all references to the <code>javax.ws.rs</code> package must be changed
+            to the <code>jakarta.ws.rs</code> package</strong>.</p>
+
+        <p>This change will affect you if, upon upgrade to Mu Server 2.x, you see compile-time errors similar to:
+            <code>package javax.ws.rs does not exist</code> or at runtime you see an error message from <code>ResourceClass</code>
+            starting with <code>The class &lt;classname&gt; contains an old version of the JAX-RS implementation</code>
+            then you need to migrate your JAX-RS resource classes.
+        </p>
+
+        <p>This is because JAX-RS is part of Java EE, which Oracle transferred to an open source foundation, and this
+        required moving packages from <code>javax.*</code> to <code>jakarta.*</code> for Java EE classes,
+            <a href="https://blogs.oracle.com/javamagazine/post/transition-from-java-ee-to-jakarta-ee">as described in
+            this blog at Oracle.com</a>.</p>
+
+        <p>For projects with few Java EE dependencies, this can be as simple as doing a global find and replace on your
+        codebase, replacing <code>javax.ws.rs</code> with <code>jakarta.ws.rs</code> and then rebuilding.</p>
+
+        <p>However, if using old versions of dependencies that use the <code>javax.*</code> package then you may need
+        to upgrade or change those. For example, <code>com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider</code>
+        should be replaced with the <code>com.fasterxml.jackson.jakarta.rs:jackson-jakarta-rs-json-provider</code> artifact
+            - <a href="/jaxrs#jackson">see a full example</a>.</p>
+
+
+
+    </div>
+
     <div class="release minor">
         <h2>1.1.2</h2>
         <ul>
@@ -86,7 +115,7 @@
 
 
     <div class="release">
-        <h2>1.0.0</h2>
+        <h2 id="1.0.0">1.0.0</h2>
         <p><strong class="breaking">Breaking changes:</strong> this is the first major release of mu-server. There is no
             new functionality since the previous version except to remove all methods, parameters and classes that were
             marked with <code>@Deprecated</code> in the <code>0.x</code> versions.</p>
@@ -198,7 +227,7 @@
         <h2>0.72.20</h2>
         <ul>
             <li class="fix">mp4 files are now served with the <code>video/mp4</code> content type</li>
-            <li class="added"><code>javax.ws.rs.ext.RuntimeDelegate.createHeaderDelegate</code> now supports
+            <li class="added"><code>jakarta.ws.rs.ext.RuntimeDelegate.createHeaderDelegate</code> now supports
                 <code>java.util.Date</code></li>
             <li class="added">Added <code>io.muserver.rest.CORSConfigBuilder.toHandler</code> so that CORS handlers can
                 be more conveniently created from CORS config.</li>
@@ -320,7 +349,7 @@
         </ul>
     </div>
 
-    <p class="note">There was no releases for 0.72.3.</p>
+    <p class="note">There was no release for 0.72.3.</p>
 
     <div class="release minor">
         <h2>0.72.2</h2>
@@ -373,7 +402,7 @@
     </div>
 
     <div class="release major">
-        <h2>0.71.0</h2>
+        <h2 id="0.71.0">0.71.0</h2>
         <ul>
             <li>Older versions of Mu Server's JAX-RS implementation automatically split string collection query string
             parameter values on commas, which while convenient was against the spec. This behaviour is now optional but

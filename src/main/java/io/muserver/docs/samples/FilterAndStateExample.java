@@ -5,7 +5,7 @@ import io.muserver.MuRequest;
 import io.muserver.MuResponse;
 import io.muserver.MuServer;
 
-import javax.ws.rs.ClientErrorException;
+import jakarta.ws.rs.ClientErrorException;
 
 import static io.muserver.MuServerBuilder.httpServer;
 

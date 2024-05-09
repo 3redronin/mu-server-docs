@@ -9,9 +9,9 @@ import io.muserver.rest.Required;
 import io.muserver.rest.RestHandlerBuilder;
 import org.json.JSONObject;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import java.net.URI;
 
 import static io.muserver.openapi.ExternalDocumentationObjectBuilder.externalDocumentationObject;

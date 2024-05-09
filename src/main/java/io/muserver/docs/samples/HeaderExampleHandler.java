@@ -2,7 +2,7 @@ package io.muserver.docs.samples;
 
 import io.muserver.*;
 
-import javax.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MediaType;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
