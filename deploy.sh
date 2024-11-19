@@ -21,7 +21,7 @@ else
   pkill 'java' || echo "Nothing killed"
 
   java -version
-  nohup java -jar $1 & disown
+  nohup java -jar $1 </dev/null >/dev/null 2>&1 & disown
 
   sleep 5
 
