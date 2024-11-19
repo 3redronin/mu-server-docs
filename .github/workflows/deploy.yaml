@@ -1,4 +1,4 @@
-name: Publish to Maven Central Repository
+name: Deploy to muserver.io
 on: workflow_dispatch
 
 jobs:
