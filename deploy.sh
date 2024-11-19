@@ -25,6 +25,6 @@ else
 
   sleep 5
 
-  cat logs/mudocs.log
+  tail -n 100 logs/mudocs.log
 
 fi
