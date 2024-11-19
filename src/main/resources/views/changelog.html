@@ -17,6 +17,26 @@
 
 <div class="changelog">
 
+    <div class="release minor">
+        <h2>2.1.0</h2>
+        <ul>
+            <li>New feature: support for <a href="https://www.haproxy.org/download/1.8/doc/proxy-protocol.txt">HA Proxy
+                Protocol</a> in order to be able to get client connection issues forwarded over TLS routers. To enable,
+            set <code>MuServerBuilder.withHAProxyProtocolEnabled(true)</code> and then access the client information
+            for a request via <code>request.connection().proxyInfo()</code> which returns a
+                {{ javadoc("io.muserver.ProxiedConnectionInfo") | raw }}
+            object.</li>
+            <li class="deps">Upgraded to Netty 4.1.115</li>
+        </ul>
+    </div>
+
+    <div class="release minor">
+        <h2>2.0.3</h2>
+        <ul>
+            <li class="deps">Upgraded to Netty 4.1.112</li>
+        </ul>
+    </div>
+
     <div class="release">
         <h2 id="2.0.0">2.0.0</h2>
         <p><strong class="breaking">Breaking change:</strong> JAX-RS now uses the <code>jakarta.ws.rs-api 3.0.0</code>
