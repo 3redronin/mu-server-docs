@@ -21,10 +21,14 @@ else
   pkill 'java' || echo "Nothing killed"
 
   java -version
-  nohup java -jar $1 &
+  java -jar $1 &
 
   sleep 5
 
-  tail -n 100 logs/mudocs.log
+  echo Showing end of log
+
+  tail -n 20 logs/mudocs.log
+
+  echo Deploy complete
 
 fi
