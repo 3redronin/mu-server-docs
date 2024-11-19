@@ -6,11 +6,11 @@ set -x
 if [[ -f 'pom.xml' ]];
 then
 
-  scp deploy.sh ubuntu@muserver.io:~
+  scp -o StrictHostKeyChecking=no deploy.sh ubuntu@muserver.io:~
 #  mvn -B releaser:release
   mvn clean package
-  scp target/docs-*.jar ubuntu@muserver.io:~
-  ssh ubuntu@muserver.io "bash deploy.sh $(basename target/docs-*.jar)"
+  scp -o StrictHostKeyChecking=no target/docs-*.jar ubuntu@muserver.io:~
+  ssh -o StrictHostKeyChecking=no ubuntu@muserver.io "bash deploy.sh $(basename target/docs-*.jar)"
 
 else
 
