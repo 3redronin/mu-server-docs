@@ -18,6 +18,17 @@
 <div class="changelog">
 
     <div class="release minor">
+        <h2>2.1.2</h2>
+        <ul>
+            <li>On a {{ javadoc("io.muserver.handlers.ResourceHandlerBuilder") | raw }} the action to take for a request
+            to a directory without a trailing space can now be specified with
+                <code>ResourceHandlerBuilder.withBareDirectoryRequestAction(BareDirectoryRequestAction action)</code>.
+            The default action remains sending a redirect response to the directory with a trailing slash, but it is now
+            possible to treat the request as <code>Not Found</code> instead. See {{ javadoc("io.muserver.handlers.BareDirectoryRequestAction") | raw }}
+            for details.</li>
+        </ul>
+    </div>
+    <div class="release minor">
         <h2>2.1.0</h2>
         <ul>
             <li>New feature: support for <a href="https://www.haproxy.org/download/1.8/doc/proxy-protocol.txt">HA Proxy
