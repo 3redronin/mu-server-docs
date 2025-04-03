@@ -18,6 +18,14 @@
 <div class="changelog">
 
     <div class="release minor">
+        <h2>2.1.9</h2>
+        <ul>
+            <li><code>WebApplicationException</code>s thrown from a JAX-RS <code>ParamConverter</code>
+            will now be propagated back to the client (instead of always returning a 400).</li>
+        </ul>
+    </div>
+
+    <div class="release minor">
         <h2>2.1.8</h2>
         <ul>
             <li class="deps">Upgraded to Netty 4.1.119</li>
