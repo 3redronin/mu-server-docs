@@ -18,6 +18,14 @@
 <div class="changelog">
 
     <div class="release">
+        <h2>2.1.19</h2>
+        <ul>
+            <li>Fix openapi JSON generation bug where two operations that different just by content type would throw an
+                exception when they shared the same parameter names</li>
+        </ul>
+    </div>
+
+    <div class="release">
         <h2>2.1.18</h2>
         <ul>
             <li>Allow up to 4096 multipart form parameters to be parsed (up from 128)</li>
