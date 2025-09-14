@@ -70,6 +70,7 @@ public class App {
             .addHandler(Method.GET, "/https", new HttpsHandler(renderer))
             .addHandler(Method.GET, "/client-certs", new VanillaHandler(renderer, "client-cert", "Mutual TLS with Client Certs"))
             .addHandler(Method.GET, "/jaxrs", new VanillaHandler(renderer, "jaxrs", "REST services with JAX-RS"))
+            .addHandler(Method.GET, "/cors-and-csrf", new VanillaHandler(renderer, "cors-and-csrf", "CORS and CSRF Protection"))
             .addHandler(Method.GET, "/resources", new VanillaHandler(renderer, "resource-handling", "Static resource handling"))
             .addHandler(Method.GET, "/resources/mime-types", new MimeTypesHandler(renderer))
             .addHandler(Method.GET, "/statistics", new StatisticsHandler(renderer))

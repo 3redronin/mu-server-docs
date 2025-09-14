@@ -1,0 +1,50 @@
+{% extends "template.html" %}
+{% block main %}
+
+<p>Mu Server comes with handlers for both CORS and CSRF protection.</p>
+
+<h2 id="cors">CORS</h2>
+
+<p>CORS (Cross-Origin Resource Sharing) lets your server control which origins, headers, and methods are permitted for
+    cross-origin requests. By default, modern browsers will block cross-origin requests, however you can opt in to
+    allow other origins to call your server by specifying CORS config as a handler or on a {{ javadoc("io.muserver.rest.RestHandlerBuilder") | raw }}.</p>
+
+<p>Full example:</p>
+
+{{ source("CORSExample.java") | raw }}
+
+<p>See {{ javadoc("io.muserver.rest.CORSConfigBuilder") | raw }} for full documentation.</p>
+
+<h2 id="csrf">CSRF</h2>
+
+<p>CSRF (Cross-Site Request Forgery) protection in Mu Server works by rejecting cross-origin, non-safe browser requests
+    using Fetch metadata and Origin headers. The handler automatically applies the following logic:</p>
+<ul>
+    <li>Allows all <b>GET</b>, <b>HEAD</b>, or <b>OPTIONS</b> requests (safe methods).</li>
+    <li>If the <code>Origin</code> header matches a configured allow-list, the request is allowed.</li>
+    <li>If <code>Sec-Fetch-Site</code> is present:
+        <ul>
+            <li>Allows if value is <code>same-origin</code> or <code>none</code>.</li>
+            <li>Rejects otherwise.</li>
+        </ul>
+    </li>
+    <li>If neither <code>Sec-Fetch-Site</code> nor <code>Origin</code> are present, the request is allowed (non-modern browsers).</li>
+    <li>If <code>Origin</code> host matches <code>Host</code> header, the request is allowed; otherwise, it is rejected.</li>
+</ul>
+<p>This approach, <a href="https://words.filippo.io/csrf/">explained here</a>, secures modern browsers and can be customized for edge cases.</p>
+
+<p>To use CSRF protection, add the handler as shown below:</p>
+
+{{ source("CSRFProtectionExample.java") | raw }}
+
+<p>Extra options for CSRF protection:</p>
+
+<ul>
+    <li><b>Allowed Origins:</b> Configure trusted origins that bypass CSRF checks.</li>
+    <li><b>Bypass Paths:</b> Exclude specific routes from CSRF protection (e.g., for SSO or health checks).</li>
+    <li><b>Custom Rejection Handlers:</b> Define custom responses when a request is rejected (e.g., error page or JSON).</li>
+</ul>
+
+<p>See {{ javadoc("io.muserver.handlers.CSRFProtectionHandlerBuilder") | raw }} for full documentation.</p>
+
+{% endblock %}
