@@ -1,11 +1,11 @@
 package io.muserver.docs.samples;
 
-import com.fasterxml.jackson.jakarta.rs.json.JacksonJsonProvider;
 import io.muserver.MuServer;
 import io.muserver.MuServerBuilder;
 import io.muserver.rest.RestHandlerBuilder;
 
 import jakarta.ws.rs.*;
+import tools.jackson.jakarta.rs.json.JacksonJsonProvider;
 
 public class JacksonJaxRSExample {
 

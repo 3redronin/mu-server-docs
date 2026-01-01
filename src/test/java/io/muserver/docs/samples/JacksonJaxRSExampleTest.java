@@ -1,12 +1,12 @@
 package io.muserver.docs.samples;
 
-import com.fasterxml.jackson.jakarta.rs.json.JacksonJsonProvider;
 import io.muserver.MuServer;
 import io.muserver.MuServerBuilder;
 import io.muserver.rest.RestHandlerBuilder;
 import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Test;
+import tools.jackson.jakarta.rs.json.JacksonJsonProvider;
 
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
