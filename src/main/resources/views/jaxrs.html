@@ -51,6 +51,8 @@
     &lt;version&gt;{{ artifactVersion(groupId="tools.jackson.jakarta.rs", artifactId="jackson-jakarta-rs-json-provider") }}&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 
+<p>Note: this dependency requires Java 17 or later.</p>
+
 <p>You can then register a body reader and/or writer on the <code>RestHandlerBuilder</code>. In the following
     example the <code>User</code> class is automatically converted to JSON:</p>
 
@@ -73,6 +75,21 @@
 <p>See the <a href="/cors-and-csrf#cors">full documentation on CORS</a> for more info.</p>
 
 <h2 id="documentation">Documentation</h2>
+
+<p>There are two options for generating <a href="https://www.openapis.org/">OpenAPI documentation</a>: the more powerful
+    Swagger implementation or built-in support.</p>
+
+<h3>Swagger integration</h3>
+
+<p>Integrating with <a href="https://swagger.io/">Swagger</a> allows you to quickly generate high quality API documentation
+using the widely-adopted Swagger annotations.</p>
+
+<p>The downside to this approach is it requires more dependencies.</p>
+
+<p>To <strong>get started</strong>, please see the documentation at <a
+    href="https://github.com/3redronin/mu-swagger/">https://github.com/3redronin/mu-swagger/</a></p>
+
+<h3>Built in OpenAPI support</h3>
 
 <p>Mu Server has built-in support for generating <a href="https://www.openapis.org/">OpenAPI</a>
     specifications for your REST APIs. This means a JSON file describing your API can be optionally
