@@ -47,23 +47,22 @@
             <artifactId>mu-server</artifactId>
             <version>${mu-server.version}</version>
             <classifier>javadoc</classifier>
-            <scope>runtime</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>io.muserver</groupId>
             <artifactId>mu-acme</artifactId>
             <version>${mu-acme.version}</version>
             <classifier>javadoc</classifier>
-            <scope>runtime</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>io.muserver</groupId>
             <artifactId>murp</artifactId>
             <version>${murp.version}</version>
             <classifier>javadoc</classifier>
-            <scope>runtime</scope>
+            <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>io.pebbletemplates</groupId>
             <artifactId>pebble</artifactId>
@@ -152,6 +151,27 @@
                 <configuration>
                     <release>17</release>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.6.1</version>
+                <executions>
+                    <execution>
+                        <id>unpack-javadocs</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>unpack-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <includeGroupIds>io.muserver</includeGroupIds>
+                            <includeClassifiers>javadoc</includeClassifiers>
+                            <includeScope>provided</includeScope>
+                            <outputDirectory>${project.build.outputDirectory}/javadocs</outputDirectory>
+                            <excludes>META-INF/**</excludes>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
