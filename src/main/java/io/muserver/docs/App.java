@@ -100,6 +100,7 @@ public class App {
             })
             .addHandler(createRestHandler())
             .addHandler(context("jaxrsdocs").addHandler(JaxRSDocumentationExample.createRestHandler()))
+            .addHandler(Method.GET, "/javadocs/", new VanillaHandler(renderer, "javadocs", "Java docs"))
             .addHandler(context("javadocs")
                 .addHandler(ResourceHandlerBuilder.classpathHandler("/javadocs"))
             )
