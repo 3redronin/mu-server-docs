@@ -12,13 +12,13 @@ public class JavaDocLinkTest {
 
     @Test
     public void createsJavaDocLinks() {
-        assertEquals("<a href=\"/javadocs/mu-server/io/muserver/Mutils.html\">Mutils</a>",
+        assertEquals("<a href=\"/javadocs/io/muserver/Mutils.html\">Mutils</a>",
             link.execute(Collections.singletonMap("className", "io.muserver.Mutils"), null, null, 0));
     }
 
     @Test
     public void murpIsSupported() {
-        assertEquals("<a href=\"/javadocs/murp/io/muserver/murp/ReverseProxyBuilder.html\">ReverseProxyBuilder</a>",
+        assertEquals("<a href=\"/javadocs/io/muserver/murp/ReverseProxyBuilder.html\">ReverseProxyBuilder</a>",
             link.execute(Collections.singletonMap("className", "io.muserver.murp.ReverseProxyBuilder"), null, null, 0));
     }
 

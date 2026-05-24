@@ -8,6 +8,8 @@ import io.muserver.Mutils;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 public class JavaDocLinkFunction implements Function {
 
@@ -31,34 +33,22 @@ public class JavaDocLinkFunction implements Function {
 
         int i = c.lastIndexOf('.');
         String pack = c.substring(0, i);
-        String artifact = artifactForPackage(pack);
-
         String name = c.substring(i + 1);
         String url;
         if (pack.startsWith("io.muserver")) {
-            url = "/javadocs/" + artifact + "/" + pack.replace(".", "/") + "/" + name + ".html";
+            url = "/javadocs/" + pack.replace(".", "/") + "/" + name + ".html";
         } else {
-            url = externalUrl(pack, artifact, name);
+            url = externalUrl(pack, name);
         }
         return "<a href=\"" + url + "\">" + Mutils.htmlEncode(name) + "</a>";
 
     }
 
-    private static String artifactForPackage(String pack) {
-        if (pack.startsWith("io.muserver.murp")) {
-            return "murp";
-        }
-        if (pack.startsWith("io.muserver.acme")) {
-            return "mu-acme";
-        }
-        return "mu-server";
-    }
-
-    private static String externalUrl(String pack, String artifact, String name) {
+    private static String externalUrl(String pack, String name) {
         if (pack.startsWith("jakarta.ws.rs")) {
             return "https://www.javadoc.io/doc/jakarta.ws.rs/jakarta.ws.rs-api/latest/" + pack.replace(".", "/") + "/" + name + ".html";
         }
-        return "https://www.javadoc.io/page/io.muserver/" + artifact + "/latest/" + pack.replace(".", "/") + "/" + name + ".html";
+        return "https://www.javadoc.io/search?q=" + URLEncoder.encode(pack + "." + name, StandardCharsets.UTF_8);
     }
 
     @Override

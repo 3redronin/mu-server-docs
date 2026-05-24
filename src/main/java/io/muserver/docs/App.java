@@ -15,8 +15,11 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.net.URI;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 import static io.muserver.ContextHandlerBuilder.context;
 import static io.muserver.Http2ConfigBuilder.http2EnabledIfAvailable;
@@ -24,6 +27,33 @@ import static io.muserver.MuServerBuilder.muServer;
 
 public class App {
     private static final Logger log = LoggerFactory.getLogger(App.class);
+    private static final Set<String> JAVADOC_ROOT_PATHS = Set.of(
+        "/",
+        "/index.html",
+        "/allclasses.html",
+        "/allclasses-index.html",
+        "/allpackages-index.html",
+        "/constant-values.html",
+        "/deprecated-list.html",
+        "/element-list",
+        "/help-doc.html",
+        "/index-all.html",
+        "/jquery-ui.overrides.css",
+        "/member-search-index.js",
+        "/module-search-index.js",
+        "/overview-summary.html",
+        "/overview-tree.html",
+        "/package-search-index.js",
+        "/script.js",
+        "/script-dir.js",
+        "/search.js",
+        "/serialized-form.html",
+        "/stylesheet.css",
+        "/tag-search-index.js",
+        "/type-search-index.js"
+    );
+    private static final List<String> JAVADOC_SAFE_PREFIXES = List.of("/resources/", "/legal/", "/io/muserver/");
+    private static final Pattern JAVADOC_SAFE_PATH_CHARS = Pattern.compile("[A-Za-z0-9_./$-]+");
 
     public static void main(String[] args) throws Exception {
 
@@ -100,7 +130,18 @@ public class App {
             })
             .addHandler(createRestHandler())
             .addHandler(context("jaxrsdocs").addHandler(JaxRSDocumentationExample.createRestHandler()))
-            .addHandler(context("javadocs").addHandler(ResourceHandlerBuilder.classpathHandler("/javadocs")))
+            .addHandler(context("javadocs")
+                .addHandler((request, response) -> {
+                    String relativePath = request.relativePath();
+                    if (!isAllowedJavaDocPath(relativePath)) {
+                        response.status(404);
+                        return true;
+                    }
+                    return false;
+                })
+                // Javadoc classifier JAR contents are shaded into the classpath root.
+                .addHandler(ResourceHandlerBuilder.classpathHandler("/"))
+            )
             .addHandler(ResourceMimeTypes.resourceHandler())
             .start();
 
@@ -139,5 +180,22 @@ public class App {
             }
             return false;
         }
+
+    }
+
+    private static boolean isAllowedJavaDocPath(String relativePath) {
+        if (relativePath == null) {
+            return false;
+        }
+        if (JAVADOC_ROOT_PATHS.contains(relativePath)) {
+            return true;
+        }
+        for (String prefix : JAVADOC_SAFE_PREFIXES) {
+            if (relativePath.startsWith(prefix)) {
+                String suffix = relativePath.substring(prefix.length());
+                return !suffix.isEmpty() && JAVADOC_SAFE_PATH_CHARS.matcher(suffix).matches();
+            }
+        }
+        return false;
     }
 }
