@@ -31,20 +31,34 @@ public class JavaDocLinkFunction implements Function {
 
         int i = c.lastIndexOf('.');
         String pack = c.substring(0, i);
-        String artifact;
-        switch (pack) {
-            case "io.muserver.murp":
-                artifact = "murp";
-                break;
-            default:
-                artifact = "mu-server";
-                break;
-        }
+        String artifact = artifactForPackage(pack);
 
         String name = c.substring(i + 1);
-        String url = "https://www.javadoc.io/page/io.muserver/" + artifact + "/latest/" + pack.replace(".", "/") + "/" + name + ".html";
+        String url;
+        if (pack.startsWith("io.muserver")) {
+            url = "/javadocs/" + artifact + "/" + pack.replace(".", "/") + "/" + name + ".html";
+        } else {
+            url = externalUrl(pack, artifact, name);
+        }
         return "<a href=\"" + url + "\">" + Mutils.htmlEncode(name) + "</a>";
 
+    }
+
+    private static String artifactForPackage(String pack) {
+        if (pack.startsWith("io.muserver.murp")) {
+            return "murp";
+        }
+        if (pack.startsWith("io.muserver.acme")) {
+            return "mu-acme";
+        }
+        return "mu-server";
+    }
+
+    private static String externalUrl(String pack, String artifact, String name) {
+        if (pack.startsWith("jakarta.ws.rs")) {
+            return "https://www.javadoc.io/doc/jakarta.ws.rs/jakarta.ws.rs-api/latest/" + pack.replace(".", "/") + "/" + name + ".html";
+        }
+        return "https://www.javadoc.io/page/io.muserver/" + artifact + "/latest/" + pack.replace(".", "/") + "/" + name + ".html";
     }
 
     @Override

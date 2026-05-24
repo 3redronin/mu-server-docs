@@ -6,6 +6,7 @@ import io.muserver.acme.AcmeCertManagerBuilder;
 import io.muserver.docs.handlers.*;
 import io.muserver.docs.samples.*;
 import io.muserver.handlers.HttpsRedirectorBuilder;
+import io.muserver.handlers.ResourceHandlerBuilder;
 import io.muserver.rest.CORSConfigBuilder;
 import io.muserver.rest.RestHandlerBuilder;
 import org.slf4j.Logger;
@@ -99,6 +100,7 @@ public class App {
             })
             .addHandler(createRestHandler())
             .addHandler(context("jaxrsdocs").addHandler(JaxRSDocumentationExample.createRestHandler()))
+            .addHandler(context("javadocs").addHandler(ResourceHandlerBuilder.classpathHandler("/javadocs")))
             .addHandler(ResourceMimeTypes.resourceHandler())
             .start();
 

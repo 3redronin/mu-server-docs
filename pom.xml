@@ -9,6 +9,9 @@
     <version>1.0-SNAPSHOT</version>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <mu-server.version>[2.2.1,)</mu-server.version>
+        <mu-acme.version>[1.0.0,)</mu-acme.version>
+        <murp.version>[1.0.0,)</murp.version>
     </properties>
 
     <dependencies>
@@ -27,17 +30,17 @@
         <dependency>
             <groupId>io.muserver</groupId>
             <artifactId>mu-server</artifactId>
-            <version>[2.2.1,)</version>
+            <version>${mu-server.version}</version>
         </dependency>
         <dependency>
             <groupId>io.muserver</groupId>
             <artifactId>mu-acme</artifactId>
-            <version>[1.0.0,)</version>
+            <version>${mu-acme.version}</version>
         </dependency>
         <dependency>
             <groupId>io.muserver</groupId>
             <artifactId>murp</artifactId>
-            <version>[1.0.0,)</version>
+            <version>${murp.version}</version>
         </dependency>
 
         <dependency>
@@ -128,6 +131,45 @@
                 <configuration>
                     <release>17</release>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.9.0</version>
+                <executions>
+                    <execution>
+                        <id>unpack-javadocs</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>io.muserver</groupId>
+                                    <artifactId>mu-server</artifactId>
+                                    <version>${mu-server.version}</version>
+                                    <classifier>javadoc</classifier>
+                                    <outputDirectory>${project.build.outputDirectory}/javadocs/mu-server</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>io.muserver</groupId>
+                                    <artifactId>mu-acme</artifactId>
+                                    <version>${mu-acme.version}</version>
+                                    <classifier>javadoc</classifier>
+                                    <outputDirectory>${project.build.outputDirectory}/javadocs/mu-acme</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>io.muserver</groupId>
+                                    <artifactId>murp</artifactId>
+                                    <version>${murp.version}</version>
+                                    <classifier>javadoc</classifier>
+                                    <outputDirectory>${project.build.outputDirectory}/javadocs/murp</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
