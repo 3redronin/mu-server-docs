@@ -2,7 +2,7 @@
 {% block main %}
 
 <p>A reverse proxy simply receives requests from a client and forwards them to another
-    server. If you need to proxy requests to other serves, then you may consider using
+    server. If you need to do this, then you may consider using
     <a href="https://github.com/3redronin/murp">Murp: the Mu Reverse Proxy</a> which is described below.</p>
 
 <h2>Step one: add the Murp dependency</h2>
@@ -18,16 +18,12 @@
     &lt;version&gt;{{murpversion}}&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 
-<p><strong>Warning:</strong> Murp has a dependency on Jetty Client which brings in some Jetty
-    dependencies. If your project already has direct or indirect dependencies on Jetty, check
-    that the versions of the <code>jetty-*</code> libraries are all the same version.</p>
-
 <h2>Step two: create a Mu Server and add the reverse proxy as a handler</h2>
 
 <p>Murp does not start a server for you, instead you need to create your own server which allows you to configure
-    it however you want (e.g. with HTTPS). The reverse proxy is just added like any other handler, which means you
-    can add handlers before it (perhaps to add or remove custom headers) or after it (if the URI mapping function
-    returns <code>null</code> then the next handler will be invoked).</p>
+    it however you want (e.g. with or without HTTPS, with or without HTTP/2 etc). The reverse proxy is just added like
+    any other handler, which means you can add handlers before it (perhaps to add or remove custom headers) or after it
+    (if the URI mapping function returns <code>null</code> then the next handler will be invoked).</p>
 
 <p>The reverse proxy is configured with the {{ javadoc("io.muserver.murp.ReverseProxyBuilder") | raw }} which has
     only one required configuration option: <code>withUriMapper</code> which takes a {{
@@ -35,7 +31,8 @@
     The URI mapper is how you convert an incoming request URI to the target URI.</p>
 
 <p>In the following example, a target server is started on HTTP which simply replies with the requested URI and headers.
-    The reverse proxy is started on HTTPS and just blindly forwards all requests to the target server.</p>
+    The reverse proxy is started on HTTPS and just blindly forwards all requests to the target server, while also
+    adding a custom header to each of the target request and client response:</p>
 
 {{ source("ReverseProxyExample.java") | raw }}
 
@@ -46,8 +43,8 @@ is sent to the client with <code class="language-java">ReverseProxyBuilder.withR
 <h3 id="hostheader">The Host header</h3>
 
 <p>There are certain headers that reverse proxies do not forward, called <em>Hop by Hop Headers</em>.
-    However, by default the <code>Host</code> header is supposed to be proxied from the client to
-    the target server, which is the default in Murp.</p>
+    The <code>Host</code> header is <strong>not</strong> a Hop by Hop header, therefore it will be forwarded to
+    the target server by default.</p>
 
 <p>However if proxying requests from the browser to another HTTPS website, you may get
     errors related to invalid Host headers, or related to SNI. This is because the Host
@@ -58,7 +55,7 @@ is sent to the client with <code class="language-java">ReverseProxyBuilder.withR
 
 <h3>Timeouts</h3>
 
-<p>There are several types of time outs when working with reverse proxies:</p>
+<p>There are several types of timeouts when working with reverse proxies:</p>
 
 <ul>
     <li><em>Name resolution</em> - the lookup of the address of the target domain name</li>
