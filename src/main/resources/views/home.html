@@ -5,30 +5,45 @@
         display: none;
     }
 
-    header {
+    .hero {
         text-align: center;
-        margin: 30px;
-        padding: 0;
-        background-color: #FFFF;
+        margin: 4px 0 24px;
+        padding: 28px 18px;
+        border: 1px solid #dbe4f0;
+        border-radius: 12px;
+        background: linear-gradient(180deg, #f8fbff 0%, #ffffff 100%);
     }
 
-    header img {
+    .hero img {
         border: 0;
-        width: 100px;
-        height: 100px;
+        width: 90px;
+        height: 90px;
     }
 
-    header p {
-        margin: 10px 0;
+    .hero p {
+        margin: 10px 0 0;
         padding: 0;
-        color: Black;
-        font-size: larger;
+        color: #334155;
+        font-size: 1.15rem;
+    }
+
+    .upgrade-note {
+        text-align: center;
+        margin-top: 16px;
+    }
+
+    .upgrade-note span {
+        display: inline-block;
+        background-color: #eff6ff;
+        border: solid 1px #bfdbfe;
+        border-radius: 999px;
+        padding: 7px 14px;
     }
 </style>
 {% endblock %}
 {% block main %}
 
-<header>
+<header class="hero">
     <img src="/logos/home-logo.png" alt="Logo" title="">
     <p>Mu Server: Java's modern web server</p>
 </header>
@@ -53,8 +68,8 @@ public class Hello {
     }
 }</code></pre>
 
-<p style="text-align: center">
-    <span style="background-color: #e2ffe7; border: solid 1px green; padding: 5px;">
+<p class="upgrade-note">
+    <span>
     <strong>Upgrading to 2.x?</strong> See the <a href="/changelog#2.0.0">upgrade notes</a>.</span>
 </p>
 
@@ -86,6 +101,6 @@ public class Hello {
     <li><a href="/mutils">Various useful utilities</a></li>
 </ul>
 
-<p>Each release is tested with Java 8, 11, 17 and 21.</p>
+<p>Each release is tested with Java 8, 11, 17, 21 and 25.</p>
 
 {% endblock %}
