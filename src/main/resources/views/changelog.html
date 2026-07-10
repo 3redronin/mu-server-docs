@@ -17,6 +17,17 @@
 
 <div class="changelog">
 
+    <div class="release minor" id="v2.3.2">
+        <h2>2.3.2</h2>
+        <ul>
+            <li>Added support for configuring the maximum number of concurrent HTTP/2 streams on a single TCP connection via the <code>Http2ConfigBuilder</code>. The default is <code>200</code>.</li>
+        </ul>
+<pre><code class="language-java">muServerBuilder.withHttp2Config(Http2ConfigBuilder
+                .http2Enabled()
+                .withMaxConcurrentStreams(100)
+            )</code></pre>
+    </div>
+
     <div class="release minor">
         <h2>2.3.0</h2>
         <ul>
@@ -37,6 +48,10 @@
         <ul>
             <li>Upgraded Netty to 4.1.135</li>
         </ul>
+        <p><strong class="breaking">Warning:</strong> This release included an inadvertent breaking change where the max
+            concurrent HTTP/2 streams on a single connection changed from unlimited to <code>100</code>. This can cause
+            clients making more than <code>100</code> concurrent requests on one connection to have requests refused.
+            This value can be configured by upgrading to <a href="#v2.3.2"><code>2.3.2</code></a> and setting it on the <code>Http2ConfigBuilder</code>.</p>
     </div>
 
     <div class="release minor">
