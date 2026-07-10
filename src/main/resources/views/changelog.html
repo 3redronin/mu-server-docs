@@ -18,6 +18,21 @@
 <div class="changelog">
 
     <div class="release minor">
+        <h2>2.3.0</h2>
+        <ul>
+            <li>Added a JAX-RS RFC 9457 problem-details exception mapper for consistent JSON error responses.
+                Quick start:</li>
+        </ul>
+<pre><code class="language-java">muServerBuilder
+    .addHandler(restHandler(new ExampleResource())
+        .addExceptionMapper(Throwable.class, problemDetailsExceptionMapper().build()))
+    .start();</code></pre>
+        <p>Throw structured errors with <code>ProblemDetailsException.builder(status)</code> and optional fields like
+            <code>type</code>, <code>title</code>, <code>detail</code>, <code>instance</code>, and extension members.
+            See <a href="/jaxrs#problem-details-rfc9457">JAX-RS problem-details docs and full example</a>.</p>
+    </div>
+
+    <div class="release minor">
         <h2>2.2.10</h2>
         <ul>
             <li>Upgraded Netty to 4.1.135</li>

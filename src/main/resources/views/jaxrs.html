@@ -212,6 +212,32 @@ you can access the properties on the interceptor context in the same way as for 
 </ul>
 <p>See the {{ javadoc("io.muserver.rest.RestHandlerBuilder") | raw }} javadoc for more details.</p>
 
+<h2 id="problem-details-rfc9457">RFC 9457 problem-details exception mapping</h2>
+
+<p>Mu Server 2.3.0 adds a problem-details exception mapper for JAX-RS so exceptions can be serialized as RFC 9457
+    JSON responses.</p>
+
+<p>Register a {{ javadoc("io.muserver.rest.ProblemDetailsExceptionMapperBuilder") | raw }} mapper on your REST
+    handler so exceptions can be serialized as RFC 9457
+    JSON responses. <strong>All exceptions</strong> will be rendered as JSON in the problem details format, but you can also customise
+    the fields if you throw {{ javadoc("io.muserver.rest.ProblemDetailsExceptionBuilder") | raw }}-backed exceptions
+    from resource methods:</p>
+
+{{ source("JaxRSProblemDetailsExample.java") | raw }}
+
+<p>Example response body:</p>
+<pre><code class="language-json">{
+  "type": "https://example.com/problems/validation",
+  "title": "Validation Failed",
+  "status": 422,
+  "detail": "Field 'email' is required",
+  "instance": "urn:uuid:3a95d8a5-f4ff-4d39-9f89-d462bd7e7db2",
+  "errorCode": "USR_001"
+}</code></pre>
+
+<p>All problem-details fields are optional.</p>
+
+
 <h2>File uploads on Form parameters</h2>
 
 <p>For <code>multipart/form-data</code> requests, the <code>@FormParam</code> method parameter annotation can be used
