@@ -58,6 +58,7 @@ public class App {
                 "/resources/mime-types", "/contexts", "/letsencrypt", "/uploads", "/sse", "/routes"))
             .addHandler(Method.GET, "/", new HomeHandler(renderer))
             .addHandler(Method.GET, "/changelog", new VanillaHandler(renderer, "changelog", "Changelog"))
+            .addHandler(Method.GET, "/changelog/mu-server-3", new VanillaHandler(renderer, "mu-server-3", "Mu Server 3 preview"))
             .addHandler(Method.GET, "/async", new VanillaHandler(renderer, "async", "Asynchronous non-blocking request handling"))
             .addHandler(Method.GET, "/model", new VanillaHandler(renderer, "model", "Request and Response model"))
             .addHandler(Method.GET, "/model/query", new QueryStringExampleHandler())
