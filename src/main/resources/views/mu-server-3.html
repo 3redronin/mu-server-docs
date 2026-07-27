@@ -39,14 +39,13 @@
 <div class="preview">
     <p><strong>Mu Server 3 is ready for early testing.</strong></p>
     <p>
-        The current prerelease is <code>0.0.3.1</code>. Try it with an existing 2.x application and report
+        The current prerelease is <code>0.0.3.2</code>. Try it with an existing 2.x application and report
         compatibility problems or unexpected behaviour on the
         <a href="https://github.com/3redronin/mu-server/issues">issue tracker</a>.
     </p>
     <p>
         These notes apply to applications upgrading from any Mu Server 2.x release. The source comparison covers
-        changes made after <code>2.3.2</code> through the current master branch. Changes merged after
-        <code>0.0.3.1</code> will be included in a later prerelease.
+        changes made after <code>2.3.2</code> through the master branch used to build <code>0.0.3.2</code>.
     </p>
 </div>
 
@@ -82,7 +81,7 @@
 <pre><code class="language-xml">&lt;dependency&gt;
     &lt;groupId&gt;io.muserver&lt;/groupId&gt;
     &lt;artifactId&gt;mu-server&lt;/artifactId&gt;
-    &lt;version&gt;0.0.3.1&lt;/version&gt;
+    &lt;version&gt;0.0.3.2&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 
 <table class="comparison">
@@ -147,6 +146,66 @@
 
 <h2>Behaviour changes to test</h2>
 
+<h3>REST exception responses</h3>
+
+<p>
+    Mu Server 3 registers an exception mapper for <code>Throwable</code> by default. Application-specific exception
+    mappers still take precedence, and a <code>WebApplicationException</code> that already has an entity keeps its
+    original response.
+</p>
+
+<table class="comparison">
+    <thead>
+    <tr>
+        <th>Change</th>
+        <th>Mu Server 2</th>
+        <th>Mu Server 3</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>
+            <strong>Unhandled resource exception</strong><br>
+            A resource throws <code>new IllegalStateException("database path: /secret")</code>.
+        </td>
+        <td><code>500 Internal Server Error</code> using Mu Server's standard HTML error page.</td>
+        <td>
+            <code>500 Internal Server Error</code> with <code>application/problem+json</code>,
+            <code>Cache-Control: no-store</code>, a unique <code>urn:uuid:</code> instance, and the generic detail
+            <code>An unexpected error occurred</code>. The exception and instance ID are logged, but the exception
+            message is not exposed to the client.
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <strong>Malformed <code>Accept</code> header</strong><br>
+            Send <code>Accept: text</code>.
+        </td>
+        <td><code>400 Bad Request</code> using the standard error response.</td>
+        <td><code>400 Bad Request</code> with <code>application/problem+json</code>.</td>
+    </tr>
+    </tbody>
+</table>
+
+<p>
+    To restore Mu Server's HTML fallback for otherwise-unmapped exceptions, remove the default mapper:
+</p>
+
+<pre><code class="language-java">restHandler(resource)
+    .removeExceptionMapper(Throwable.class);</code></pre>
+
+<p>
+    To change details such as whether 4xx instance IDs are logged, replace it with a configured mapper. By default,
+    5xx instance IDs are logged and 4xx instance IDs are not.
+</p>
+
+<pre><code class="language-java">restHandler(resource)
+    .addExceptionMapper(
+        Throwable.class,
+        ProblemDetailsExceptionMapperBuilder.problemDetailsExceptionMapper()
+            .withLog4xxProblemDetailsInstanceIds(true)
+            .build());</code></pre>
+
 <h3>Graceful shutdown</h3>
 
 <table class="comparison">
@@ -194,7 +253,29 @@
         </td>
         <td><code>400 Bad Request</code></td>
         <td>
-            <code>404 Not Found</code>. The problem-details mapper retains <code>400 Bad Request</code>.
+            <code>400 Bad Request</code> with <code>application/problem+json</code>. If the default
+            <code>Throwable</code> mapper is removed, the underlying Jakarta REST result is
+            <code>404 Not Found</code>.
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <strong>Array-valued resource parameters</strong><br>
+            Given <code>find(@QueryParam("tag") String[] tags)</code>, request
+            <code>?tag=one&amp;tag=two</code>.
+        </td>
+        <td>Object-array parameters are not supported.</td>
+        <td><code>tags</code> is <code>["one", "two"]</code>.</td>
+    </tr>
+    <tr>
+        <td>
+            <strong>Non-public resource methods</strong><br>
+            Annotate package-private <code>@GET String hidden()</code>.
+        </td>
+        <td>The method is silently ignored.</td>
+        <td>
+            The method is still ignored, as Jakarta REST exposes public resource methods only, but a startup warning
+            identifies the problem.
         </td>
     </tr>
     <tr>
@@ -249,21 +330,22 @@
 </table>
 
 <p>
-    To retain a <code>400 Bad Request</code> with a clear
-    <a href="/jaxrs#problem-details-rfc9457">RFC 9457 problem-details response</a>, opt in to Mu Server's
-    problem-details exception mapper:
+    Object arrays are supported for <code>@QueryParam</code>, <code>@HeaderParam</code>,
+    <code>@MatrixParam</code>, <code>@FormParam</code>, and <code>@CookieParam</code>. Repeated values become array
+    elements, a missing parameter produces an empty array, and <code>@DefaultValue</code> produces a one-element
+    array. Element conversion uses the same built-in or application <code>ParamConverter</code> as scalar
+    parameters. <code>UploadedFile[]</code> is also supported for multipart uploads.
 </p>
 
-<pre><code class="language-java">restHandler(resource)
-    .addExceptionMapper(
-        Throwable.class,
-        ProblemDetailsExceptionMapperBuilder.problemDetailsExceptionMapper().build());</code></pre>
+<p>
+    <code>@PathParam</code> arrays and primitive arrays such as <code>int[]</code> are not supported. Cookie arrays
+    use <code>jakarta.ws.rs.core.Cookie[]</code>, not <code>io.muserver.Cookie[]</code>.
+</p>
 
 <p>
-    Registering the mapper for <code>Throwable</code> renders all REST exceptions as problem-details JSON. For URI
-    parameter conversion failures, including unknown enum values, it preserves the <code>400</code> status and
-    descriptive error used in 2.x. The JSON includes <code>parameter</code> and <code>suppliedValue</code>; for a
-    standard enum it also includes <code>allowedValues</code>.
+    For URI parameter conversion failures, including unknown enum values, the default mapper preserves the
+    <code>400</code> status and descriptive error used in 2.x. The JSON includes <code>parameter</code> and
+    <code>suppliedValue</code>; for a standard enum it also includes <code>allowedValues</code>.
 </p>
 
 <p>
@@ -507,6 +589,32 @@
     </tr>
     <tr>
         <td>
+            <strong>Cookie comments</strong><br>
+            Serialize a <code>NewCookie</code> with comment <code>A "quoted" \ comment</code>.
+        </td>
+        <td>The <code>Comment</code> attribute is omitted.</td>
+        <td>
+            The attribute is emitted as <code>Comment="A \"quoted\" \\ comment"</code>. Carriage returns and line
+            feeds are rejected.
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <strong>Unknown response-header object types</strong><br>
+            Add an object with no registered <code>RuntimeDelegate.HeaderDelegate</code> as a response header.
+        </td>
+        <td>
+            Mu Server falls back to <code>toString()</code>, but asking the runtime delegate directly throws a
+            Mu Server exception.
+        </td>
+        <td>
+            The response still uses <code>toString()</code>, while
+            <code>RuntimeDelegate.createHeaderDelegate(...)</code> returns <code>null</code> as required by Jakarta
+            REST.
+        </td>
+    </tr>
+    <tr>
+        <td>
             <strong>Cookies on wrapped responses</strong><br>
             Add a cookie to a wrapped Jakarta REST response.
         </td>
@@ -542,7 +650,36 @@
     </tbody>
 </table>
 
-<h2>New APIs you can opt into</h2>
+<h2>New APIs and capabilities</h2>
+
+<h3>Use arrays for repeated parameter values</h3>
+
+<pre><code class="language-java">@GET
+public List&lt;Result&gt; find(@QueryParam("tag") String[] tags) {
+    return searchForAll(tags);
+}</code></pre>
+
+<p>
+    A request such as <code>?tag=java&amp;tag=http</code> supplies both values without requiring a collection
+    parameter. The same support applies to the parameter annotations and multipart upload arrays described above.
+</p>
+
+<h3>Read and write XML <code>Source</code> entities</h3>
+
+<pre><code class="language-java">@POST
+@Consumes("application/xml")
+@Produces("application/*+xml")
+public Source echo(Source document) {
+    return document;
+}</code></pre>
+
+<p>
+    Mu Server 3 includes the standard Jakarta REST entity provider for
+    <code>javax.xml.transform.Source</code>. It reads <code>Source</code> and <code>StreamSource</code>, and writes
+    any <code>Source</code> implementation, for <code>text/xml</code>, <code>application/xml</code>, and structured
+    suffix types such as <code>application/vnd.example+xml</code>. Declared XML charsets and byte-order marks are
+    honoured. When writing, secure processing is enabled and external DTD and stylesheet access are disabled.
+</p>
 
 <h3>Start from a Jakarta REST <code>Application</code></h3>
 
@@ -587,7 +724,30 @@ CompletionStage&lt;SeBootstrap.Instance&gt; started =
 <pre><code>-Djakarta.ws.rs.ext.RuntimeDelegate=io.muserver.rest.MuRuntimeDelegate</code></pre>
 
 <p>
-    TLS client authentication through <code>SeBootstrap</code> is not currently implemented.
+    HTTPS bootstrap supports <code>NONE</code>, <code>OPTIONAL</code>, and <code>MANDATORY</code> client-certificate
+    authentication:
+</p>
+
+<pre><code class="language-java">SeBootstrap.Configuration configuration = SeBootstrap.Configuration.builder()
+    .protocol("HTTPS")
+    .sslContext(serverSslContext)
+    .sslClientAuthentication(
+        SeBootstrap.Configuration.SSLClientAuthentication.MANDATORY)
+    .build();</code></pre>
+
+<p>
+    The same modes are available when configuring Mu Server directly:
+</p>
+
+<pre><code class="language-java">new HttpsConfigBuilder()
+    .withClientCertificateTrustManager(clientTrustManager)
+    .withClientCertificateAuthentication(
+        ClientCertificateAuthentication.MANDATORY);</code></pre>
+
+<p>
+    <code>OPTIONAL</code> accepts clients without a certificate but validates any certificate they provide;
+    <code>MANDATORY</code> requires a trusted certificate at the TLS handshake. Existing direct configurations that
+    set a client-certificate trust manager without choosing a mode remain optional.
 </p>
 
 <h3>SSE lifecycle and concurrency</h3>
