@@ -30,6 +30,17 @@
 
 <div class="changelog">
 
+    <div class="release minor" id="v2.4.0">
+        <h2>2.4.0</h2>
+        <ul>
+            <li>Improved JAX-RS <code>CacheControl</code> parsing and serialization: standard directive names are now
+                case-insensitive, field-name lists on <code>private</code> and <code>no-cache</code> are preserved, and
+                extension values are correctly quoted and escaped.</li>
+            <li>Improved parameterized header parsing and serialization to preserve escaped characters in quoted
+                values and reject malformed quoted values.</li>
+        </ul>
+    </div>
+
     <div class="release minor">
         <h2>2.3.3</h2>
         <ul>
