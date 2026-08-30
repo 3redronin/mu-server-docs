@@ -57,6 +57,7 @@ public class App {
             .addHandler(isLocal ? null : new ViewCacheHandler("/", "/download", "/https", "/jaxrs", "/resources",
                 "/resources/mime-types", "/contexts", "/letsencrypt", "/uploads", "/sse", "/routes"))
             .addHandler(Method.GET, "/", new HomeHandler(renderer))
+            .addHandler(Method.GET, "/agent-skills", new VanillaHandler(renderer, "agent-skills", "Agent Skills"))
             .addHandler(Method.GET, "/changelog", new VanillaHandler(renderer, "changelog", "Changelog"))
             .addHandler(Method.GET, "/changelog/mu-server-3", new VanillaHandler(renderer, "mu-server-3", "Mu Server 3 preview"))
             .addHandler(Method.GET, "/async", new VanillaHandler(renderer, "async", "Asynchronous non-blocking request handling"))

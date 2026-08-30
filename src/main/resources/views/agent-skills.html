@@ -1,0 +1,262 @@
+{% extends "template.html" %}
+{% block head %}
+<style>
+    .skills-intro {
+        max-width: 760px;
+        font-size: 1.08rem;
+        color: var(--muted);
+    }
+
+    .quick-install {
+        margin: 24px 0;
+        padding: 18px 20px;
+        border: 1px solid #bfdbfe;
+        border-radius: 10px;
+        background: #eff6ff;
+    }
+
+    .quick-install h2 {
+        margin-top: 0;
+    }
+
+    .quick-install pre {
+        background: #ffffff;
+    }
+
+    .agent-command {
+        white-space: nowrap;
+    }
+
+    .copyable-command {
+        position: relative;
+    }
+
+    pre.copyable-command,
+    td.copyable-command {
+        padding-right: 52px;
+    }
+
+    .copy-command {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        color: var(--muted);
+        background: #ffffff;
+        border: 1px solid var(--border);
+        border-radius: 7px;
+        cursor: pointer;
+    }
+
+    td.copyable-command .copy-command {
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+    .copy-command:hover {
+        color: var(--primary);
+        border-color: #93c5fd;
+        background: #eff6ff;
+    }
+
+    .copy-command:focus-visible {
+        outline: 3px solid #93c5fd;
+        outline-offset: 2px;
+    }
+
+    .copy-command svg {
+        width: 17px;
+        height: 17px;
+        fill: none;
+        stroke: currentColor;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 1.8;
+    }
+
+    .copy-command .check-icon,
+    .copy-command.copied .copy-icon {
+        display: none;
+    }
+
+    .copy-command.copied {
+        color: #15803d;
+        border-color: #86efac;
+        background: #f0fdf4;
+    }
+
+    .copy-command.copied .check-icon {
+        display: block;
+    }
+
+    @media (max-width: 760px) {
+        .agent-command {
+            white-space: normal;
+            overflow-wrap: anywhere;
+        }
+    }
+</style>
+{% endblock %}
+{% block main %}
+
+<p class="skills-intro">
+    Give your coding agent practical guidance for building, testing, securing, upgrading, and operating Java
+    applications with Mu Server. The skills are open, portable instruction sets that an agent loads when they are
+    relevant to your task.
+</p>
+
+<section class="quick-install">
+    <h2>Quick install</h2>
+    <p>From the project where you use Mu Server, run:</p>
+    <pre class="bash copyable-command"><code>npx skills add 3redronin/mu-server-skills</code></pre>
+    <p>
+        The installer lets you choose the skills to add and the coding agent to use. It installs into the current
+        project by default, so the setup can be shared with the project. Add <code>--global</code> to make the skills
+        available across your projects instead.
+    </p>
+</section>
+
+<h2>Install for a specific tool</h2>
+
+<p>Use the matching agent name to go directly to the installer for your tool:</p>
+
+<table>
+    <thead>
+    <tr>
+        <th>Tool</th>
+        <th>Command</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>Codex</td>
+        <td class="copyable-command"><code class="agent-command">npx skills add 3redronin/mu-server-skills --agent codex</code></td>
+    </tr>
+    <tr>
+        <td>Claude Code</td>
+        <td class="copyable-command"><code class="agent-command">npx skills add 3redronin/mu-server-skills --agent claude-code</code></td>
+    </tr>
+    <tr>
+        <td>Cursor</td>
+        <td class="copyable-command"><code class="agent-command">npx skills add 3redronin/mu-server-skills --agent cursor</code></td>
+    </tr>
+    <tr>
+        <td>GitHub Copilot</td>
+        <td class="copyable-command"><code class="agent-command">npx skills add 3redronin/mu-server-skills --agent github-copilot</code></td>
+    </tr>
+    <tr>
+        <td>Gemini CLI</td>
+        <td class="copyable-command"><code class="agent-command">npx skills add 3redronin/mu-server-skills --agent gemini-cli</code></td>
+    </tr>
+    <tr>
+        <td>OpenCode</td>
+        <td class="copyable-command"><code class="agent-command">npx skills add 3redronin/mu-server-skills --agent opencode</code></td>
+    </tr>
+    </tbody>
+</table>
+
+<p>
+    The <a href="https://github.com/vercel-labs/skills">skills installer</a> supports many more coding agents. You can
+    also give an agent with its own skills installer the
+    <a href="https://github.com/3redronin/mu-server-skills">Mu Server skills repository URL</a> directly.
+</p>
+
+<h2>Choose the skills</h2>
+
+<p>List the available skills without installing anything:</p>
+
+<pre class="bash copyable-command"><code>npx skills add 3redronin/mu-server-skills --list</code></pre>
+
+<p>Install one skill, for example the getting-started guide:</p>
+
+<pre class="bash copyable-command"><code>npx skills add 3redronin/mu-server-skills \
+  --skill mu-server-get-started</code></pre>
+
+<p>Or install every skill globally:</p>
+
+<pre class="bash copyable-command"><code>npx skills add 3redronin/mu-server-skills \
+  --skill '*' --global</code></pre>
+
+<h2>What the skills cover</h2>
+
+<p>
+    The collection includes guidance for getting started, handlers, Jakarta REST, static resources, uploads,
+    WebSockets, asynchronous streaming, Swagger, browser security, testing, production operation, ACME certificates,
+    Murp reverse proxies, and version upgrades.
+</p>
+
+<p>
+    After installing, ask your agent naturally—for example, “Create a Maven application with Mu Server and a
+    <code>/hello</code> route,” or “Review this Mu Server service for production readiness.” The agent can select the
+    relevant skills automatically.
+</p>
+
+<p>
+    <a href="https://github.com/3redronin/mu-server-skills">Browse the skills and installation notes on GitHub</a>.
+</p>
+
+<script>
+    document.querySelectorAll('.copyable-command').forEach(function (container) {
+        var button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'copy-command';
+        button.title = 'Copy command';
+        button.setAttribute('aria-label', 'Copy command');
+        button.innerHTML = '<svg class="copy-icon" aria-hidden="true" viewBox="0 0 24 24">' +
+            '<rect x="8" y="8" width="11" height="11" rx="2"></rect>' +
+            '<path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"></path></svg>' +
+            '<svg class="check-icon" aria-hidden="true" viewBox="0 0 24 24">' +
+            '<path d="m5 12 4 4L19 6"></path></svg>';
+
+        button.addEventListener('click', function () {
+            var command = container.querySelector('code').textContent;
+            copyText(command).then(function () {
+                button.classList.add('copied');
+                button.title = 'Copied';
+                button.setAttribute('aria-label', 'Command copied');
+                window.setTimeout(function () {
+                    button.classList.remove('copied');
+                    button.title = 'Copy command';
+                    button.setAttribute('aria-label', 'Copy command');
+                }, 1500);
+            }).catch(function () {
+                button.title = 'Unable to copy';
+                button.setAttribute('aria-label', 'Unable to copy command');
+            });
+        });
+
+        container.appendChild(button);
+    });
+
+    function copyText(text) {
+        if (navigator.clipboard && window.isSecureContext) {
+            return navigator.clipboard.writeText(text).catch(function () {
+                return copyWithTextArea(text);
+            });
+        }
+
+        return copyWithTextArea(text);
+    }
+
+    function copyWithTextArea(text) {
+        return new Promise(function (resolve, reject) {
+            var textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.setAttribute('readonly', '');
+            textArea.style.position = 'fixed';
+            textArea.style.opacity = '0';
+            document.body.appendChild(textArea);
+            textArea.select();
+            var copied = document.execCommand('copy');
+            document.body.removeChild(textArea);
+            copied ? resolve() : reject(new Error('Copy failed'));
+        });
+    }
+</script>
+
+{% endblock %}

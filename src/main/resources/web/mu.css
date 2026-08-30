@@ -59,6 +59,10 @@ nav a, nav a:visited {
     font-size: 0.95rem;
 }
 
+.current-version {
+    color: #a9bdd1;
+}
+
 nav a:hover {
     color: #ffffff;
     text-decoration: underline;
