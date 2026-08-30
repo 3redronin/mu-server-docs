@@ -17,6 +17,106 @@
         border-radius: 10px;
         padding: 14px 16px;
     }
+    .release-heading {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .release-anchor,
+    .release-anchor:visited {
+        color: inherit;
+        text-decoration: none;
+    }
+    .release-anchor:hover {
+        color: var(--primary);
+        text-decoration: underline;
+    }
+    .release-anchor:focus-visible,
+    .copy-release-link:focus-visible {
+        outline: 3px solid #93c5fd;
+        outline-offset: 2px;
+    }
+    .copy-release-link {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+        padding: 0;
+        color: var(--muted);
+        background: #ffffff;
+        border: 1px solid var(--border);
+        border-radius: 7px;
+        cursor: pointer;
+    }
+    .copy-release-link::after {
+        content: attr(data-tooltip);
+        position: absolute;
+        bottom: calc(100% + 7px);
+        left: 50%;
+        z-index: 1;
+        padding: 5px 7px;
+        color: #ffffff;
+        background: #0f172a;
+        border-radius: 5px;
+        box-shadow: 0 3px 8px rgba(15, 23, 42, 0.2);
+        font-size: 0.72rem;
+        font-weight: 400;
+        line-height: 1;
+        opacity: 0;
+        pointer-events: none;
+        transform: translate(-50%, 2px);
+        transition: opacity 120ms ease, transform 120ms ease;
+        white-space: nowrap;
+    }
+    .copy-release-link:hover::after,
+    .copy-release-link:focus-visible::after,
+    .copy-release-link.copied::after {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+    .copy-release-link.suppress-tooltip::after {
+        opacity: 0;
+        transform: translate(-50%, 2px);
+    }
+    .copy-release-link:hover {
+        color: var(--primary);
+        border-color: #93c5fd;
+        background: #eff6ff;
+    }
+    .copy-release-link svg {
+        width: 15px;
+        height: 15px;
+        fill: none;
+        stroke: currentColor;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 1.8;
+    }
+    .copy-release-link .check-icon,
+    .copy-release-link.copied .copy-icon {
+        display: none;
+    }
+    .copy-release-link.copied {
+        color: #15803d;
+        border-color: #86efac;
+        background: #f0fdf4;
+    }
+    .copy-release-link.copied .check-icon {
+        display: block;
+    }
+    .copy-release-status {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+    }
 </style>
 {% endblock %}
 {% block main %}
@@ -31,7 +131,7 @@
 <div class="changelog">
 
     <div class="release minor" id="v2.4.2">
-        <h2>2.4.2</h2>
+        <h2 class="release-heading"><a class="release-anchor" href="#v2.4.2">2.4.2</a></h2>
         <ul>
             <li>Fixed JAX-RS route matching for path segments containing raw colons. Colons are now treated as path
                 data rather than URI scheme separators, including in custom path regexes, matrix parameters, and
@@ -41,7 +141,7 @@
     </div>
 
     <div class="release minor" id="v2.4.1">
-        <h2>2.4.1</h2>
+        <h2 class="release-heading"><a class="release-anchor" href="#v2.4.1">2.4.1</a></h2>
         <ul>
             <li>Upgraded Netty to 4.1.137</li>
         </ul>
@@ -49,7 +149,7 @@
     </div>
 
     <div class="release minor" id="v2.4.0">
-        <h2>2.4.0</h2>
+        <h2 class="release-heading"><a class="release-anchor" href="#v2.4.0">2.4.0</a></h2>
         <ul>
             <li>Improved JAX-RS <code>CacheControl</code> parsing and serialization: standard directive names are now
                 case-insensitive, field-name lists on <code>private</code> and <code>no-cache</code> are preserved, and
@@ -59,8 +159,8 @@
         </ul>
     </div>
 
-    <div class="release minor">
-        <h2>2.3.3</h2>
+    <div class="release minor" id="v2.3.3">
+        <h2 class="release-heading"><a class="release-anchor" href="#v2.3.3">2.3.3</a></h2>
         <ul>
             <li>Upgraded Netty to 4.1.136</li>
         </ul>
@@ -69,7 +169,7 @@
 
 
     <div class="release minor" id="v2.3.2">
-        <h2>2.3.2</h2>
+        <h2 class="release-heading"><a class="release-anchor" href="#v2.3.2">2.3.2</a></h2>
         <ul>
             <li>Added support for configuring the maximum number of concurrent HTTP/2 streams on a single TCP connection via the <code>Http2ConfigBuilder</code>. The default is <code>200</code>.</li>
         </ul>
@@ -79,8 +179,8 @@
             )</code></pre>
     </div>
 
-    <div class="release minor">
-        <h2>2.3.0</h2>
+    <div class="release minor" id="v2.3.0">
+        <h2 class="release-heading"><a class="release-anchor" href="#v2.3.0">2.3.0</a></h2>
         <ul>
             <li>Added a JAX-RS RFC 9457 problem-details exception mapper for consistent JSON error responses.
                 Quick start:</li>
@@ -94,8 +194,8 @@
             See <a href="/jaxrs#problem-details-rfc9457">JAX-RS problem-details docs and full example</a>.</p>
     </div>
 
-    <div class="release minor">
-        <h2>2.2.10</h2>
+    <div class="release minor" id="v2.2.10">
+        <h2 class="release-heading"><a class="release-anchor" href="#v2.2.10">2.2.10</a></h2>
         <ul>
             <li>Upgraded Netty to 4.1.135</li>
         </ul>
@@ -105,124 +205,124 @@
             This value can be configured by upgrading to <a href="#v2.3.2"><code>2.3.2</code></a> and setting it on the <code>Http2ConfigBuilder</code>.</p>
     </div>
 
-    <div class="release minor">
-        <h2>2.2.8</h2>
+    <div class="release minor" id="v2.2.8">
+        <h2 class="release-heading"><a class="release-anchor" href="#v2.2.8">2.2.8</a></h2>
         <ul>
             <li>Upgraded Netty to 4.1.133</li>
         </ul>
     </div>
 
-    <div class="release minor">
-        <h2>2.2.7</h2>
+    <div class="release minor" id="v2.2.7">
+        <h2 class="release-heading"><a class="release-anchor" href="#v2.2.7">2.2.7</a></h2>
         <ul>
             <li>Upgraded Netty to 4.1.132</li>
         </ul>
     </div>
 
-    <div class="release minor">
-        <h2>2.2.6</h2>
+    <div class="release minor" id="v2.2.6">
+        <h2 class="release-heading"><a class="release-anchor" href="#v2.2.6">2.2.6</a></h2>
         <ul>
             <li>Fixed a WebSocket close_wait bug</li>
         </ul>
     </div>
 
-    <div class="release minor">
-        <h2>2.2.4</h2>
+    <div class="release minor" id="v2.2.4">
+        <h2 class="release-heading"><a class="release-anchor" href="#v2.2.4">2.2.4</a></h2>
         <ul>
             <li>Fixed a bug where reading a chunked request body via an <code>InputStream</code> could throw an exception</li>
         </ul>
     </div>
 
-    <div class="release minor">
-        <h2>2.2.3</h2>
+    <div class="release minor" id="v2.2.3">
+        <h2 class="release-heading"><a class="release-anchor" href="#v2.2.3">2.2.3</a></h2>
         <ul>
             <li>The SNI hostname sent by the client during the TLS handshake is now accessible via <code>connection.sniHostName()</code></li>
         </ul>
     </div>
 
-    <div class="release minor">
-        <h2>2.2.2</h2>
+    <div class="release minor" id="v2.2.2">
+        <h2 class="release-heading"><a class="release-anchor" href="#v2.2.2">2.2.2</a></h2>
         <ul>
             <li>Upgraded Netty to 4.1.131</li>
         </ul>
     </div>
 
-    <div class="release">
-        <h2>2.2.1</h2>
+    <div class="release" id="v2.2.1">
+        <h2 class="release-heading"><a class="release-anchor" href="#v2.2.1">2.2.1</a></h2>
         <ul>
             <li>Upgraded Netty to 4.1.130</li>
         </ul>
     </div>
-    <div class="release minor">
-        <h2>2.2.0</h2>
+    <div class="release minor" id="v2.2.0">
+        <h2 class="release-heading"><a class="release-anchor" href="#v2.2.0">2.2.0</a></h2>
         <ul>
             <li>Added <a href="/cors-and-csrf#csrf">Cross Site Request Forgery (CSRF) protection</a>.</li>
         </ul>
     </div>
 
-    <div class="release">
-        <h2>2.1.20</h2>
+    <div class="release" id="v2.1.20">
+        <h2 class="release-heading"><a class="release-anchor" href="#v2.1.20">2.1.20</a></h2>
         <ul>
             <li>Upgraded Netty to 4.1.127</li>
         </ul>
     </div>
 
-    <div class="release">
-        <h2>2.1.19</h2>
+    <div class="release" id="v2.1.19">
+        <h2 class="release-heading"><a class="release-anchor" href="#v2.1.19">2.1.19</a></h2>
         <ul>
             <li>Fix openapi JSON generation bug where two operations that different just by content type would throw an
                 exception when they shared the same parameter names</li>
         </ul>
     </div>
 
-    <div class="release">
-        <h2>2.1.18</h2>
+    <div class="release" id="v2.1.18">
+        <h2 class="release-heading"><a class="release-anchor" href="#v2.1.18">2.1.18</a></h2>
         <ul>
             <li>Allow up to 4096 multipart form parameters to be parsed (up from 128)</li>
             <li>Upgraded Netty to 4.1.124</li>
         </ul>
     </div>
 
-    <div class="release">
-        <h2>2.1.12</h2>
+    <div class="release" id="v2.1.12">
+        <h2 class="release-heading"><a class="release-anchor" href="#v2.1.12">2.1.12</a></h2>
         <ul>
             <li>Upgraded Netty to 4.1.122</li>
         </ul>
     </div>
 
-    <div class="release">
-        <h2>2.1.10</h2>
+    <div class="release" id="v2.1.10">
+        <h2 class="release-heading"><a class="release-anchor" href="#v2.1.10">2.1.10</a></h2>
         <ul>
             <li>Added <code>MuServer.stop(long duration, TimeUnit unit)</code> for more control over graceful shutdown
             timeouts.</li>
         </ul>
     </div>
 
-    <div class="release minor">
-        <h2>2.1.9</h2>
+    <div class="release minor" id="v2.1.9">
+        <h2 class="release-heading"><a class="release-anchor" href="#v2.1.9">2.1.9</a></h2>
         <ul>
             <li><code>WebApplicationException</code>s thrown from a JAX-RS <code>ParamConverter</code>
             will now be propagated back to the client (instead of always returning a 400).</li>
         </ul>
     </div>
 
-    <div class="release minor">
-        <h2>2.1.8</h2>
+    <div class="release minor" id="v2.1.8">
+        <h2 class="release-heading"><a class="release-anchor" href="#v2.1.8">2.1.8</a></h2>
         <ul>
             <li class="deps">Upgraded to Netty 4.1.119</li>
         </ul>
     </div>
 
     
-    <div class="release minor">
-        <h2>2.1.6</h2>
+    <div class="release minor" id="v2.1.6">
+        <h2 class="release-heading"><a class="release-anchor" href="#v2.1.6">2.1.6</a></h2>
         <ul>
             <li class="deps">Upgraded to Netty 4.1.118</li>
         </ul>
     </div>
     
-    <div class="release minor">
-        <h2>2.1.2</h2>
+    <div class="release minor" id="v2.1.2">
+        <h2 class="release-heading"><a class="release-anchor" href="#v2.1.2">2.1.2</a></h2>
         <ul>
             <li>On a {{ javadoc("io.muserver.handlers.ResourceHandlerBuilder") | raw }} the action to take for a request
             to a directory without a trailing space can now be specified with
@@ -232,8 +332,8 @@
             for details.</li>
         </ul>
     </div>
-    <div class="release minor">
-        <h2>2.1.0</h2>
+    <div class="release minor" id="v2.1.0">
+        <h2 class="release-heading"><a class="release-anchor" href="#v2.1.0">2.1.0</a></h2>
         <ul>
             <li>New feature: support for <a href="https://www.haproxy.org/download/1.8/doc/proxy-protocol.txt">HA Proxy
                 Protocol</a> in order to be able to get client connection issues forwarded over TLS routers. To enable,
@@ -245,15 +345,15 @@
         </ul>
     </div>
 
-    <div class="release minor">
-        <h2>2.0.3</h2>
+    <div class="release minor" id="v2.0.3">
+        <h2 class="release-heading"><a class="release-anchor" href="#v2.0.3">2.0.3</a></h2>
         <ul>
             <li class="deps">Upgraded to Netty 4.1.112</li>
         </ul>
     </div>
 
-    <div class="release">
-        <h2 id="2.0.0">2.0.0</h2>
+    <div class="release" id="v2.0.0">
+        <h2 class="release-heading" id="2.0.0"><a class="release-anchor" href="#v2.0.0">2.0.0</a></h2>
         <p><strong class="breaking">Breaking change:</strong> JAX-RS now uses the <code>jakarta.ws.rs-api 3.0.0</code>
         dependency, meaning <strong>all references to the <code>javax.ws.rs</code> package must be changed
             to the <code>jakarta.ws.rs</code> package</strong>.</p>
@@ -279,15 +379,15 @@
 
     </div>
 
-    <div class="release minor">
-        <h2>1.1.2</h2>
+    <div class="release minor" id="v1.1.2">
+        <h2 class="release-heading"><a class="release-anchor" href="#v1.1.2">1.1.2</a></h2>
         <ul>
             <li class="deps">Upgraded to Netty 4.1.109</li>
         </ul>
     </div>
 
-    <div class="release minor">
-        <h2>1.1.1</h2>
+    <div class="release minor" id="v1.1.1">
+        <h2 class="release-heading"><a class="release-anchor" href="#v1.1.1">1.1.1</a></h2>
         <ul>
             <li>Stop returning <code>Access-Control-Allow-Origin: &quot;null&quot;</code> when CORS
             is not allowed for an origin, as per <a
@@ -295,8 +395,8 @@
         </ul>
     </div>
 
-    <div class="release minor">
-        <h2>1.1.0</h2>
+    <div class="release minor" id="v1.1.0">
+        <h2 class="release-heading"><a class="release-anchor" href="#v1.1.0">1.1.0</a></h2>
         <ul>
             <li><strong>Bug fix:</strong> in a JAX-RS handler, <code>UriInfo.resolve(URI)</code> is now
             relative to the base URI and <code>UriInfo.getPathParameters()</code> now correctly returns
@@ -304,8 +404,8 @@
         </ul>
     </div>
 
-    <div class="release minor">
-        <h2>1.0.7</h2>
+    <div class="release minor" id="v1.0.7">
+        <h2 class="release-heading"><a class="release-anchor" href="#v1.0.7">1.0.7</a></h2>
         <ul>
             <li>Improved performance when publishing a large string in an SSE message which has no line breaks. See <a
                 href="https://github.com/3redronin/mu-server/pull/47">pull request 47</a>.</li>
@@ -314,16 +414,16 @@
         </ul>
     </div>
 
-    <div class="release minor">
-        <h2>1.0.6</h2>
+    <div class="release minor" id="v1.0.6">
+        <h2 class="release-heading"><a class="release-anchor" href="#v1.0.6">1.0.6</a></h2>
         <ul>
             <li class="fix">Bug fix: corrected encoding of ampersands inside querystring values when the ContextHandler
                 redirects from <code>/contextName</code> to <code>/contextName/</code> with a querystring.</li>
         </ul>
     </div>
 
-    <div class="release minor">
-        <h2>1.0.5</h2>
+    <div class="release minor" id="v1.0.5">
+        <h2 class="release-heading"><a class="release-anchor" href="#v1.0.5">1.0.5</a></h2>
         <ul>
             <li class="deps">Upgraded to Netty 4.1.107</li>
             <li>No longer throw an <code>IllegalStateException</code> when setting the status on an errored response, as
@@ -332,23 +432,23 @@
         </ul>
     </div>
 
-    <div class="release minor">
-        <h2>1.0.4</h2>
+    <div class="release minor" id="v1.0.4">
+        <h2 class="release-heading"><a class="release-anchor" href="#v1.0.4">1.0.4</a></h2>
         <ul>
             <li class="fix">Fixed bug (<a href="https://github.com/3redronin/mu-server/issues/45">issue #45</a>)
                 where <code>server.sslInfo().certificates()</code> would fail to get cert info after the SSL certs are changed at runtime</li>
         </ul>
     </div>
-    <div class="release minor">
-        <h2>1.0.1</h2>
+    <div class="release minor" id="v1.0.1">
+        <h2 class="release-heading"><a class="release-anchor" href="#v1.0.1">1.0.1</a></h2>
         <ul>
             <li class="deps">Upgraded to Netty 4.1.104</li>
         </ul>
     </div>
 
 
-    <div class="release">
-        <h2 id="1.0.0">1.0.0</h2>
+    <div class="release" id="v1.0.0">
+        <h2 class="release-heading" id="1.0.0"><a class="release-anchor" href="#v1.0.0">1.0.0</a></h2>
         <p><strong class="breaking">Breaking changes:</strong> this is the first major release of mu-server. There is no
             new functionality since the previous version except to remove all methods, parameters and classes that were
             marked with <code>@Deprecated</code> in the <code>0.x</code> versions.</p>
@@ -368,8 +468,8 @@
 
     <hr>
 
-    <div class="release minor">
-        <h2>0.74.3</h2>
+    <div class="release minor" id="v0.74.3">
+        <h2 class="release-heading"><a class="release-anchor" href="#v0.74.3">0.74.3</a></h2>
         <ul>
             <li class="deps">Upgraded to Netty 4.1.100</li>
             <li class="fix">When an exception is encountered when writing a jax-rs response entity and the response has not started,
@@ -377,15 +477,15 @@
         </ul>
     </div>
 
-    <div class="release minor">
-        <h2>0.74.1</h2>
+    <div class="release minor" id="v0.74.1">
+        <h2 class="release-heading"><a class="release-anchor" href="#v0.74.1">0.74.1</a></h2>
         <ul>
             <li class="deps">Upgraded to Netty 4.1.95</li>
             <li class="fix">Implemented the JAX-RS Response <code>readEntity</code> and buffer options. Closing the response no longer throws an exception.</li>
         </ul>
     </div>
-    <div class="release major">
-        <h2>0.74.0</h2>
+    <div class="release major" id="v0.74.0">
+        <h2 class="release-heading"><a class="release-anchor" href="#v0.74.0">0.74.0</a></h2>
         <ul>
             <li class="deps">Upgraded to Netty 4.1.94</li>
             <li class="fix">Bug fix: when no rate limiters are specified, <code>MuServer.rateLimiters()</code>
@@ -395,23 +495,23 @@
             causing queries from UIs such as swagger to add commas into array values rather than having multiple parameters.</li>
         </ul>
     </div>
-    <div class="release minor">
-        <h2>0.73.6</h2>
+    <div class="release minor" id="v0.73.6">
+        <h2 class="release-heading"><a class="release-anchor" href="#v0.73.6">0.73.6</a></h2>
         <ul>
             <li class="deps">Upgraded to Netty 4.1.91</li>
             <li class="fix">Bug fix: when a request path starts with <code>//</code> the request gets redirected with
                 the extra slash removed, rather than the previous behaviour where the first path segment would be ignored.</li>
         </ul>
     </div>
-    <div class="release minor">
-        <h2>0.73.5</h2>
+    <div class="release minor" id="v0.73.5">
+        <h2 class="release-heading"><a class="release-anchor" href="#v0.73.5">0.73.5</a></h2>
         <ul>
             <li class="deps">Upgraded to Netty 4.1.89</li>
         </ul>
     </div>
 
-    <div class="release minor">
-        <h2>0.73.4</h2>
+    <div class="release minor" id="v0.73.4">
+        <h2 class="release-heading"><a class="release-anchor" href="#v0.73.4">0.73.4</a></h2>
         <ul>
             <li class="deps">Downgraded to Netty 4.1.84 (from 4.1.87) because versions 4.1.85 to 4.1.87 have a memory
             leak issue when reading request bodies.</li>
@@ -419,8 +519,8 @@
         </ul>
     </div>
 
-    <div class="release minor">
-        <h2>0.73.3</h2>
+    <div class="release minor" id="v0.73.3">
+        <h2 class="release-heading"><a class="release-anchor" href="#v0.73.3">0.73.3</a></h2>
         <ul>
             <li class="added">Added getters to <code>MuServerBuilder</code>, <code>ResourceHandlerBuilder</code>,
             <code>RestHandlerBuilder</code> and <code>Http2ConfigBuilder</code> to expose the current values
@@ -430,15 +530,15 @@
 
     <p class="note">0.73.1 and 0.73.2 were not released.</p>
 
-    <div class="release major">
-        <h2>0.73.0</h2>
+    <div class="release major" id="v0.73.0">
+        <h2 class="release-heading"><a class="release-anchor" href="#v0.73.0">0.73.0</a></h2>
         <ul>
             <li class="added">Add support for <a href="/client-certs">Mutual TLS / client certificates</a></li>
         </ul>
     </div>
 
-    <div class="release minor">
-        <h2>0.72.22</h2>
+    <div class="release minor" id="v0.72.22">
+        <h2 class="release-heading"><a class="release-anchor" href="#v0.72.22">0.72.22</a></h2>
         <ul>
             <li class="added">Pre-constructed KeyStore objects can now be passed to the HttpsBuilder</li>
             <li class="added">When reading binary data from a web socket, the binary data can optionally be held and
@@ -449,15 +549,15 @@
         </ul>
     </div>
 
-    <div class="release minor">
-        <h2>0.72.21</h2>
+    <div class="release minor" id="v0.72.21">
+        <h2 class="release-heading"><a class="release-anchor" href="#v0.72.21">0.72.21</a></h2>
         <ul>
             <li class="deps">Updated to Netty 4.1.86</li>
         </ul>
     </div>
 
-    <div class="release minor">
-        <h2>0.72.20</h2>
+    <div class="release minor" id="v0.72.20">
+        <h2 class="release-heading"><a class="release-anchor" href="#v0.72.20">0.72.20</a></h2>
         <ul>
             <li class="fix">mp4 files are now served with the <code>video/mp4</code> content type</li>
             <li class="added"><code>jakarta.ws.rs.ext.RuntimeDelegate.createHeaderDelegate</code> now supports
@@ -469,8 +569,8 @@
 
     <p class="note">There were no releases for 0.72.18, and 0.72.19.</p>
 
-    <div class="release minor">
-        <h2>0.72.17</h2>
+    <div class="release minor" id="v0.72.17">
+        <h2 class="release-heading"><a class="release-anchor" href="#v0.72.17">0.72.17</a></h2>
         <ul>
             <li class="fix">Unmatched CORS responses will no longer put "null" as an allowed origin as per
                 <a href="https://w3c.github.io/webappsec-cors-for-developers/#avoid-returning-access-control-allow-origin-null">https://w3c.github.io/webappsec-cors-for-developers/#avoid-returning-access-control-allow-origin-null</a></li>
@@ -478,22 +578,22 @@
         </ul>
     </div>
 
-    <div class="release minor">
-        <h2>0.72.16</h2>
+    <div class="release minor" id="v0.72.16">
+        <h2 class="release-heading"><a class="release-anchor" href="#v0.72.16">0.72.16</a></h2>
         <ul>
             <li class="deps">Updated to Netty 4.1.78</li>
         </ul>
     </div>
 
-    <div class="release minor">
-        <h2>0.72.15</h2>
+    <div class="release minor" id="v0.72.15">
+        <h2 class="release-heading"><a class="release-anchor" href="#v0.72.15">0.72.15</a></h2>
         <ul>
             <li class="fix">Fixed <code>UriBuilder.uri()</code> method to handle encoded paths and query string values</li>
         </ul>
     </div>
 
-    <div class="release minor">
-        <h2>0.72.14</h2>
+    <div class="release minor" id="v0.72.14">
+        <h2 class="release-heading"><a class="release-anchor" href="#v0.72.14">0.72.14</a></h2>
         <ul>
             <li class="added">Added support for converting comma-separated <code>X-Forwarded-*</code> headers to
                 <code>Forwarded</code> headers</li>
@@ -501,30 +601,30 @@
         </ul>
     </div>
 
-    <div class="release minor">
-        <h2>0.72.13</h2>
+    <div class="release minor" id="v0.72.13">
+        <h2 class="release-heading"><a class="release-anchor" href="#v0.72.13">0.72.13</a></h2>
         <ul>
             <li class="fix">Bug fix: When a write fails, don't try to update the response state if the response state is already in an end state.</li>
         </ul>
     </div>
 
-    <div class="release minor">
-        <h2>0.72.12</h2>
+    <div class="release minor" id="v0.72.12">
+        <h2 class="release-heading"><a class="release-anchor" href="#v0.72.12">0.72.12</a></h2>
         <ul>
             <li class="fix">Bug fix: Made it so unhandled exception handlers that stream custom errors get closed when completed.</li>
         </ul>
     </div>
 
-    <div class="release minor">
-        <h2>0.72.11</h2>
+    <div class="release minor" id="v0.72.11">
+        <h2 class="release-heading"><a class="release-anchor" href="#v0.72.11">0.72.11</a></h2>
         <ul>
             <li class="fix">Bug fix: Made async SSE publishers (which includes jax-rs <code>SseSinks</code>) detect
                 client disconnections and mark the publisher as closed</li>
         </ul>
     </div>
 
-    <div class="release minor">
-        <h2>0.72.10</h2>
+    <div class="release minor" id="v0.72.10">
+        <h2 class="release-heading"><a class="release-anchor" href="#v0.72.10">0.72.10</a></h2>
         <ul>
             <li class="added">Allow collections of <code>UploadedFile</code> objects in JAX-RS method parameters to be
                 wildcard types, primarily to make it work with Kotlin lists</li>
@@ -533,28 +633,28 @@
         </ul>
     </div>
 
-    <div class="release minor">
-        <h2>0.72.9</h2>
+    <div class="release minor" id="v0.72.9">
+        <h2 class="release-heading"><a class="release-anchor" href="#v0.72.9">0.72.9</a></h2>
         <ul>
             <li class="deps">Updated to Netty 4.1.75</li>
         </ul>
     </div>
 
-    <div class="release minor">
-        <h2>0.72.8</h2>
+    <div class="release minor" id="v0.72.8">
+        <h2 class="release-heading"><a class="release-anchor" href="#v0.72.8">0.72.8</a></h2>
         <ul>
             <li class="added">Added <code>MuServerBuilder.withExceptionHandler</code> to allow custom exception handlers</li>
         </ul>
     </div>
-    <div class="release minor">
-        <h2>0.72.7</h2>
+    <div class="release minor" id="v0.72.7">
+        <h2 class="release-heading"><a class="release-anchor" href="#v0.72.7">0.72.7</a></h2>
         <ul>
             <li class="added">Added ability to send partial websocket messages</li>
         </ul>
     </div>
 
-    <div class="release minor">
-        <h2>0.72.6</h2>
+    <div class="release minor" id="v0.72.6">
+        <h2 class="release-heading"><a class="release-anchor" href="#v0.72.6">0.72.6</a></h2>
         <ul>
             <li>In web socket listeners, Continuation frames are no longer aggregated; instead an <code>isLast</code>
                 parameter has been added to <code>onBinary</code> and <code>onText</code>. This is non-breaking to
@@ -565,8 +665,8 @@
         </ul>
     </div>
 
-    <div class="release minor">
-        <h2>0.72.5</h2>
+    <div class="release minor" id="v0.72.5">
+        <h2 class="release-heading"><a class="release-anchor" href="#v0.72.5">0.72.5</a></h2>
         <ul>
             <li><a href="https://github.com/3redronin/mu-server/issues/36">#36</a> Allow JAX-RS resources to implement interfaces with default implementations</li>
             <li class="fix">Fixed bug where a request body input stream closed twice would cause an exception</li>
@@ -574,8 +674,8 @@
     </div>
 
 
-    <div class="release minor">
-        <h2>0.72.4</h2>
+    <div class="release minor" id="v0.72.4">
+        <h2 class="release-heading"><a class="release-anchor" href="#v0.72.4">0.72.4</a></h2>
         <ul>
             <li class="fix">Fixed bug where request bodies that exceeded the maximum upload limit could leak memory for a time</li>
             <li>Improved the back pressure of HTTP/2 connections when request bodies are being uploaded</li>
@@ -584,16 +684,16 @@
 
     <p class="note">There was no release for 0.72.3.</p>
 
-    <div class="release minor">
-        <h2>0.72.2</h2>
+    <div class="release minor" id="v0.72.2">
+        <h2 class="release-heading"><a class="release-anchor" href="#v0.72.2">0.72.2</a></h2>
         <ul>
             <li class="fix">HEAD responses that set no content-length no longer set a content-length of 0 (there should
                 be no content-length header)</li>
         </ul>
     </div>
 
-    <div class="release major">
-        <h2>0.72.1</h2>
+    <div class="release major" id="v0.72.1">
+        <h2 class="release-heading"><a class="release-anchor" href="#v0.72.1">0.72.1</a></h2>
         <p class="note">Versions from 0.71.4 to 0.72.0 included a change to enabled OCSP staping which was subsequently
             rolled back due to <a href="https://github.com/3redronin/mu-server/pull/34#issuecomment-997322911">the
                 reasons described here</a> so this 0.72.1 release includes changes from 0.71.x.</p>
@@ -608,15 +708,15 @@
     </div>
 
 
-    <div class="release minor">
-        <h2>0.71.3</h2>
+    <div class="release minor" id="v0.71.3">
+        <h2 class="release-heading"><a class="release-anchor" href="#v0.71.3">0.71.3</a></h2>
         <ul>
             <li class="deps">Updated to Netty 4.1.71</li>
         </ul>
     </div>
 
-    <div class="release minor">
-        <h2>0.71.2</h2>
+    <div class="release minor" id="v0.71.2">
+        <h2 class="release-heading"><a class="release-anchor" href="#v0.71.2">0.71.2</a></h2>
         <ul>
             <li class="added">Added support for JAX-RS <code>Response.variant</code> and
                 <code>Response.variants</code>. Also, <code>selectVariant</code> allows <code>qs</code> parameters to
@@ -626,16 +726,16 @@
         </ul>
     </div>
 
-    <div class="release minor">
-        <h2>0.71.1</h2>
+    <div class="release minor" id="v0.71.1">
+        <h2 class="release-heading"><a class="release-anchor" href="#v0.71.1">0.71.1</a></h2>
         <ul>
             <li class="fix">Bug fix: in JAX-RS, when <code>SPLIT_ON_COMMA</code> is on and an empty string is given an empty list
                 (rather than a list with an empty string) is returned for collection parameters</li>
         </ul>
     </div>
 
-    <div class="release major">
-        <h2 id="0.71.0">0.71.0</h2>
+    <div class="release major" id="v0.71.0">
+        <h2 class="release-heading" id="0.71.0"><a class="release-anchor" href="#v0.71.0">0.71.0</a></h2>
         <ul>
             <li>Older versions of Mu Server's JAX-RS implementation automatically split string collection query string
             parameter values on commas, which while convenient was against the spec. This behaviour is now optional but
@@ -657,8 +757,8 @@
     <p class="note">The 0.70.x releases contained a breaking change that was reverted in 0.71.0 and so these
     releases should be skipped and ignored.</p>
 
-    <div class="release minor">
-        <h2>0.62.5</h2>
+    <div class="release minor" id="v0.62.5">
+        <h2 class="release-heading"><a class="release-anchor" href="#v0.62.5">0.62.5</a></h2>
         <ul>
             <li class="added">Allow JAX-RS request precondition evaluation</li>
             <li class="added">JAX-RS Content negotiation now supported</li>
@@ -668,16 +768,16 @@
 
     <p class="note">0.62.3 and 0.62.4 were not released.</p>
 
-    <div class="release minor">
-        <h2>0.62.2</h2>
+    <div class="release minor" id="v0.62.2">
+        <h2 class="release-heading"><a class="release-anchor" href="#v0.62.2">0.62.2</a></h2>
         <ul>
             <li class="added">JAX-RS entity reader interceptors can now be registered on a
                 <code>RestHandlerBuilder</code></li>
         </ul>
     </div>
 
-    <div class="release major">
-        <h2>0.62.1</h2>
+    <div class="release major" id="v0.62.1">
+        <h2 class="release-heading"><a class="release-anchor" href="#v0.62.1">0.62.1</a></h2>
         <p class="note">This includes changes in the 0.62.0 release which was not published.</p>
         <ul>
             <li class="added">In OpenAPI JSON, custom schemas are now exposed in the <code>/components/schemas</code>
@@ -687,8 +787,8 @@
         </ul>
     </div>
 
-    <div class="release minor">
-        <h2>0.61.15</h2>
+    <div class="release minor" id="v0.61.15">
+        <h2 class="release-heading"><a class="release-anchor" href="#v0.61.15">0.61.15</a></h2>
         <ul>
             <li>Allow JAX-RS filters to retrieve the Mu Request and <code>ResourceInfo</code> objects from properties.
             Example: <code>ResourceInfo resourceInfo = (ResourceInfo) requestContext.getProperty(MuRuntimeDelegate.RESOURCE_INFO_PROPERTY);</code>
@@ -699,8 +799,8 @@
 
     <p class="note">0.61.14 was not released</p>
 
-    <div class="release minor">
-        <h2>0.61.13</h2>
+    <div class="release minor" id="v0.61.13">
+        <h2 class="release-heading"><a class="release-anchor" href="#v0.61.13">0.61.13</a></h2>
         <ul>
             <li class="fix">Made it so when downloading a fixed-size file from the file system, but the file is being
                 written to, then only the number of bytes that were there when the download was started will be sent
@@ -708,8 +808,8 @@
         </ul>
     </div>
 
-    <div class="release minor">
-        <h2>0.61.12</h2>
+    <div class="release minor" id="v0.61.12">
+        <h2 class="release-heading"><a class="release-anchor" href="#v0.61.12">0.61.12</a></h2>
         <ul>
             <li class="deps">Upgraded to Netty 4.1.66</li>
         </ul>
@@ -717,15 +817,15 @@
 
     <p class="note">0.61.11 was not released</p>
 
-    <div class="release minor">
-        <h2>0.61.10</h2>
+    <div class="release minor" id="v0.61.10">
+        <h2 class="release-heading"><a class="release-anchor" href="#v0.61.10">0.61.10</a></h2>
         <ul>
             <li class="fix">Fix: fixed bug where in certain issues HTTP2 data frames could be out of order</li>
         </ul>
     </div>
 
-    <div class="release minor">
-        <h2>0.61.9</h2>
+    <div class="release minor" id="v0.61.9">
+        <h2 class="release-heading"><a class="release-anchor" href="#v0.61.9">0.61.9</a></h2>
         <ul>
             <li class="fix">Fixed bug in HTTP2 back pressure handling where frames waiting in a queue when writing is
             paused due to back pressure could be skipped.</li>
@@ -734,8 +834,8 @@
 
     <p class="note">0.61.6, 0.61.7 and 0.61.8 were not released.</p>
 
-    <div class="release minor">
-        <h2>0.61.5</h2>
+    <div class="release minor" id="v0.61.5">
+        <h2 class="release-heading"><a class="release-anchor" href="#v0.61.5">0.61.5</a></h2>
         <ul>
             <li class="fix">Fixed bug where during certain HTTP2 back pressure scenarios, the publishing of frames
             may be unduly delayed.</li>
@@ -744,16 +844,16 @@
 
     <p class="note">0.61.4 was not released.</p>
 
-    <div class="release minor">
-        <h2>0.61.3</h2>
+    <div class="release minor" id="v0.61.3">
+        <h2 class="release-heading"><a class="release-anchor" href="#v0.61.3">0.61.3</a></h2>
         <ul>
             <li class="fix">Fixed bug where a 408 Request Timeout may be sent even when a request body is being sent
                 data faster than the request timeout.</li>
         </ul>
     </div>
 
-    <div class="release minor">
-        <h2>0.61.2</h2>
+    <div class="release minor" id="v0.61.2">
+        <h2 class="release-heading"><a class="release-anchor" href="#v0.61.2">0.61.2</a></h2>
         <ul>
             <li class="fix">Fixed the completion state of request bodies which would not be marked as &quot;complete&quot;
             in certain situations.</li>
@@ -761,16 +861,16 @@
         </ul>
     </div>
 
-    <div class="release major">
-        <h2>0.61.1</h2>
+    <div class="release major" id="v0.61.1">
+        <h2 class="release-heading"><a class="release-anchor" href="#v0.61.1">0.61.1</a></h2>
         <p class="note">This includes changes from the unpublished 0.61.0 release</p>
         <ul>
             <li class="fix">Fixed memory leaks when using HTTP2</li>
         </ul>
     </div>
 
-    <div class="release minor">
-        <h2>0.60.8</h2>
+    <div class="release minor" id="v0.60.8">
+        <h2 class="release-heading"><a class="release-anchor" href="#v0.60.8">0.60.8</a></h2>
         <ul>
             <li class="fix">When a JAX-RS filter uses <code>abortWith(Response)</code> an exception mapper is no
                 longer invoked with that Response mapped in a <code>WebApplicationException</code>.</li>
@@ -783,8 +883,8 @@
     <p class="note">0.60.7 was not released.</p>
 
 
-    <div class="release minor">
-        <h2>0.60.6</h2>
+    <div class="release minor" id="v0.60.6">
+        <h2 class="release-heading"><a class="release-anchor" href="#v0.60.6">0.60.6</a></h2>
         <ul>
             <li>Upgraded to Netty 4.1.62</li>
         </ul>
@@ -792,24 +892,24 @@
 
     <p class="note">0.60.5 and 0.60.4 were not released.</p>
 
-    <div class="release minor">
-        <h2>0.60.3</h2>
+    <div class="release minor" id="v0.60.3">
+        <h2 class="release-heading"><a class="release-anchor" href="#v0.60.3">0.60.3</a></h2>
         <ul>
             <li>JAX RS input streams are now closed even if the consumer doesn't. This prevents JAXRS requests that
                 have unclosed input stream readers from hanging.</li>
         </ul>
     </div>
 
-    <div class="release minor">
-        <h2>0.60.2</h2>
+    <div class="release minor" id="v0.60.2">
+        <h2 class="release-heading"><a class="release-anchor" href="#v0.60.2">0.60.2</a></h2>
         <ul>
             <li>Allow fixed-length request body uploads that are greater than around 2.6gb
                 (or to be specific, where the request size is greater than <code>Integer.MAX_VALUE</code> bytes)</li>
         </ul>
     </div>
 
-    <div class="release major">
-        <h2>0.60.1</h2>
+    <div class="release major" id="v0.60.1">
+        <h2 class="release-heading"><a class="release-anchor" href="#v0.60.1">0.60.1</a></h2>
         <p class="note">This includes changes from the unpublished 0.60.0 version.</p>
         <ul>
             <li>Major changes to the way IO is working under the hood to fix several back-pressure related bugs and
@@ -832,30 +932,30 @@
         </ul>
     </div>
 
-    <div class="release minor">
-        <h2>0.56.5</h2>
+    <div class="release minor" id="v0.56.5">
+        <h2 class="release-heading"><a class="release-anchor" href="#v0.56.5">0.56.5</a></h2>
         <ul>
             <li>Rate limit buckets are now exposed in the server interface so you can see how many requests
                 are in progress for each bucket</li>
         </ul>
     </div>
 
-    <div class="release minor">
-        <h2>0.56.4</h2>
+    <div class="release minor" id="v0.56.4">
+        <h2 class="release-heading"><a class="release-anchor" href="#v0.56.4">0.56.4</a></h2>
         <ul>
             <li>Upgraded to Netty 4.1.56</li>
         </ul>
     </div>
 
-    <div class="release minor">
-        <h2>0.56.3</h2>
+    <div class="release minor" id="v0.56.3">
+        <h2 class="release-heading"><a class="release-anchor" href="#v0.56.3">0.56.3</a></h2>
         <ul>
             <li>In JAX-RS, if a sub-resource locator method throws a web application exception, then use that for the client response</li>
         </ul>
     </div>
 
-    <div class="release minor">
-        <h2>0.56.2</h2>
+    <div class="release minor" id="v0.56.2">
+        <h2 class="release-heading"><a class="release-anchor" href="#v0.56.2">0.56.2</a></h2>
         <ul>
             <li>Better cancelling of in-flight requests when idle timeout hits in HTTP 1</li>
         </ul>
@@ -863,22 +963,22 @@
 
     <p class="note">0.56.1 contained changes in test code only.</p>
 
-    <div class="release major">
-        <h2>0.56.0</h2>
+    <div class="release major" id="v0.56.0">
+        <h2 class="release-heading"><a class="release-anchor" href="#v0.56.0">0.56.0</a></h2>
         <ul>
             <li class="fix">Fix: don't send 408s if the full request has been read</li>
         </ul>
     </div>
 
-    <div class="release minor">
-        <h2>0.55.6</h2>
+    <div class="release minor" id="v0.55.6">
+        <h2 class="release-heading"><a class="release-anchor" href="#v0.55.6">0.55.6</a></h2>
         <ul>
             <li class="fix">Fixed bug where PKCS12 certs with no SANs could through a Null pointer exception on startup</li>
         </ul>
     </div>
 
-    <div class="release minor">
-        <h2>0.55.5</h2>
+    <div class="release minor" id="v0.55.5">
+        <h2 class="release-heading"><a class="release-anchor" href="#v0.55.5">0.55.5</a></h2>
         <ul>
             <li class="added">Added support for reading and writing <code>LocalDate</code>, <code>LocalDateTime</code>,
                 <code>LocalTime</code>, <code>OffsetDateTime</code>, <code>OffsetTime</code>, <code>ZonedDateTime</code>
@@ -889,5 +989,125 @@
 
 </div>
 
+<span class="copy-release-status" role="status" aria-live="polite" aria-atomic="true"></span>
+
+<script>
+    var copyReleaseStatus = document.querySelector('.copy-release-status');
+    var statusResetTimer;
+
+    document.querySelectorAll('.release').forEach(function (release) {
+        var heading = release.querySelector('h2');
+        if (!heading || !release.id) {
+            return;
+        }
+
+        var anchor = heading.querySelector('.release-anchor');
+        var releaseVersion = anchor ? anchor.textContent.trim() : heading.textContent.trim();
+        if (!anchor) {
+            anchor = document.createElement('a');
+            anchor.className = 'release-anchor';
+            anchor.href = '#' + release.id;
+            anchor.textContent = releaseVersion;
+            heading.textContent = '';
+            heading.classList.add('release-heading');
+            heading.appendChild(anchor);
+        }
+
+        var button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'copy-release-link';
+        button.setAttribute('data-release-id', release.id);
+        button.setAttribute('data-tooltip', 'Copy link');
+        button.setAttribute('aria-label', 'Copy link to release ' + releaseVersion);
+        button.innerHTML = '<svg class="copy-icon" aria-hidden="true" viewBox="0 0 24 24">' +
+            '<rect x="8" y="8" width="11" height="11" rx="2"></rect>' +
+            '<path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"></path></svg>' +
+            '<svg class="check-icon" aria-hidden="true" viewBox="0 0 24 24">' +
+            '<path d="m5 12 4 4L19 6"></path></svg>';
+
+        heading.appendChild(button);
+    });
+
+    document.querySelectorAll('.copy-release-link').forEach(function (button) {
+        button.addEventListener('mouseenter', function () {
+            resetCopyButton(button);
+        });
+        button.addEventListener('focus', function () {
+            resetCopyButton(button);
+        });
+        button.addEventListener('click', function () {
+            window.clearTimeout(button.copyResetTimer);
+            button.classList.remove('copied');
+            button.classList.remove('suppress-tooltip');
+            button.setAttribute('data-tooltip', 'Copy link');
+            var releaseId = button.getAttribute('data-release-id');
+            var releaseVersion = releaseId.substring(1);
+            var releaseUrl = new URL(window.location.pathname, window.location.origin);
+            releaseUrl.hash = releaseId;
+
+            copyText(releaseUrl.href).then(function () {
+                button.classList.add('copied');
+                button.setAttribute('data-tooltip', 'Copied!');
+                button.setAttribute('aria-label', 'Link copied');
+                announceCopyStatus('Link to release ' + releaseVersion + ' copied');
+                window.clearTimeout(button.copyResetTimer);
+                button.copyResetTimer = window.setTimeout(function () {
+                    button.classList.remove('copied');
+                    button.classList.add('suppress-tooltip');
+                    button.setAttribute('aria-label', 'Copy link to release ' + releaseVersion);
+                }, 1500);
+            }).catch(function () {
+                button.setAttribute('data-tooltip', 'Unable to copy');
+                button.setAttribute('aria-label', 'Unable to copy release link');
+                announceCopyStatus('Unable to copy link to release ' + releaseVersion);
+                window.clearTimeout(button.copyResetTimer);
+                button.copyResetTimer = window.setTimeout(function () {
+                    button.classList.add('suppress-tooltip');
+                    button.setAttribute('aria-label', 'Copy link to release ' + releaseVersion);
+                }, 2000);
+            });
+        });
+    });
+
+    function resetCopyButton(button) {
+        if (button.classList.contains('suppress-tooltip')) {
+            button.setAttribute('data-tooltip', 'Copy link');
+            button.classList.remove('suppress-tooltip');
+        }
+    }
+
+    function announceCopyStatus(message) {
+        window.clearTimeout(statusResetTimer);
+        copyReleaseStatus.textContent = message;
+        statusResetTimer = window.setTimeout(function () {
+            copyReleaseStatus.textContent = '';
+        }, 2000);
+    }
+
+    function copyText(text) {
+        if (navigator.clipboard && window.isSecureContext) {
+            return navigator.clipboard.writeText(text).catch(function () {
+                return copyWithTextArea(text);
+            });
+        }
+
+        return copyWithTextArea(text);
+    }
+
+    function copyWithTextArea(text) {
+        return new Promise(function (resolve, reject) {
+            var textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.setAttribute('readonly', '');
+            textArea.style.position = 'fixed';
+            textArea.style.opacity = '0';
+            document.body.appendChild(textArea);
+            textArea.select();
+            var copied = document.execCommand('copy');
+            document.body.removeChild(textArea);
+            copied ? resolve() : reject(new Error('Copy failed'));
+        });
+    }
+</script>
 
 {% endblock %}
