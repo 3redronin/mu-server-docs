@@ -156,7 +156,7 @@
     The main change is much closer compliance with Jakarta REST 3.1. A typical application with unambiguous resource
     paths and one JSON provider may need no source changes beyond the Java, Jakarta REST, and logging upgrades.
     Applications using custom providers, filters, interceptors, converters, generic resource interfaces, or SSE
-    should check the cases below. The known limitations listed at the end still apply.
+    should check the cases below.
 </p>
 
 <h2>Behaviour changes to test</h2>
@@ -269,7 +269,23 @@
     </tbody>
 </table>
 
+<h3>HTTP/2 completion listeners</h3>
+
+<p>
+    Completion listeners now run after both the request and response have finished. In Mu Server 2,
+    an HTTP/2 response could finish before the request body, causing the listener to observe
+    <code>completedSuccessfully() == false</code> even when the request subsequently completed normally.
+    In <code>3.0.0</code>, a completed upload reports success; a reset or disconnect during the remaining
+    upload reports failure. Check applications that use completion listeners for metrics or cleanup.
+</p>
+
 <h3>Resource matching, parameters, and locations</h3>
+
+<p>
+    Root resources annotated with <code>@Path("")</code> or <code>@Path("/")</code> now match method subpaths.
+    For example, a <code>@GET @Path("children/{id}")</code> method can handle <code>/children/123</code>;
+    Mu Server 2 returned <code>404</code> for this route.
+</p>
 
 <table class="comparison">
     <thead>
