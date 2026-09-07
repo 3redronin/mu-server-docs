@@ -41,7 +41,7 @@
     <p>
         These notes describe the changes from Mu Server <code>2.4.2</code> to <code>3.0.0</code>.
         If you use an older 2.x release, also check the intervening 2.x release notes.
-        See the <a href="#known-limitations">known limitations</a> when testing your application.
+        Check the behavior changes below when testing your application.
     </p>
 </div>
 
@@ -636,6 +636,30 @@
     order, and reader/writer interceptors in ascending order.
 </p>
 
+<h3 id="writer-interceptor-lifecycle">Writer interceptors wrap serialization</h3>
+
+<p>
+    In Mu Server 3.0.0, the final <code>WriterInterceptorContext.proceed()</code> call invokes the message body
+    writer before returning. In 2.x, the body was written after all writer interceptors had returned.
+    Code after <code>proceed()</code> now runs after serialization, and exceptions from the writer propagate
+    through the interceptors before reaching exception mapping.
+</p>
+
+<p>
+    Set the entity, media type, annotations, and output stream before calling <code>proceed()</code>.
+    Changing the entity after that call no longer changes the serialized body. Code that finishes compression,
+    inspects captured bytes, or appends output can run after <code>proceed()</code>; Mu closes the final
+    replacement stream after the interceptors return. Headers must still be set before output commits the response.
+</p>
+
+<p>
+    An interceptor that returns without calling <code>proceed()</code> now stops the chain: later interceptors
+    and the body writer do not run. Add that call if your interceptor expects normal serialization to continue.
+    Mu also avoids calculating <code>Content-Length</code> from the original entity when a writer interceptor runs,
+    since the interceptor can change the bytes sent. Applications that set this header themselves must supply
+    the final transmitted length.
+</p>
+
 <h3>Responses, cookies, and variants</h3>
 
 <table class="comparison">
@@ -930,20 +954,6 @@ CompletionStage&lt;SeBootstrap.Instance&gt; started =
     </tr>
     </tbody>
 </table>
-
-<h2 id="known-limitations">Known limitations</h2>
-
-<p>
-    The following limitation also exists in Mu Server 2.x and remains relevant when upgrading to 3.0.0:
-</p>
-
-<ul>
-    <li>
-        Writer interceptor priority is now honored, but serialization still occurs after the interceptor chain
-        returns. Code after <code>WriterInterceptorContext.proceed()</code> therefore runs before the body is written.
-        This existing 2.x limitation affects interceptors that finalize compression or inspect serialized bytes.
-    </li>
-</ul>
 
 <h2>Try it with your 2.x application</h2>
 
