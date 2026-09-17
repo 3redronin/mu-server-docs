@@ -37,7 +37,7 @@
 {% block main %}
 
 <div class="upgrade-summary">
-    <p><strong>Upgrading to Mu Server 3.0.0</strong></p>
+    <p><strong>Upgrading to Mu Server 3</strong></p>
     <p>
         These notes describe the changes from Mu Server <code>2.4.2</code> to <code>3.0.0</code>.
         If you use an older 2.x release, also check the intervening 2.x release notes.
@@ -58,6 +58,8 @@
         <strong>
             Public APIs now have <a href="https://jspecify.dev/">JSpecify</a> nullness annotations.
         </strong>
+        If you use Kotlin or otherwise use null-checking builds, you may have compile errors or warnings where
+        a null value is being passed to a function that does not allow nulls, which will require fixing.
     </li>
 </ul>
 
@@ -67,7 +69,7 @@
     <code>EntityPart</code>, standard <code>List&lt;EntityPart&gt;</code> multipart providers,
     <code>Feature</code>/<code>DynamicFeature</code> service loading, per-request resource injection,
     and bean validation are unsupported. See the
-    <a href="https://github.com/3redronin/mu-server/blob/mu-server-3.0.0/src/main/java/io/muserver/rest/README.md">support matrix</a>
+    <a href="https://github.com/3redronin/mu-server/blob/mu-server-0.0.3.7/src/main/java/io/muserver/rest/README.md">support matrix</a>
     for the complete list.
 </p>
 
@@ -91,11 +93,11 @@
 <pre><code class="language-xml">&lt;dependency&gt;
     &lt;groupId&gt;io.muserver&lt;/groupId&gt;
     &lt;artifactId&gt;mu-server&lt;/artifactId&gt;
-    &lt;version&gt;0.0.3.6&lt;/version&gt;
+    &lt;version&gt;0.0.3.7&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 
 <p>
-    Use this prerelease to test your application against the <code>3.0.0</code> changes described below.
+    Use this prerelease to test your application against the <code>3.x</code> changes described below.
 </p>
 
 <table class="comparison">
@@ -224,7 +226,7 @@
 <h3>Failed asynchronous resource results</h3>
 
 <p>
-    Mu Server 3.0.0 handles exceptionally completed <code>CompletionStage</code> results through the same exception-mapping
+    Mu Server 3 handles exceptionally completed <code>CompletionStage</code> results through the same exception-mapping
     policy as synchronous resource failures, then completes the HTTP response. In 2.x these requests could remain
     pending until a timeout or disconnect, even when the returned future had already failed.
 </p>
@@ -275,7 +277,7 @@
     Completion listeners now run after both the request and response have finished. In Mu Server 2,
     an HTTP/2 response could finish before the request body, causing the listener to observe
     <code>completedSuccessfully() == false</code> even when the request subsequently completed normally.
-    In <code>3.0.0</code>, a completed upload reports success; a reset or disconnect during the remaining
+    In <code>3.x</code>, a completed upload reports success; a reset or disconnect during the remaining
     upload reports failure. Check applications that use completion listeners for metrics or cleanup.
 </p>
 
@@ -655,7 +657,7 @@
 <h3 id="writer-interceptor-lifecycle">Writer interceptors wrap serialization</h3>
 
 <p>
-    In Mu Server 3.0.0, the final <code>WriterInterceptorContext.proceed()</code> call invokes the message body
+    In Mu Server 3, the final <code>WriterInterceptorContext.proceed()</code> call invokes the message body
     writer before returning. In 2.x, the body was written after all writer interceptors had returned.
     Code after <code>proceed()</code> now runs after serialization, and exceptions from the writer propagate
     through the interceptors before reaching exception mapping.
@@ -984,7 +986,7 @@ CompletionStage&lt;SeBootstrap.Instance&gt; started =
     Please report a regression—or a Jakarta REST behaviour you expect but do not see—on the
     <a href="https://github.com/3redronin/mu-server/issues">issue tracker</a>.
     You can also
-    <a href="https://github.com/3redronin/mu-server/compare/mu-server-2.4.2..mu-server-3.0.0">compare the 2.4.2 and 3.0.0 source trees</a>.
+    <a href="https://github.com/3redronin/mu-server/compare/mu-server-2.4.2..mu-server-0.0.3.7">compare the 2.4.2 and 3.x source trees</a>.
 </p>
 
 {% endblock %}
