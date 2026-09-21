@@ -1,94 +1,35 @@
 {% extends "template.html" %}
 {% block head %}
 <style>
-    .upgrade-summary {
-        background: #eff6ff;
-        border: 1px solid #bfdbfe;
-        border-radius: 10px;
-        padding: 16px 18px;
-    }
-
-    .upgrade-summary p:first-child {
-        margin-top: 0;
-    }
-
-    .upgrade-summary p:last-child {
-        margin-bottom: 0;
-    }
-
     .comparison {
         display: block;
         overflow-x: auto;
     }
-
-    .comparison th:first-child,
-    .comparison td:first-child {
-        min-width: 20rem;
-        width: 44%;
-    }
-
-    .comparison th:not(:first-child),
-    .comparison td:not(:first-child) {
-        min-width: 12rem;
-    }
-
 </style>
 {% endblock %}
 {% block main %}
 
-<div class="upgrade-summary">
-    <p><strong>Upgrading to Mu Server 3</strong></p>
-    <p>
-        These notes describe the changes from Mu Server <code>2.4.2</code> to <code>3.0.0</code>.
-        If you use an older 2.x release, also check the intervening 2.x release notes.
-        Check the behavior changes below when testing your application.
-    </p>
-</div>
+<p>Mu Server 3 upgrades to Jakarta REST 3.1 and fixes a number of JAX-RS compatibility issues.
+    These notes cover the changes from <code>2.4.2</code> to <code>3.0.0</code>. If you are upgrading
+    from an older 2.x version, see the <a href="/changelog">changelog</a> for the changes before 2.4.2.</p>
 
-<h2>The headlines</h2>
+<h2>Upgrading from 2.x</h2>
 
 <ul>
-    <li><strong>The minimum Java version changes from 8 to 11.</strong></li>
-    <li>
-        <strong>
-            Jakarta REST is upgraded from 3.0 to 3.1, with substantial improvements to specification compliance.
-        </strong>
-    </li>
-    <li>
-        <strong>
-            Public APIs now have <a href="https://jspecify.dev/">JSpecify</a> nullness annotations.
-        </strong>
-        If you use Kotlin or otherwise use null-checking builds, you may have compile errors or warnings where
-        a null value is being passed to a function that does not allow nulls, which will require fixing.
-    </li>
+    <li><strong>Java 11 or later is now required</strong>, up from Java 8.</li>
+    <li>Jakarta REST is upgraded from 3.0 to
+        <a href="https://jakarta.ee/specifications/restful-ws/3.1/">3.1</a>. If you manage the Jakarta REST API
+        dependency separately, update it to 3.1.</li>
+    <li>SLF4J is upgraded from 1.7 to 2.0. You will need an SLF4J 2.x logging provider, as the old 1.7 bindings
+        are not discovered by SLF4J 2's service-provider mechanism. Check that your application still logs on startup.</li>
+    <li>Public APIs now have <a href="https://jspecify.dev/">JSpecify</a> nullness annotations.
+        If you use Kotlin or a null-checking build, you may need to fix calls that pass null where it is not allowed.
+        These annotations do not change JVM method descriptors.</li>
+    <li>The unused public <code>io.muserver.Toggles</code> class has been removed. Mu Server itself did not use it,
+        so this is not expected to affect applications.</li>
 </ul>
 
-<p>
-    <strong>Supported scope:</strong> Mu Server remains a server implementation with explicitly registered singleton
-    resources and providers. It does not implement the entire Jakarta REST platform. In particular,
-    <code>EntityPart</code>, standard <code>List&lt;EntityPart&gt;</code> multipart providers,
-    <code>Feature</code>/<code>DynamicFeature</code> service loading, per-request resource injection,
-    and bean validation are unsupported. See the
-    <a href="https://github.com/3redronin/mu-server/blob/mu-server-0.0.3.7/src/main/java/io/muserver/rest/README.md">support matrix</a>
-    for the complete list.
-</p>
-
-<h2>What you need to change</h2>
-
-<ol>
-    <li>Use Java 11 or later and update any explicitly managed Jakarta REST API dependency to 3.1.</li>
-    <li>Use an SLF4J 2.x logging provider and check that application startup still produces logs.</li>
-    <li>Check clients that parse REST error bodies: the default format is now problem-details JSON.</li>
-    <li>Exercise custom providers, URI construction, filters, matrix parameters, and asynchronous endpoints used by your application.</li>
-    <li>Check code that inspects the boolean returned by graceful shutdown.</li>
-</ol>
-
-<h3>Try the prerelease</h3>
-
-<p>
-    The Maven coordinates and Java package names are unchanged. To try Mu Server 3 before the <code>3.0.0</code>
-    release, use the latest prerelease, <code>0.0.3.6</code>:
-</p>
+<p>The Maven coordinates and Java package names are unchanged. To try the prerelease, use:</p>
 
 <pre><code class="language-xml">&lt;dependency&gt;
     &lt;groupId&gt;io.muserver&lt;/groupId&gt;
@@ -96,72 +37,27 @@
     &lt;version&gt;0.0.3.7&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 
-<p>
-    Use this prerelease to test your application against the <code>3.x</code> changes described below.
-</p>
+<p>A typical application with unambiguous resource paths and one JSON provider may need no source changes beyond
+    the dependency and Java upgrades. The default REST error response is now JSON, so check any clients that read
+    error bodies. If you use custom providers, filters, interceptors, converters, generic resource interfaces,
+    URI building, matrix parameters, async endpoints, or SSE, see the relevant changes below. Also check any code
+    that uses the boolean returned by graceful shutdown.</p>
 
-<table class="comparison">
-    <thead>
-    <tr>
-        <th>Upgrade requirement</th>
-        <th>Mu Server 2</th>
-        <th>Mu Server 3</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-        <td><strong>Java</strong></td>
-        <td>Java 8 or later</td>
-        <td>Java 11 or later</td>
-    </tr>
-    <tr>
-        <td><strong>Jakarta REST API</strong></td>
-        <td>Jakarta REST 3.0</td>
-        <td><a href="https://jakarta.ee/specifications/restful-ws/3.1/">Jakarta REST 3.1</a></td>
-    </tr>
-    <tr>
-        <td><strong>Logging API</strong></td>
-        <td>SLF4J 1.7</td>
-        <td>
-            SLF4J 2.0. Use an SLF4J 2.x provider; SLF4J 1.7 bindings are not discovered by SLF4J 2's
-            service-provider mechanism.
-        </td>
-    </tr>
-    <tr>
-        <td><strong>Nullness metadata</strong></td>
-        <td>No API-wide nullness annotation contract</td>
-        <td>
-            <a href="https://jspecify.dev/">JSpecify</a> annotations across the public APIs. JVM method descriptors
-            are unchanged, but strict static analysis and Kotlin may now identify unsafe calls.
-        </td>
-    </tr>
-    </tbody>
-</table>
+<h2>Jakarta REST support</h2>
 
-<p>
-    For completeness, the unused public <code>io.muserver.Toggles</code> class has been removed. It was not used by
-    Mu Server itself and is not expected to affect applications.
-</p>
+<p>Mu Server 3 follows the Jakarta REST specification more closely, including cases where 2.x behaved differently
+    from other implementations. The changes are tested with Mu Server's regression tests and a server-side test
+    harness based on the Jakarta REST 3.1 Technology Compatibility Kit (TCK).
+    Mu Server is not certified, but passes all TCK tests for the features it declares support for.</p>
 
-<h2>Why Jakarta REST compliance matters</h2>
+<p>As in 2.x, Mu Server implements a subset of Jakarta REST, with explicitly registered singleton resources and
+    providers. It does not support <code>EntityPart</code>, the standard <code>List&lt;EntityPart&gt;</code> multipart
+    providers, <code>Feature</code>/<code>DynamicFeature</code> service loading, per-request resource injection,
+    or bean validation. See the
+    <a href="https://github.com/3redronin/mu-server/blob/mu-server-0.0.3.7/src/main/java/io/muserver/rest/README.md">Mu Server spec implementation page</a>
+    for the full list.</p>
 
-<p>
-    The goal of the compliance work is predictable, portable behaviour. Resource classes, providers, filters, and
-    interceptors written to the Jakarta REST specification should produce fewer surprises when moved between
-    implementations, including in edge cases where Mu Server 2.x had its own behaviour. The compatibility work uses
-    a curated server-side harness based on the Jakarta REST 3.1 Technology Compatibility Kit (TCK), together with
-    Mu regression tests. The harness tracks unsupported features, tests blocked by unsupported fixture prerequisites,
-    and known deviations separately. This is not a claim of full TCK conformance or certification.
-</p>
-
-<p>
-    The main change is much closer compliance with Jakarta REST 3.1. A typical application with unambiguous resource
-    paths and one JSON provider may need no source changes beyond the Java, Jakarta REST, and logging upgrades.
-    Applications using custom providers, filters, interceptors, converters, generic resource interfaces, or SSE
-    should check the cases below.
-</p>
-
-<h2>Behaviour changes to test</h2>
+<h2>Behaviour changes</h2>
 
 <h3>REST exception responses</h3>
 
@@ -171,64 +67,29 @@
     original response.
 </p>
 
-<table class="comparison">
-    <thead>
-    <tr>
-        <th>Change</th>
-        <th>Mu Server 2</th>
-        <th>Mu Server 3</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-        <td>
-            <strong>Unhandled resource exception</strong><br>
-            A resource throws <code>new IllegalStateException("database path: /secret")</code>.
-        </td>
-        <td><code>500 Internal Server Error</code> using Mu Server's standard HTML error page.</td>
-        <td>
-            <code>500 Internal Server Error</code> with <code>application/problem+json</code>,
-            <code>Cache-Control: no-store</code>, a unique <code>urn:uuid:</code> instance, and the generic detail
-            <code>An unexpected error occurred</code>. The exception and instance ID are logged, but the exception
-            message is not exposed to the client.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <strong>Malformed <code>Accept</code> header</strong><br>
-            Send <code>Accept: text</code>.
-        </td>
-        <td><code>400 Bad Request</code> using the standard error response.</td>
-        <td><code>400 Bad Request</code> with <code>application/problem+json</code>.</td>
-    </tr>
-    </tbody>
-</table>
+<p>For example, if a resource throws <code>new IllegalStateException("database path: /secret")</code>, the response
+    is still <code>500 Internal Server Error</code>, but the body is now <code>application/problem+json</code>
+    instead of Mu Server's standard HTML error page. It includes the detail <code>An unexpected error occurred</code>
+    and a unique <code>urn:uuid:</code> instance ID, with a <code>Cache-Control: no-store</code> header.
+    The exception and instance ID are logged; the exception message is not sent to the client.</p>
+
+<p>A malformed <code>Accept</code> header, such as <code>Accept: text</code>, still returns
+    <code>400 Bad Request</code>, also with <code>application/problem+json</code> instead of the standard error response.</p>
 
 <p>
-    To restore Mu Server's HTML fallback for otherwise-unmapped exceptions, remove the default mapper:
+    To retain the 2.x behaviour of returning Mu Server's HTML error page for exceptions without an application mapper,
+    remove the default mapper:
 </p>
 
 <pre><code class="language-java">restHandler(resource)
     .removeExceptionMapper(Throwable.class);</code></pre>
 
-<p>
-    To change details such as whether 4xx instance IDs are logged, replace it with a configured mapper. By default,
-    5xx instance IDs are logged and 4xx instance IDs are not.
-</p>
-
-<pre><code class="language-java">restHandler(resource)
-    .addExceptionMapper(
-        Throwable.class,
-        ProblemDetailsExceptionMapperBuilder.problemDetailsExceptionMapper()
-            .withLog4xxProblemDetailsInstanceIds(true)
-            .build());</code></pre>
-
-<h3>Failed asynchronous resource results</h3>
+<h3>Async resource errors</h3>
 
 <p>
-    Mu Server 3 handles exceptionally completed <code>CompletionStage</code> results through the same exception-mapping
-    policy as synchronous resource failures, then completes the HTTP response. In 2.x these requests could remain
-    pending until a timeout or disconnect, even when the returned future had already failed.
+    If a resource returns a <code>CompletionStage</code> that fails, Mu Server now passes the error to the exception
+    mapper and completes the HTTP response, just as it would for a synchronous resource. In 2.x the request could
+    hang until a timeout or disconnect, even though the future had already failed.
 </p>
 
 <p>
@@ -239,37 +100,17 @@
 </p>
 
 <p>
-    Cancellation also follows exception mapping, producing <code>500</code> by default unless an application mapper
-    handles it. Test asynchronous failures and cancellation as well as successful results when upgrading.
+    Cancelled futures also go through exception mapping and return <code>500</code> by default. You can register
+    an exception mapper to change this response. When upgrading, check failed and cancelled futures as well as
+    successful ones.
 </p>
 
 <h3>Graceful shutdown</h3>
 
-<table class="comparison">
-    <thead>
-    <tr>
-        <th>Change</th>
-        <th>Mu Server 2</th>
-        <th>Mu Server 3</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-        <td>
-            <strong><code>MuServer.stop(...)</code> result</strong><br>
-            Gracefully stop a server with an in-flight request, both when the request completes within the timeout
-            and when it does not.
-        </td>
-        <td>
-            Returns <code>false</code> after a clean shutdown and <code>true</code> after timing out.
-        </td>
-        <td>
-            Returns <code>true</code> after a clean shutdown and <code>false</code> when requests do not finish,
-            matching the documented contract.
-        </td>
-    </tr>
-    </tbody>
-</table>
+<p>Fixed the boolean returned by <code>MuServer.stop(...)</code> when stopping gracefully with an in-flight request.
+    It now returns <code>true</code> if the request finishes within the timeout and the server shuts down cleanly,
+    or <code>false</code> if requests do not finish in time. In 2.x these values were reversed.
+    The result now matches the documented behaviour.</p>
 
 <h3>HTTP/2 completion listeners</h3>
 
@@ -283,137 +124,65 @@
 
 <h3>Resource matching, parameters, and locations</h3>
 
-<p>
-    Root resources annotated with <code>@Path("")</code> or <code>@Path("/")</code> now match method subpaths.
-    For example, a <code>@GET @Path("children/{id}")</code> method can handle <code>/children/123</code>;
-    Mu Server 2 returned <code>404</code> for this route.
-</p>
+<p>Several changes have been made to resource matching, parameter handling, and response locations:</p>
 
-<table class="comparison">
-    <thead>
-    <tr>
-        <th>Change</th>
-        <th>Mu Server 2</th>
-        <th>Mu Server 3</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-        <td>
-            <strong>Invalid URI parameter values</strong><br>
-            Given <code>find(@QueryParam("colour") Colour colour)</code>, request
-            <code>?colour=purple</code>.
-        </td>
-        <td><code>400 Bad Request</code></td>
-        <td>
-            <code>400 Bad Request</code> with <code>application/problem+json</code>. If the default
-            <code>Throwable</code> mapper is removed, the underlying Jakarta REST result is
-            <code>404 Not Found</code>.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <strong>Array-valued resource parameters</strong><br>
-            Given <code>find(@QueryParam("tag") String[] tags)</code>, request
-            <code>?tag=one&amp;tag=two</code>.
-        </td>
-        <td>Object-array parameters are not supported.</td>
-        <td><code>tags</code> is <code>["one", "two"]</code>.</td>
-    </tr>
-    <tr>
-        <td>
-            <strong>Non-public resource methods</strong><br>
-            Annotate package-private <code>@GET String hidden()</code>.
-        </td>
-        <td>The method is silently ignored.</td>
-        <td>
-            The method is still ignored, as Jakarta REST exposes public resource methods only, but a startup warning
-            identifies the problem.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <strong>Relative <code>Location</code> values</strong><br>
-            From <code>/app/items/123</code>, return <code>Response.created(URI.create("next"))</code>.
-        </td>
-        <td><code>Location: /app/items/next</code></td>
-        <td>
-            <code>Location: /app/next</code>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <strong>Requests without <code>Content-Type</code></strong><br>
-            Send a request without this header to a resource method with <code>@Consumes("application/json")</code>.
-        </td>
-        <td>The resource method may not match.</td>
-        <td>
-            The absent content type is a wildcard for method matching, whether or not a body is present.
-            Entity readers still use <code>application/octet-stream</code> when the header is absent;
-            send an explicit content type when the reader requires one.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <strong>Repeated path captures</strong><br>
-            Match a path template that captures the same parameter more than once and inject it into a collection.
-        </td>
-        <td>Only one captured value may be retained.</td>
-        <td>
-            All captured values are retained; the capture count also participates in resource ranking.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <strong>Empty path captures and defaults</strong><br>
-            Inject an empty path capture into a parameter with <code>@DefaultValue</code>.
-        </td>
-        <td>An empty capture can be replaced by its <code>@DefaultValue</code>.</td>
-        <td>An empty capture stays empty; only an absent value uses <code>@DefaultValue</code>.</td>
-    </tr>
-    <tr>
-        <td>
-            <strong>Inherited resource declarations</strong><br>
-            Declare a resource annotation or generic entity type on a parent class or interface.
-        </td>
-        <td>The annotation may be missed or the generic type resolved as <code>Object</code>.</td>
-        <td>
-            The annotation and concrete generic type are retained.
-        </td>
-    </tr>
-    </tbody>
-</table>
-
-<p>
-    Collection-valued <code>@QueryParam</code> and <code>@HeaderParam</code> parameters no longer require an explicit
-    collection strategy at startup. The default is <code>CollectionParameterStrategy.NO_TRANSFORM</code>:
-    <code>?tag=one,two</code> supplies one value, while <code>?tag=one&amp;tag=two</code> supplies two.
-    An explicit <code>SPLIT_ON_COMMA</code> setting continues to work and now consistently removes empty split values.
-</p>
-
-<p>
-    Object arrays are supported for <code>@QueryParam</code>, <code>@HeaderParam</code>,
-    <code>@MatrixParam</code>, <code>@FormParam</code>, and <code>@CookieParam</code>. Repeated values become array
-    elements, a missing parameter produces an empty array, and <code>@DefaultValue</code> produces a one-element
-    array. Element conversion uses the same built-in or application <code>ParamConverter</code> as scalar
-    parameters. <code>UploadedFile[]</code> is also supported for multipart uploads.
-</p>
-
-<p>
-    <code>@PathParam</code> arrays and primitive arrays such as <code>int[]</code> are not supported. Cookie arrays
-    use <code>jakarta.ws.rs.core.Cookie[]</code>, not <code>io.muserver.Cookie[]</code>.
-</p>
-
-<p>
-    For URI parameter conversion failures, including unknown enum values, the default mapper preserves the
-    <code>400</code> status and descriptive error used in 2.x. The JSON includes <code>parameter</code> and
-    <code>suppliedValue</code>; for a standard enum it also includes <code>allowedValues</code>.
-</p>
-
-<p>
-    For a bespoke response, Mu Server 3 exposes <code>UriParameterConversionException</code> with the parameter name,
-    supplied value, target type, allowed values when known, and original cause, so it can be mapped directly.
-</p>
+<ul>
+    <li>Fixed a route-matching bug for resource classes with an empty or slash-only class-level path
+        (<code>@Path("")</code> or <code>@Path("/")</code>). On a class with one of these annotations,
+        a <code>@GET @Path("children/{id}")</code> method now handles <code>/children/123</code>.
+        In 2.x, the class-level path failed to match the request, resulting in <code>404</code> before the method was reached.</li>
+    <li>
+        <p>JAX-RS requires <code>404 Not Found</code> for parameter conversion failures such as passing
+        <code>?colour=purple</code> to <code>find(@QueryParam("colour") Colour colour)</code> when
+        <code>purple</code> is not a valid enum value. Mu Server 3 now follows this rule internally.
+        However, the exception mapper enabled by default converts these errors to <code>400 Bad Request</code>,
+        preserving the 2.x status code, with an <code>application/problem+json</code> response body.</p>
+        <p>This status change therefore affects you if you remove the default <code>Throwable</code> mapper or use
+        a custom exception mapper to handle these errors. The underlying exception now carries a <code>404</code>
+        rather than a <code>400</code>, so check which status your mapper returns.</p>
+        <p>The default mapper also preserves the descriptive error used in 2.x. The JSON includes <code>parameter</code>
+        and <code>suppliedValue</code>; for a standard enum it also includes <code>allowedValues</code>.
+        To return your own error response, add a mapper for <code>UriParameterConversionException</code>. It provides
+        the parameter name, supplied value, target type, allowed values when known, and original cause.</p>
+    </li>
+    <li>
+        <p>Object-array parameters are now supported. For example,
+        <code>find(@QueryParam("tag") String[] tags)</code> receives <code>["one", "two"]</code> for
+        <code>?tag=one&amp;tag=two</code>.</p>
+        <p>This applies to <code>@QueryParam</code>, <code>@HeaderParam</code>, <code>@MatrixParam</code>,
+        <code>@FormParam</code>, and <code>@CookieParam</code>. Repeated values become array elements, a missing
+        parameter produces an empty array, and <code>@DefaultValue</code> produces a one-element array.
+        Element conversion uses the same built-in or application <code>ParamConverter</code> as scalar parameters.
+        <code>UploadedFile[]</code> is also supported for multipart uploads.</p>
+        <p><code>@PathParam</code> arrays and primitive arrays such as <code>int[]</code> are not supported.
+        Cookie arrays use <code>jakarta.ws.rs.core.Cookie[]</code>, not <code>io.muserver.Cookie[]</code>.</p>
+    </li>
+    <li>Collection-valued <code>@QueryParam</code> and <code>@HeaderParam</code> parameters no longer require an explicit
+        collection strategy at startup. The default is <code>CollectionParameterStrategy.NO_TRANSFORM</code>:
+        <code>?tag=one,two</code> supplies one value, while <code>?tag=one&amp;tag=two</code> supplies two.
+        An explicit <code>SPLIT_ON_COMMA</code> setting continues to work and now consistently removes empty split values.</li>
+    <li>Non-public resource methods, such as a package-private <code>@GET String hidden()</code>, now produce a
+        startup warning. They are still ignored, as Jakarta REST only exposes public resource methods.</li>
+    <li>Relative <code>Location</code> values are resolved against the base URI. For example, returning
+        <code>Response.created(URI.create("next"))</code> from <code>/app/items/123</code> now gives
+        <code>Location: /app/next</code>, where 2.x gave <code>Location: /app/items/next</code>.
+        <strong>This may cause your REST handlers to return incorrect URLs in responses if they use relative
+        <code>Location</code> values and rely on the 2.x behaviour.</strong></li>
+    <li>A request without <code>Content-Type</code> now uses a wildcard when matching resource methods, whether or
+        not it has a body. In 2.x it could fail to match a method with <code>@Consumes("application/json")</code>.
+        Entity readers still use <code>application/octet-stream</code> when the header is absent, so send an
+        explicit content type if the reader needs one.</li>
+    <li>When a path template captures the same parameter more than once, all values are retained for collection
+        parameters. Previously only one value might be kept. The number of captures also counts when ranking
+        matching resources.</li>
+    <li>An empty path capture now stays empty, even if the parameter has a <code>@DefaultValue</code>.
+        For example, with <code>@Path("/{param:.*}")</code> and a method parameter declared as
+        <code>@DefaultValue("DEFAULT") @PathParam("param") String param</code>, a request to <code>/</code>
+        now supplies <code>""</code>. The <code>.*</code> pattern matches an empty string, so the value is present
+        but empty. In 2.x it could be replaced with <code>"DEFAULT"</code>; now only an absent value uses the default.</li>
+    <li>Resource annotations and concrete generic entity types declared on parent classes or interfaces are now
+        retained. Previously an annotation could be missed, or a generic type resolved as <code>Object</code>.</li>
+</ul>
 
 <h3>Matrix parameters and generated OpenAPI</h3>
 
@@ -453,226 +222,122 @@
     response. Test clients that previously relied on replacement characters for invalid encodings.
 </p>
 
+<p>Some examples of the encoding changes:</p>
+
 <table class="comparison">
     <thead>
     <tr>
-        <th>Change</th>
+        <th>Example</th>
         <th>Mu Server 2</th>
         <th>Mu Server 3</th>
     </tr>
     </thead>
     <tbody>
     <tr>
-        <td>
-            <strong>Writing <code>application/x-www-form-urlencoded</code></strong><br>
-            Write the values <code>blue green</code> and <code>blue+green</code>.
-        </td>
+        <td>Write <code>blue green</code> and <code>blue+green</code> as <code>application/x-www-form-urlencoded</code></td>
         <td><code>blue%20green</code> and <code>blue%2Bgreen</code></td>
-        <td>
-            <code>blue+green</code> and <code>blue%2Bgreen</code>
-        </td>
+        <td><code>blue+green</code> and <code>blue%2Bgreen</code></td>
     </tr>
     <tr>
-        <td>
-            <strong><code>@Encoded @FormParam</code></strong><br>
-            Inject <code>q=blue+green</code> into <code>@Encoded @FormParam("q") String q</code>.
-        </td>
+        <td>Read <code>q=blue+green</code> with <code>@Encoded @FormParam("q") String q</code></td>
         <td><code>blue%20green</code></td>
-        <td>
-            <code>blue+green</code>
-        </td>
+        <td><code>blue+green</code></td>
     </tr>
     <tr>
-        <td>
-            <strong>Reading a plus sign from a path</strong><br>
-            Call decoded <code>UriInfo</code> path access for <code>/cars/blue+green</code>.
-        </td>
+        <td>Read <code>/cars/blue+green</code> with decoded <code>UriInfo</code> path access</td>
         <td><code>cars/blue green</code></td>
-        <td>
-            <code>cars/blue+green</code>
-        </td>
+        <td><code>cars/blue+green</code></td>
     </tr>
     <tr>
-        <td>
-            <strong>Reading matrix parameters</strong><br>
-            Read <code>;colour=blue+green%20car</code>.
-        </td>
+        <td>Read the matrix parameter <code>;colour=blue+green%20car</code></td>
         <td><code>colour=blue green car</code></td>
         <td><code>colour=blue+green car</code></td>
     </tr>
-    <tr>
-        <td>
-            <strong>Building URI components</strong><br>
-            Add the values <code>blue green</code> and <code>blue+green</code> as path or query components.
-        </td>
-        <td>Component-specific encoding is not applied consistently.</td>
-        <td><code>blue%20green</code> and <code>blue%2Bgreen</code></td>
-    </tr>
-    <tr>
-        <td>
-            <strong><code>UriInfo.getAbsolutePath()</code></strong><br>
-            Get the absolute path when the request authority differs from the configured base, or when the path
-            contains an encoded slash such as <code>%2F</code>.
-        </td>
-        <td>The base authority may be used and <code>%2F</code> may be treated as a path delimiter.</td>
-        <td>The request authority and encoded <code>%2F</code> are preserved.</td>
-    </tr>
     </tbody>
 </table>
+
+<p>When building path or query components, <code>blue green</code> and <code>blue+green</code> are now consistently
+    encoded as <code>blue%20green</code> and <code>blue%2Bgreen</code> respectively.</p>
+
+<p><code>UriInfo.getAbsolutePath()</code> now preserves the request authority and encoded slashes such as
+    <code>%2F</code>. Previously it could use the configured base authority instead, or treat <code>%2F</code>
+    as a path delimiter.</p>
 
 <h3>Providers, filters, and interceptors</h3>
 
-<table class="comparison">
-    <thead>
-    <tr>
-        <th>Change</th>
-        <th>Mu Server 2</th>
-        <th>Mu Server 3</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-        <td>
-            <strong>Application providers versus built-ins</strong><br>
-            Register an application provider for <code>Object</code>, then read or write a <code>String</code>.
-        </td>
-        <td>The built-in String provider can be selected.</td>
-        <td>The application provider wins, even though its accepted Java type is broader.</td>
-    </tr>
-    <tr>
-        <td>
-            <strong>Reader selection by media type</strong><br>
-            Register compatible readers for <code>*/*</code> and <code>application/json</code>, then receive
-            <code>application/json</code>.
-        </td>
-        <td>The <code>*/*</code> reader can be selected.</td>
-        <td>The compatible reader with the more specific media type is preferred.</td>
-    </tr>
-    <tr>
-        <td>
-            <strong>Writer selection by Java type</strong><br>
-            Return a <code>Dog</code> from a method declared as <code>Object</code>, with writers for
-            <code>Animal</code> and <code>Object</code>.
-        </td>
-        <td>The <code>Object</code> writer can be selected.</td>
-        <td>
-            The <code>Animal</code> writer wins because it is nearest to the runtime <code>Dog</code> type.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <strong>Generic entity types</strong><br>
-            Return a generic entity through an inherited method, <code>CompletionStage</code>, or
-            <code>GenericEntity</code>.
-        </td>
-        <td>The provider may receive a raw type or <code>Object</code>.</td>
-        <td>The declared generic type is retained for provider selection.</td>
-    </tr>
-    <tr>
-        <td>
-            <strong>Request entity-stream filters</strong><br>
-            In a request filter, replace the entity stream with a <code>GZIPInputStream</code> and remove the stale
-            <code>Content-Encoding</code> and <code>Content-Length</code> headers.
-        </td>
-        <td>Gzip decoding can fail or produce a truncated request entity.</td>
-        <td>The resource receives the complete decompressed entity and the removed headers remain absent.</td>
-    </tr>
-    <tr>
-        <td>
-            <strong>Response entity-stream filters</strong><br>
-            In a response filter, set status and response metadata, remove any stale <code>Content-Length</code>,
-            and then wrap the entity stream with <code>GZIPOutputStream</code>.
-        </td>
-        <td>The replacement stream may not be closed, leaving an incomplete gzip body.</td>
-        <td>
-            Mu closes the replacement stream, finishing the gzip body. Set metadata before creating the wrapper:
-            its constructor writes bytes and can commit the response. Later header and status changes are too late.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <strong>Reader and writer interceptor order</strong><br>
-            Register interceptors with priorities <code>100</code> and <code>200</code>.
-        </td>
-        <td>Order can depend on registration; a reader interceptor added second can run first.</td>
-        <td>
-            Priority <code>100</code> runs before priority <code>200</code>.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <strong><code>abortWith(...)</code> in a request filter</strong><br>
-            Call <code>abortWith(response)</code> before later request filters.
-        </td>
-        <td>Later request filters can still run, and an exception mapper can replace the supplied response.</td>
-        <td>The request filter chain stops and the supplied response bypasses exception mapping.</td>
-    </tr>
-    <tr>
-        <td>
-            <strong>Non-matching name-bound interceptors</strong><br>
-            Put a non-matching name-bound interceptor before another applicable interceptor.
-        </td>
-        <td>Skipping one can accidentally stop the remaining interceptor chain.</td>
-        <td>The non-matching interceptor is skipped and the rest of the chain continues.</td>
-    </tr>
-    <tr>
-        <td>
-            <strong><code>WebApplicationException</code> with an entity</strong><br>
-            Throw a <code>WebApplicationException</code> that already contains a response entity while an exception
-            mapper is registered.
-        </td>
-        <td>An exception mapper can replace the response already carried by the exception.</td>
-        <td>The response and its entity are preserved.</td>
-    </tr>
-    <tr>
-        <td>
-            <strong>Mutating request state from a response filter</strong><br>
-            Call <code>abortWith</code> or <code>setEntityStream</code> from a response filter.
-        </td>
-        <td>The call may be accepted after request processing has finished.</td>
-        <td>They throw <code>IllegalStateException</code>.</td>
-    </tr>
-    <tr>
-        <td>
-            <strong>Headers changed by filters or interceptors</strong><br>
-            Change a response header before writing, or set an application-supplied <code>Date</code>.
-        </td>
-        <td>The change may miss the response; setting <code>Date</code> can produce two values.</td>
-        <td>
-            The change is sent; an application-supplied <code>Date</code> replaces the server default.
-        </td>
-    </tr>
-    </tbody>
-</table>
+<p>Custom message body readers and writers now take precedence over built-in providers. For example, if you
+    register a provider for <code>Object</code>, it is used for a <code>String</code> entity too.
+    Previously the built-in String provider could be selected instead.</p>
 
-<p>
-    Application message body readers and writers now honor <code>@Priority</code> when their preceding selection
-    criteria tie; lower numbers win and the default is <code>Priorities.USER</code> (5000). Reader selection orders
-    media-type specificity before priority. Writer selection orders Java type, then media-type specificity, then
-    priority. Application exception mappers registered through <code>Application</code> also use priority to break
-    ties for the same exception type. Request filters run in ascending priority order, response filters in descending
-    order, and reader/writer interceptors in ascending order.
-</p>
+<p>There are also fixes to provider selection:</p>
 
-<h3 id="writer-interceptor-lifecycle">Writer interceptors wrap serialization</h3>
+<ul>
+    <li>Readers with a more specific compatible media type are preferred. For an <code>application/json</code>
+        request, a compatible <code>application/json</code> reader now wins over a <code>*/*</code> reader.</li>
+    <li>Writers are selected using the runtime Java type. If a method declared as <code>Object</code> returns a
+        <code>Dog</code>, a writer for <code>Animal</code> now wins over one for <code>Object</code> because it is
+        closer to <code>Dog</code>. In 2.x the <code>Object</code> writer could be selected.</li>
+    <li>Generic types are retained when an entity comes from an inherited method, <code>CompletionStage</code>,
+        or <code>GenericEntity</code>. Providers previously could receive a raw type or <code>Object</code>.</li>
+</ul>
+
+<p>Application readers and writers now use <code>@Priority</code> to break ties. Lower numbers take precedence;
+    the default is <code>Priorities.USER</code> (5000). Readers are selected by media-type specificity, then
+    priority. Writers are selected by Java type, then media-type specificity, then priority. Exception mappers
+    registered through <code>Application</code> also use priority to break ties for the same exception type.</p>
+
+<p>Request filters and reader/writer interceptors run in ascending priority order: <code>100</code> runs before
+    <code>200</code>. Response filters run in descending order. Previously interceptor order could depend on
+    registration order, with a reader interceptor added second running first.</p>
+
+<p>Other filter and interceptor fixes:</p>
+
+<ul>
+    <li>Calling <code>abortWith(response)</code> in a request filter now stops the request filter chain and sends
+        the supplied response without exception mapping. Previously later request filters could still run and
+        an exception mapper could replace the response.</li>
+    <li>Skipping a name-bound interceptor that does not match the resource no longer stops the remaining
+        interceptors from running.</li>
+    <li>A <code>WebApplicationException</code> with its own response entity keeps that response, even when an
+        exception mapper is registered. In 2.x the mapper could replace it.</li>
+    <li>Calling <code>abortWith</code> or <code>setEntityStream</code> from a response filter now throws
+        <code>IllegalStateException</code>. Previously these calls could be accepted after request processing
+        had finished.</li>
+    <li>Response header changes made by filters or interceptors before writing are now sent correctly.
+        An application-supplied <code>Date</code> replaces the server default instead of producing two values.</li>
+</ul>
+
+<p>Request filters can now replace the entity stream with a <code>GZIPInputStream</code> and remove the old
+    <code>Content-Encoding</code> and <code>Content-Length</code> headers without causing failed or truncated gzip
+    decoding. The resource receives the complete decompressed body, and the removed headers stay absent.</p>
+
+<p>Replacement response streams are now closed, so a response filter using <code>GZIPOutputStream</code> produces
+    a complete gzip body.</p>
+
+<p>If your filter uses <code>GZIPOutputStream</code>, set the HTTP status and headers before creating the stream.
+    Also remove any <code>Content-Length</code> calculated for the uncompressed body, as compression changes its size.
+    Creating the stream immediately writes the gzip header and can start sending the response to the client.
+    Once the HTTP status and headers have been sent, they cannot be changed.</p>
+
+<h3 id="writer-interceptor-lifecycle">Writer interceptors</h3>
 
 <p>
     In Mu Server 3, the final <code>WriterInterceptorContext.proceed()</code> call invokes the message body
     writer before returning. In 2.x, the body was written after all writer interceptors had returned.
-    Code after <code>proceed()</code> now runs after serialization, and exceptions from the writer propagate
+    Code after <code>proceed()</code> now runs after serialisation, and exceptions from the writer propagate
     through the interceptors before reaching exception mapping.
 </p>
 
 <p>
     Set the entity, media type, annotations, and output stream before calling <code>proceed()</code>.
-    Changing the entity after that call no longer changes the serialized body. Code that finishes compression,
+    Changing the entity after that call no longer changes the serialised body. Code that finishes compression,
     inspects captured bytes, or appends output can run after <code>proceed()</code>; Mu closes the final
     replacement stream after the interceptors return. Headers must still be set before output commits the response.
 </p>
 
 <p>
     An interceptor that returns without calling <code>proceed()</code> now stops the chain: later interceptors
-    and the body writer do not run. Add that call if your interceptor expects normal serialization to continue.
+    and the body writer do not run. Add that call if your interceptor expects normal serialisation to continue.
     Mu also avoids calculating <code>Content-Length</code> from the original entity when a writer interceptor runs,
     since the interceptor can change the bytes sent. Applications that set this header themselves must supply
     the final transmitted length.
@@ -680,104 +345,28 @@
 
 <h3>Responses, cookies, and variants</h3>
 
-<table class="comparison">
-    <thead>
-    <tr>
-        <th>Change</th>
-        <th>Mu Server 2</th>
-        <th>Mu Server 3</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-        <td>
-            <strong>Default <code>ResponseBuilder</code> status</strong><br>
-            Build a response without explicitly setting its status.
-        </td>
-        <td>The builder does not derive a status from the presence of an entity.</td>
-        <td>A response with an entity defaults to <code>200 OK</code>; one without defaults to <code>204 No Content</code>.</td>
-    </tr>
-    <tr>
-        <td>
-            <strong>Session cookies</strong><br>
-            Return a <code>NewCookie</code> with its default maximum age.
-        </td>
-        <td>The resulting <code>Set-Cookie</code> can expire immediately.</td>
-        <td>Session cookies omit both <code>Max-Age</code> and <code>Expires</code>.</td>
-    </tr>
-    <tr>
-        <td>
-            <strong><code>SameSite</code> cookies</strong><br>
-            Parse or serialize a Jakarta REST 3.1 <code>NewCookie</code> with <code>SameSite</code>.
-        </td>
-        <td>Jakarta REST 3.1 <code>SameSite</code> values are not supported.</td>
-        <td>
-            <code>Strict</code>, <code>Lax</code>, and <code>None</code> are parsed and serialized. For duplicate
-            attributes the last value wins; invalid values are rejected.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <strong>Cookie comments</strong><br>
-            Serialize a <code>NewCookie</code> with comment <code>A "quoted" \ comment</code>.
-        </td>
-        <td>The <code>Comment</code> attribute is omitted.</td>
-        <td>
-            The attribute is emitted as <code>Comment="A \"quoted\" \\ comment"</code>. Carriage returns and line
-            feeds are rejected.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <strong>Unknown response-header object types</strong><br>
-            Add an object with no registered <code>RuntimeDelegate.HeaderDelegate</code> as a response header.
-        </td>
-        <td>
-            Mu Server falls back to <code>toString()</code>, but asking the runtime delegate directly throws a
-            Mu Server exception.
-        </td>
-        <td>
-            The response still uses <code>toString()</code>, while
-            <code>RuntimeDelegate.createHeaderDelegate(...)</code> returns <code>null</code> as required by Jakarta
-            REST.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <strong>Cookies on wrapped responses</strong><br>
-            Add a cookie to a wrapped Jakarta REST response.
-        </td>
-        <td>The same <code>Set-Cookie</code> value can be emitted twice.</td>
-        <td>Each cookie is emitted once.</td>
-    </tr>
-    <tr>
-        <td>
-            <strong>Response entities backed by <code>Reader</code></strong><br>
-            Return a <code>Reader</code> as the response entity.
-        </td>
-        <td>A <code>Reader</code> response entity is not handled as a standard entity type.</td>
-        <td><code>Reader</code> entities are streamed to the response.</td>
-    </tr>
-    <tr>
-        <td>
-            <strong>String response-header view</strong><br>
-            Save the map returned by <code>Response.getStringHeaders()</code>, then mutate either it or
-            <code>Response.getHeaders()</code>.
-        </td>
-        <td>The saved string map is a snapshot and can become stale.</td>
-        <td>Both maps are live views: changes through either one are immediately visible through the other.</td>
-    </tr>
-    <tr>
-        <td>
-            <strong>Variant selection</strong><br>
-            Select from variants containing compatible media types or wildcard encodings, or pass a null variant
-            list.
-        </td>
-        <td>Null lists, wildcard encodings, or compatible media types can produce incorrect selection.</td>
-        <td>Null variant lists are rejected and compatible media types and wildcard encodings are ranked correctly.</td>
-    </tr>
-    </tbody>
-</table>
+<ul>
+    <li>If you do not set a status on a <code>ResponseBuilder</code>, it now defaults to <code>200 OK</code> when
+        there is an entity, or <code>204 No Content</code> when there is none. Previously the builder did not
+        choose a status based on the entity.</li>
+    <li>Fixed session cookies expiring immediately. A <code>NewCookie</code> with the default maximum age now
+        omits both <code>Max-Age</code> and <code>Expires</code> from <code>Set-Cookie</code>.</li>
+    <li>Added support for parsing and serialising Jakarta REST 3.1 <code>NewCookie</code> <code>SameSite</code>
+        values: <code>Strict</code>, <code>Lax</code>, and <code>None</code>. The last value wins if the attribute
+        appears more than once, and invalid values are rejected.</li>
+    <li>Cookie comments are now included. For example, a <code>NewCookie</code> comment of
+        <code>A "quoted" \ comment</code> is written as <code>Comment="A \"quoted\" \\ comment"</code>.
+        Carriage returns and line feeds are rejected.</li>
+    <li>For header object types without a registered <code>RuntimeDelegate.HeaderDelegate</code>,
+        <code>RuntimeDelegate.createHeaderDelegate(...)</code> now returns <code>null</code> as required by
+        Jakarta REST, instead of throwing a Mu Server exception. Response headers still fall back to
+        <code>toString()</code> for these types.</li>
+    <li>Fixed duplicate <code>Set-Cookie</code> values on wrapped Jakarta REST responses. Each cookie is now sent once.</li>
+    <li>Added support for streaming a <code>Reader</code> response entity.</li>
+    <li><code>Response.getStringHeaders()</code> now returns a live view instead of a snapshot.
+        Changes through that map or <code>Response.getHeaders()</code> are immediately visible through the other.</li>
+    <li>Fixed variant selection for compatible media types and wildcard encodings. Null variant lists are now rejected.</li>
+</ul>
 
 <p>
     An empty <code>text/plain</code> request entity for boxed types such as <code>Integer</code> now produces
@@ -786,9 +375,9 @@
     query parameters.
 </p>
 
-<h2>New APIs and capabilities</h2>
+<h2>New features</h2>
 
-<h3>Look up providers and application context</h3>
+<h3>Providers and application context</h3>
 
 <p>
     Resource methods can now receive <code>@Context Providers</code> and <code>@Context Application</code>.
@@ -801,25 +390,36 @@
     .addCustomWriter(providers -&gt; new MyJsonWriter(providers));</code></pre>
 
 <p>
-    The reader/writer factory overloads receive the handler's <code>Providers</code> instance. Retain it for use while
-    reading or writing; lookups are available after <code>build()</code> completes. Provider fields are not injected.
-    An explicitly supplied <code>Application</code> is injected as-is. Programmatically assembled handlers expose an
-    immutable snapshot of their resources and custom JAX-RS providers.
+    You can also pass a factory to <code>addCustomReader</code> or <code>addCustomWriter</code>, as above. The factory
+    receives the handler's <code>Providers</code> instance, which you can keep and use when reading or writing.
+    Lookups are available after <code>build()</code> completes. Provider fields are not injected.
 </p>
-
-<h3>Serve WebJar resources</h3>
-
-<pre><code class="language-java">ContextHandlerBuilder.context("/assets")
-    .addHandler(ResourceHandlerBuilder.webjarHandler("jquery"));</code></pre>
 
 <p>
-    Add the WebJar dependency to your application. The one-argument helper reads its version from Maven metadata
-    under <code>org.webjars</code> or <code>org.webjars.npm</code>. Use
-    <code>webjarHandler("jquery", "3.7.1")</code> to select a version explicitly, including when metadata is absent
-    or multiple versions are present. Resource URLs are relative to the selected WebJar's version directory.
+    A resource method's <code>@Context Application</code> parameter receives the application used to create the
+    handler. If you use <code>RestHandlerBuilder.fromApplication(application)</code>, this is the same object you
+    passed to the builder. If you register resources and providers directly on the builder, Mu Server supplies an
+    <code>Application</code> containing an immutable snapshot of those resources and custom JAX-RS providers.
 </p>
 
-<h3>Use arrays for repeated parameter values</h3>
+<h3>WebJar resources</h3>
+
+<p>To serve files from a WebJar, add its dependency to your application and use <code>webjarHandler</code>.
+    For example, with the Swagger UI WebJar dependency:</p>
+
+<pre><code class="language-java">ContextHandlerBuilder.context("/swagger-ui")
+    .addHandler(ResourceHandlerBuilder.webjarHandler("swagger-ui"));</code></pre>
+
+<p>
+    The one-argument helper reads the version from Maven metadata under <code>org.webjars</code> or
+    <code>org.webjars.npm</code>. To select a version explicitly, pass the version from your WebJar dependency as
+    the second argument: <code>webjarHandler("swagger-ui", swaggerUiVersion)</code>. This is useful when metadata
+    is absent or multiple versions are present. Resource URLs are relative to the selected WebJar's version directory.
+</p>
+
+<h3>Array parameters</h3>
+
+<p>You can now use an array to receive repeated parameter values:</p>
 
 <pre><code class="language-java">@GET
 public List&lt;Result&gt; find(@QueryParam("tag") String[] tags) {
@@ -831,7 +431,9 @@ public List&lt;Result&gt; find(@QueryParam("tag") String[] tags) {
     parameter. The same support applies to the parameter annotations and multipart upload arrays described above.
 </p>
 
-<h3>Read and write XML <code>Source</code> entities</h3>
+<h3>XML entities</h3>
+
+<p>Resources can now read and write XML using <code>javax.xml.transform.Source</code>. For example:</p>
 
 <pre><code class="language-java">@POST
 @Consumes("application/xml")
@@ -849,12 +451,14 @@ public Source echo(Source document) {
 </p>
 
 <p>
-    The request entity stream remains open through response serialization. A resource can return its incoming
+    The request entity stream remains open through response serialisation. A resource can return its incoming
     <code>Source</code>, <code>InputStream</code>, or <code>Reader</code>, including when a request filter wraps the
     input in a <code>GZIPInputStream</code>. Mu closes the request entity stream after writing the response.
 </p>
 
-<h3>Start from a Jakarta REST <code>Application</code></h3>
+<h3>Jakarta REST applications</h3>
+
+<p>To create a handler from a Jakarta REST <code>Application</code>, use <code>RestHandlerBuilder.fromApplication</code>:</p>
 
 <pre><code class="language-java">Application application = new MyApplication();
 
@@ -876,7 +480,9 @@ MuServer server = MuServerBuilder.httpServer()
     <code>@ApplicationPath</code>; use <code>SeBootstrap</code> for those applications.
 </p>
 
-<h3>Use Jakarta REST 3.1 Java SE bootstrap</h3>
+<h3>Java SE bootstrap</h3>
+
+<p>You can also start an application with the Jakarta REST 3.1 <code>SeBootstrap</code> API:</p>
 
 <pre><code class="language-java">MuRuntimeDelegate.ensureSet();
 
@@ -926,67 +532,23 @@ CompletionStage&lt;SeBootstrap.Instance&gt; started =
     set a client-certificate trust manager without choosing a mode remain optional.
 </p>
 
-<h3>SSE lifecycle and concurrency</h3>
+<h3>Server Sent Events</h3>
 
-<table class="comparison">
-    <thead>
-    <tr>
-        <th>Change</th>
-        <th>Mu Server 2</th>
-        <th>Mu Server 3</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-        <td>
-            <strong>Closed state</strong><br>
-            Close an SSE sink or Jakarta REST response, then inspect its state or send another event.
-        </td>
-        <td>
-            <code>SseEventSink.isClosed()</code> can report incorrectly.
-            <code>Response.isClosed()</code> is not part of the Jakarta REST 3.0 API.
-        </td>
-        <td>
-            <code>SseEventSink.isClosed()</code> reflects closure, and sending to a closed sink throws
-            <code>IllegalStateException</code>. Jakarta REST 3.1 also adds <code>Response.isClosed()</code>.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <strong>Broadcaster shutdown</strong><br>
-            Call <code>SseBroadcaster.close(boolean cascading)</code>.
-        </td>
-        <td>The cascading flag is not fully honoured.</td>
-        <td>Cascading close shuts the sinks; non-cascading close leaves them open.</td>
-    </tr>
-    <tr>
-        <td>
-            <strong>Concurrent callbacks</strong><br>
-            Close, disconnect, broadcast, or shut down a broadcaster concurrently.
-        </td>
-        <td>A close or error callback can be delivered more than once.</td>
-        <td>
-            Closure and broadcast-failure notifications are tracked per registration to suppress race-driven duplicates.
-            A separate failure while closing a sink can still produce an additional error notification.
-        </td>
-    </tr>
-    </tbody>
-</table>
+<ul>
+    <li>Fixed <code>SseEventSink.isClosed()</code> reporting the wrong state. Sending an event to a closed sink now
+        throws <code>IllegalStateException</code>. Jakarta REST 3.1 also adds <code>Response.isClosed()</code>,
+        which was not available in 3.0.</li>
+    <li><code>SseBroadcaster.close(boolean cascading)</code> now honours the cascading flag: a cascading close
+        closes the sinks, while a non-cascading close leaves them open.</li>
+    <li>Fixed duplicate close and broadcast-failure callbacks when a close, disconnect, broadcast, or broadcaster
+        shutdown happens concurrently. Notifications are tracked per registration. A separate failure while
+        closing a sink can still cause an additional error notification.</li>
+</ul>
 
-<h2>Try it with your 2.x application</h2>
+<h2>Feedback</h2>
 
-<p>
-    The cases above are deliberately detailed: many came from Jakarta REST compatibility tests and are unlikely to
-    affect a straightforward resource. They are the places most worth exercising if your application depends on
-    overlapping providers, filter order, custom conversion, generic resource interfaces, raw URI values, cookies, or
-    SSE.
-</p>
-
-<p>
-    Please report a regression—or a Jakarta REST behaviour you expect but do not see—on the
-    <a href="https://github.com/3redronin/mu-server/issues">issue tracker</a>.
-    You can also
-    <a href="https://github.com/3redronin/mu-server/compare/mu-server-2.4.2..mu-server-0.0.3.7">compare the 2.4.2 and 3.x source trees</a>.
-</p>
+<p>If you find a regression or a Jakarta REST feature that does not behave as expected, please
+    <a href="https://github.com/3redronin/mu-server/issues">raise an issue</a>.
+    You can also <a href="https://github.com/3redronin/mu-server/compare/mu-server-2.4.2..mu-server-0.0.3.7">compare the 2.4.2 and 3.x source trees</a>.</p>
 
 {% endblock %}
