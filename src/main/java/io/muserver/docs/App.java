@@ -62,6 +62,7 @@ public class App {
             .addHandler(Method.GET, "/changelog/mu-server-3", new VanillaHandler(renderer, "mu-server-3", "Mu Server 3.0.0 migration guide"))
             .addHandler(Method.GET, "/async", new VanillaHandler(renderer, "async", "Asynchronous non-blocking request handling"))
             .addHandler(Method.GET, "/model", new VanillaHandler(renderer, "model", "Request and Response model"))
+            .addHandler(Method.GET, "/proxy-protocol", new VanillaHandler(renderer, "proxy-protocol", "HAProxy PROXY protocol listeners"))
             .addHandler(Method.GET, "/model/query", new QueryStringExampleHandler())
             .addHandler(Method.GET, "/model/headers", new HeaderExampleHandler())
             .addHandler(Method.GET, "/model/cookie", new CookieExampleHandler())

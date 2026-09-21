@@ -1,0 +1,117 @@
+{% extends "template.html" %}
+{% block head %}
+<meta name="description" content="Use HAProxy PROXY protocol v1 and v2 with Mu Server to read original client addresses behind a TCP proxy, including TLS passthrough.">
+{% endblock %}
+{% block main %}
+
+<p>The HAProxy PROXY protocol lets a TCP proxy or load balancer pass the original client's address and port
+    to a backend server. Without it, the backend sees the proxy as the other end of its connection.
+    Mu Server supports PROXY protocol v1 and v2 in versions 2 (since 2.1.0), 3 and 4.</p>
+
+<h2 id="background">How it works</h2>
+
+<p>The proxy sends connection information once, at the start of the backend connection, before any HTTP or
+    TLS traffic. Version 1 uses a text header; version 2 uses a binary header. Both carry source and
+    destination connection details.</p>
+
+<p>This is useful for TLS passthrough: a proxy can forward the encrypted connection and report the client's
+    address without decrypting HTTP requests. With HTTP headers such as <code>Forwarded</code> or
+    <code>X-Forwarded-For</code>, the proxy needs access to the HTTP request instead. PROXY protocol metadata
+    is available through Mu's connection API, separately from request headers.</p>
+
+<h2 id="enable">Enable PROXY protocol</h2>
+
+<p>PROXY protocol is disabled by default. Enable it on the server builder, then read the forwarded information
+    from <code>request.connection().proxyInfo()</code>.</p>
+
+<h3 id="mu2-mu3">Mu Server 2 and 3</h3>
+
+<p>Use <code>withHAProxyProtocolEnabled(true)</code>:</p>
+
+<pre><code class="language-java">import io.muserver.MuServer;
+import io.muserver.MuServerBuilder;
+import io.muserver.ProxiedConnectionInfo;
+
+MuServer server = MuServerBuilder.httpsServer()
+    .withHAProxyProtocolEnabled(true)
+    .addHandler((request, response) -&gt; {
+        ProxiedConnectionInfo info = request.connection().proxyInfo().orElseThrow();
+        response.write(String.valueOf(info.sourceAddress()));
+        return true;
+    }).start();</code></pre>
+
+<h3 id="mu4">Mu Server 4</h3>
+
+<p>Use <code>HAProxyProtocolConfigBuilder</code> to enable PROXY protocol and configure the accepted versions,
+    preamble timeout and v2 payload limit:</p>
+
+<pre><code class="language-java">import io.muserver.HAProxyProtocolConfigBuilder;
+import io.muserver.MuServer;
+import io.muserver.MuServerBuilder;
+import io.muserver.ProxiedConnectionInfo;
+
+MuServer server = MuServerBuilder.httpsServer()
+    .withHAProxyProtocolConfig(HAProxyProtocolConfigBuilder.config())
+    .addHandler((request, response) -&gt; {
+        ProxiedConnectionInfo info = request.connection().proxyInfo().orElseThrow();
+        response.write(String.valueOf(info.sourceAddress()));
+        return true;
+    }).start();</code></pre>
+
+<p>The config builder defaults to both V1 and V2, a ten-second timeout and a 65,535-byte v2 payload limit.
+    For example, to accept only V2 with a shorter timeout and smaller limit:</p>
+
+<pre><code class="language-java">import io.muserver.HAProxyProtocolVersion;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+// Use this configuration on the server builder:
+.withHAProxyProtocolConfig(HAProxyProtocolConfigBuilder.config()
+    .withSupportedVersions(List.of(HAProxyProtocolVersion.V2))
+    .withTimeout(5, TimeUnit.SECONDS)
+    .withMaxV2PayloadSize(4096))</code></pre>
+
+<p>The timeout is the time allowed to receive the PROXY preamble after accepting a connection; HTTP idle
+    and request timeouts are separate. The v2 payload limit excludes the fixed 16-byte header and can be
+    from 0 to 65,535 bytes. Use <code>withEnabled(false)</code> on the config builder to disable PROXY protocol.</p>
+
+<p>The boolean <code>withHAProxyProtocolEnabled(...)</code> API is deprecated in Mu4. When migrating,
+    replace <code>withHAProxyProtocolEnabled(true)</code> with the config builder above. Calling the boolean
+    method with true replaces any custom PROXY configuration with the defaults.</p>
+
+<p>PROXY protocol works with both plaintext HTTP and HTTPS.</p>
+
+<h2 id="proxy-setup">Configure the proxy and listener</h2>
+
+<p>Enable HAProxy's <code>send-proxy</code> (v1) or <code>send-proxy-v2</code> (v2) on the backend server line.
+    Every connection to the enabled listener must send a PROXY header before TLS or HTTP, including health
+    checks. With TLS passthrough, the TLS handshake follows the PROXY header.</p>
+
+<p>Only trusted proxies should be able to connect to this listener. Restrict access using the bind address,
+    firewall, security group or network policy. PROXY metadata is supplied by the connecting peer and is not
+    proof of the client's identity; allowing untrusted connections would let callers advertise false addresses.</p>
+
+<h2 id="connection-metadata">Read connection metadata</h2>
+
+<p><code>HttpConnection.proxyInfo()</code> returns an <code>Optional&lt;ProxiedConnectionInfo&gt;</code>.
+    It is empty when no proxy information is available. The example above expects it to be present because
+    the listener requires PROXY protocol. The {{ javadoc("io.muserver.ProxiedConnectionInfo") | raw }} API exposes:</p>
+
+<ul>
+    <li><code>sourceAddress()</code> and <code>sourcePort()</code>: the client address and port reported by the proxy.</li>
+    <li><code>destinationAddress()</code> and <code>destinationPort()</code>: the destination address and port
+        reported by the proxy.</li>
+</ul>
+
+<p>Some PROXY headers do not advertise endpoints, so an address can be null even when the
+    <code>Optional</code> contains metadata. The connection's <code>remoteAddress()</code> and
+    <code>localAddress()</code> continue to describe the actual socket endpoints.</p>
+
+<p>PROXY information belongs to the entire connection. Keep-alive requests, HTTP/2 streams and a WebSocket
+    upgrade on that connection share it. Configure your proxy so that it does not reuse a backend connection
+    for unrelated client identities.</p>
+
+<p>For the wire format and proxy interoperability details, see the
+    <a href="https://www.haproxy.org/download/3.0/doc/proxy-protocol.txt">HAProxy PROXY protocol specification</a>.</p>
+
+{% endblock %}
