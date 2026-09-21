@@ -59,13 +59,24 @@ public interface ViewRenderer {
 class ViewRendererImpl implements ViewRenderer {
     private static final Logger log = LoggerFactory.getLogger(ViewRendererImpl.class);
 
-    private static final String muVersion = MuServer.artifactVersion();
+    private final String muVersion;
     private final boolean isLocal;
     private final PebbleEngine engine;
 
     ViewRendererImpl(boolean isLocal, PebbleEngine engine) {
         this.isLocal = isLocal;
         this.engine = engine;
+        Properties config = new Properties();
+        try (InputStream in = ViewRenderer.class.getResourceAsStream("/site.properties")) {
+            if (in != null) {
+                config.load(in);
+            }
+        } catch (java.io.IOException e) {
+            throw new IllegalStateException("Could not read site.properties", e);
+        }
+        String override = System.getProperty("mu-server.display-version",
+            config.getProperty("mu-server.display-version", ""));
+        this.muVersion = override.isBlank() ? MuServer.artifactVersion() : override.trim();
     }
 
     @Override
