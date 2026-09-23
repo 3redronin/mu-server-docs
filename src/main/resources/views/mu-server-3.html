@@ -17,6 +17,10 @@
 
 <ul>
     <li><strong>Java 11 or later is now required</strong>, up from Java 8.</li>
+    <li>HTTP <code>QUERY</code> requests are supported in Mu handlers and Jakarta REST resources using
+        <code>io.muserver.rest.QUERY</code>.</li>
+    <li>Generated OpenAPI documents are upgraded from 3.0 to 3.2.1, including <code>QUERY</code> operations and
+        schemas for server-sent events (SSE).</li>
     <li>Jakarta REST is upgraded from 3.0 to
         <a href="https://jakarta.ee/specifications/restful-ws/3.1/">3.1</a>. If you manage the Jakarta REST API
         dependency separately, update it to 3.1.</li>
@@ -34,7 +38,7 @@
 <pre><code class="language-xml">&lt;dependency&gt;
     &lt;groupId&gt;io.muserver&lt;/groupId&gt;
     &lt;artifactId&gt;mu-server&lt;/artifactId&gt;
-    &lt;version&gt;0.0.3.7&lt;/version&gt;
+    &lt;version&gt;0.0.3.9&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 
 <p>A typical application with unambiguous resource paths and one JSON provider may need no source changes beyond
@@ -42,6 +46,49 @@
     error bodies. If you use custom providers, filters, interceptors, converters, generic resource interfaces,
     URI building, matrix parameters, async endpoints, or SSE, see the relevant changes below. Also check any code
     that uses the boolean returned by graceful shutdown.</p>
+
+<h2>QUERY and OpenAPI 3.2</h2>
+
+<p>Mu Server 3 supports the safe, idempotent HTTP <code>QUERY</code> method. Use <code>Method.QUERY</code> with a
+    Mu handler, or annotate a Jakarta REST resource method with <code>io.muserver.rest.QUERY</code>:</p>
+
+<pre><code class="language-java">@Path("/search")
+public class SearchResource {
+    @io.muserver.rest.QUERY
+    @Consumes("text/plain")
+    @Produces("text/plain")
+    public String search(String query) {
+        return "Result for " + query;
+    }
+}</code></pre>
+
+<p>A <code>QUERY</code> request needs a valid, concrete <code>Content-Type</code>, even when its body is empty.
+    Mu Server uses <code>@Consumes</code> to select the resource method and advertises supported query body types
+    in <code>Accept-Query</code> on automatic <code>OPTIONS</code> and unsupported-media-type responses.</p>
+
+<p>Generated OpenAPI JSON now declares <code>"openapi": "3.2.1"</code>. A resource method like the one above
+    appears as a <code>query</code> operation with a request body and response. SSE responses can also describe
+    the events clients receive. Add the repeatable <code>io.muserver.rest.ApiSseEvent</code> annotation to a
+    Jakarta REST streaming method, specifying each event name, payload type, and payload media type:</p>
+
+<pre><code class="language-java">@GET
+@Path("/prices")
+@Produces(MediaType.SERVER_SENT_EVENTS)
+@io.muserver.rest.ApiSseEvent(name = "price", data = Integer.class,
+    mediaType = "application/json", description = "Current price")
+public void prices(@Context SseEventSink sink, @Context Sse sse) {
+    sink.send(sse.newEventBuilder().name("price")
+        .mediaType(MediaType.APPLICATION_JSON_TYPE)
+        .data(Integer.class, 42).build())
+        .whenComplete((ignored, error) -&gt; sink.close());
+}</code></pre>
+
+<p>The generated <code>text/event-stream</code> response uses OpenAPI 3.2's <code>itemSchema</code> to describe a
+    parsed event with <code>event</code>, <code>data</code>, <code>id</code>, and <code>retry</code> fields. For the
+    example above, <code>event</code> is fixed to <code>price</code>, and the string <code>data</code> field has
+    <code>contentMediaType: application/json</code> and a <code>contentSchema</code> for <code>Integer</code>.
+    Add more <code>@ApiSseEvent</code> annotations for other named events; they become alternatives in the
+    <code>itemSchema</code>. The annotation documents the stream and does not change what the method sends.</p>
 
 <h2>Jakarta REST support</h2>
 
@@ -54,7 +101,7 @@
     providers. It does not support <code>EntityPart</code>, the standard <code>List&lt;EntityPart&gt;</code> multipart
     providers, <code>Feature</code>/<code>DynamicFeature</code> service loading, per-request resource injection,
     or bean validation. See the
-    <a href="https://github.com/3redronin/mu-server/blob/mu-server-0.0.3.7/src/main/java/io/muserver/rest/README.md">Mu Server spec implementation page</a>
+    <a href="https://github.com/3redronin/mu-server/blob/mu-server-0.0.3.9/src/main/java/io/muserver/rest/README.md">Mu Server spec implementation page</a>
     for the full list.</p>
 
 <h2>Behaviour changes</h2>
@@ -62,7 +109,8 @@
 <h3>REST exception responses</h3>
 
 <p>
-    Mu Server 3 registers an exception mapper for <code>Throwable</code> by default. Application-specific exception
+    Mu Server 3 registers an exception mapper for <code>Throwable</code> by default on Jakarta REST (JAX-RS)
+    handlers. This does not change error handling for ordinary Mu handlers. Application-specific exception
     mappers still take precedence, and a <code>WebApplicationException</code> that already has an entity keeps its
     original response.
 </p>
@@ -72,6 +120,12 @@
     instead of Mu Server's standard HTML error page. It includes the detail <code>An unexpected error occurred</code>
     and a unique <code>urn:uuid:</code> instance ID, with a <code>Cache-Control: no-store</code> header.
     The exception and instance ID are logged; the exception message is not sent to the client.</p>
+
+<p>This also applies to expected errors thrown by resource methods, such as <code>NotFoundException</code> and
+    <code>BadRequestException</code>, when they have no explicit response entity. For example,
+    <code>new NotFoundException("No user with id 4")</code> still returns <code>404 Not Found</code>, but the HTML
+    error body becomes <code>application/problem+json</code>, with <code>No user with id 4</code> as the
+    <code>title</code>. Check clients that parse these error bodies as well as those handling unexpected errors.</p>
 
 <p>A malformed <code>Accept</code> header, such as <code>Accept: text</code>, still returns
     <code>400 Bad Request</code>, also with <code>application/problem+json</code> instead of the standard error response.</p>
@@ -549,6 +603,6 @@ CompletionStage&lt;SeBootstrap.Instance&gt; started =
 
 <p>If you find a regression or a Jakarta REST feature that does not behave as expected, please
     <a href="https://github.com/3redronin/mu-server/issues">raise an issue</a>.
-    You can also <a href="https://github.com/3redronin/mu-server/compare/mu-server-2.4.2..mu-server-0.0.3.7">compare the 2.4.2 and 3.x source trees</a>.</p>
+    You can also <a href="https://github.com/3redronin/mu-server/compare/mu-server-2.4.2..mu-server-0.0.3.9">compare the 2.4.2 and 3.x source trees</a>.</p>
 
 {% endblock %}
