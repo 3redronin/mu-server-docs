@@ -16,7 +16,7 @@ import static org.hamcrest.Matchers.is;
 public class DisplayVersionTest {
     @Test
     public void configuredStableVersionIsAdvertised() throws Exception {
-        assertDownloadVersion(null, "2.4.2");
+        assertDownloadVersion(null, "2.4.3");
     }
 
     @Test

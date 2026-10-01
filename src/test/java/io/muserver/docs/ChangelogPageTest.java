@@ -36,6 +36,7 @@ public class ChangelogPageTest {
         try (Response response = new OkHttpClient().newCall(request).execute()) {
             assertThat(response.code(), is(200));
             String html = response.body().string();
+            assertThat(html, containsString("<a class=\"release-anchor\" href=\"#v2.4.3\">2.4.3</a>"));
             assertThat(html, containsString("<a class=\"release-anchor\" href=\"#v2.4.2\">2.4.2</a>"));
             assertThat(html, containsString("<a class=\"release-anchor\" href=\"#v2.4.1\">2.4.1</a>"));
             int releaseCount = countMatches(html, "<div class=\"release[^\"]*\"");

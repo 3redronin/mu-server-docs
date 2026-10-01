@@ -10,8 +10,8 @@
 {% block main %}
 
 <p>Mu Server 3 upgrades to Jakarta REST 3.1 and fixes a number of JAX-RS compatibility issues.
-    These notes cover the changes from <code>2.4.2</code> to <code>3.0.0</code>. If you are upgrading
-    from an older 2.x version, see the <a href="/changelog">changelog</a> for the changes before 2.4.2.</p>
+    These notes cover the changes from <code>2.4.3</code> to <code>3.0.0</code>. If you are upgrading
+    from an older 2.x version, see the <a href="/changelog">changelog</a> for the changes before 2.4.3.</p>
 
 <h2>Upgrading from 2.x</h2>
 
@@ -38,7 +38,7 @@
 <pre><code class="language-xml">&lt;dependency&gt;
     &lt;groupId&gt;io.muserver&lt;/groupId&gt;
     &lt;artifactId&gt;mu-server&lt;/artifactId&gt;
-    &lt;version&gt;0.0.3.9&lt;/version&gt;
+    &lt;version&gt;0.0.3.11&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 
 <p>A typical application with unambiguous resource paths and one JSON provider may need no source changes beyond
@@ -90,6 +90,15 @@ public void prices(@Context SseEventSink sink, @Context Sse sse) {
     Add more <code>@ApiSseEvent</code> annotations for other named events; they become alternatives in the
     <code>itemSchema</code>. The annotation documents the stream and does not change what the method sends.</p>
 
+<h2>HTTP/2 request validation</h2>
+
+<p>HTTP/2 requests are rejected if <code>Host</code> does not match <code>:authority</code>.</p>
+
+<h2>Dependency updates</h2>
+
+<p>The <code>0.0.3.11</code> prerelease uses Netty <code>4.1.138.Final</code> and is also tested with
+    <code>4.2.18.Final</code>. The Jakarta Annotations API dependency is updated to <code>2.1.1</code>.</p>
+
 <h2>Jakarta REST support</h2>
 
 <p>Mu Server 3 follows the Jakarta REST specification more closely, including cases where 2.x behaved differently
@@ -101,7 +110,7 @@ public void prices(@Context SseEventSink sink, @Context Sse sse) {
     providers. It does not support <code>EntityPart</code>, the standard <code>List&lt;EntityPart&gt;</code> multipart
     providers, <code>Feature</code>/<code>DynamicFeature</code> service loading, per-request resource injection,
     or bean validation. See the
-    <a href="https://github.com/3redronin/mu-server/blob/mu-server-0.0.3.9/src/main/java/io/muserver/rest/README.md">Mu Server spec implementation page</a>
+    <a href="https://github.com/3redronin/mu-server/blob/mu-server-0.0.3.11/src/main/java/io/muserver/rest/README.md">Mu Server spec implementation page</a>
     for the full list.</p>
 
 <h2>Behaviour changes</h2>
@@ -603,6 +612,6 @@ CompletionStage&lt;SeBootstrap.Instance&gt; started =
 
 <p>If you find a regression or a Jakarta REST feature that does not behave as expected, please
     <a href="https://github.com/3redronin/mu-server/issues">raise an issue</a>.
-    You can also <a href="https://github.com/3redronin/mu-server/compare/mu-server-2.4.2..mu-server-0.0.3.9">compare the 2.4.2 and 3.x source trees</a>.</p>
+    You can also <a href="https://github.com/3redronin/mu-server/compare/mu-server-2.4.3..mu-server-0.0.3.11">compare the 2.4.3 and 3.x source trees</a>.</p>
 
 {% endblock %}
