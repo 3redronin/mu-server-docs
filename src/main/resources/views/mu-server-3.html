@@ -38,7 +38,7 @@
 <pre><code class="language-xml">&lt;dependency&gt;
     &lt;groupId&gt;io.muserver&lt;/groupId&gt;
     &lt;artifactId&gt;mu-server&lt;/artifactId&gt;
-    &lt;version&gt;0.0.3.11&lt;/version&gt;
+    &lt;version&gt;0.0.3.12&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 
 <p>A typical application with unambiguous resource paths and one JSON provider may need no source changes beyond
@@ -105,7 +105,7 @@ public void prices(@Context SseEventSink sink, @Context Sse sse) {
     providers. It does not support <code>EntityPart</code>, the standard <code>List&lt;EntityPart&gt;</code> multipart
     providers, <code>Feature</code>/<code>DynamicFeature</code> service loading, per-request resource injection,
     or bean validation. See the
-    <a href="https://github.com/3redronin/mu-server/blob/mu-server-0.0.3.11/src/main/java/io/muserver/rest/README.md">Mu Server spec implementation page</a>
+    <a href="https://github.com/3redronin/mu-server/blob/mu-server-0.0.3.12/src/main/java/io/muserver/rest/README.md">Mu Server spec implementation page</a>
     for the full list.</p>
 
 <h2>Behaviour changes</h2>
@@ -607,6 +607,6 @@ CompletionStage&lt;SeBootstrap.Instance&gt; started =
 
 <p>If you find a regression or a Jakarta REST feature that does not behave as expected, please
     <a href="https://github.com/3redronin/mu-server/issues">raise an issue</a>.
-    You can also <a href="https://github.com/3redronin/mu-server/compare/mu-server-2.4.3..mu-server-0.0.3.11">compare the 2.4.3 and 3.x source trees</a>.</p>
+    You can also <a href="https://github.com/3redronin/mu-server/compare/mu-server-2.4.3..mu-server-0.0.3.12">compare the 2.4.3 and 3.x source trees</a>.</p>
 
 {% endblock %}
