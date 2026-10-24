@@ -27,23 +27,14 @@ public class App {
     public static void main(String[] args) throws Exception {
 
         boolean isLocal = args.length == 1 && args[0].equals("local");
-        int acmeStartDelaySeconds = Integer.parseInt(System.getenv().getOrDefault("MUSERVER_ACME_START_DELAY_SECONDS", "0"));
-        if (acmeStartDelaySeconds < 0 || acmeStartDelaySeconds > 300) {
-            throw new IllegalArgumentException("MUSERVER_ACME_START_DELAY_SECONDS must be between 0 and 300");
-        }
 
         ViewRenderer renderer = ViewRenderer.create(isLocal);
 
-        AcmeCertManagerBuilder acmeBuilder = AcmeCertManagerBuilder.letsEncrypt()
-            .withConfigDir(new File(System.getenv().getOrDefault("MUSERVER_ACME_CONFIG_DIR", "letsencrypt")));
-        for (String domain : System.getenv().getOrDefault("MUSERVER_DOMAINS", "muserver.io,www.muserver.io").split(",")) {
-            if (domain.isBlank()) {
-                throw new IllegalArgumentException("MUSERVER_DOMAINS must contain comma-separated hostnames");
-            }
-            acmeBuilder.withDomain(domain.trim());
-        }
-        AcmeCertManager acmeCertManager = acmeBuilder
-            .disable(isLocal || !Boolean.parseBoolean(System.getenv().getOrDefault("MUSERVER_ACME_ENABLED", "true")))
+        AcmeCertManager acmeCertManager = AcmeCertManagerBuilder.letsEncrypt()
+            .withConfigDir(new File("letsencrypt"))
+            .withDomain("muserver.io")
+            .withDomain("www.muserver.io")
+            .disable(isLocal) // when local, a no-op manager is returned
             .build();
 
         MuServer server = muServer()
@@ -53,9 +44,6 @@ public class App {
             .withHttpsConfig(acmeCertManager.createHttpsConfig())
             .addHandler((req, resp) -> {
                 log.info("Received " + req + " from " + req.remoteAddress());
-                if (Boolean.parseBoolean(System.getenv("MUSERVER_NOINDEX"))) {
-                    resp.headers().set("X-Robots-Tag", "noindex, nofollow");
-                }
                 return false;
             })
             .addHandler(acmeCertManager.createHandler())
@@ -117,18 +105,14 @@ public class App {
             .addHandler(ResourceMimeTypes.resourceHandler())
             .start();
 
+        acmeCertManager.start(server);
+
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             acmeCertManager.stop();
             server.stop();
         }));
 
         log.info("Started at " + server.uri());
-
-        // Let the container become healthy and its proxy routes publish before HTTP-01 starts.
-        if (!isLocal && acmeStartDelaySeconds > 0) {
-            TimeUnit.SECONDS.sleep(acmeStartDelaySeconds);
-        }
-        acmeCertManager.start(server);
 
     }
 
