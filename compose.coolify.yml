@@ -1,0 +1,52 @@
+services:
+  docs:
+    build: .
+    restart: unless-stopped
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 1g
+    cpus: 1.0
+    pids_limit: 256
+    tmpfs:
+      - /tmp:size=128m,mode=1777,exec,nosuid,nodev
+    volumes:
+      - acme:/app/letsencrypt
+    networks:
+      - docs
+    healthcheck:
+      test: [CMD, curl, --fail, --silent, --insecure, https://localhost:8443/]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 90s
+      start_interval: 1s
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '3'
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=${DOCS_NETWORK:?Set DOCS_NETWORK}
+      - traefik.tcp.routers.mudocs-tls.entrypoints=https
+      - traefik.tcp.routers.mudocs-tls.rule=HostSNI(`muserver.io`) || HostSNI(`www.muserver.io`)
+      - traefik.tcp.routers.mudocs-tls.tls.passthrough=true
+      - traefik.tcp.routers.mudocs-tls.service=mudocs-tls
+      - traefik.tcp.services.mudocs-tls.loadbalancer.server.port=8443
+      - traefik.http.routers.mudocs-http.entrypoints=http
+      - traefik.http.routers.mudocs-http.rule=Host(`muserver.io`) || Host(`www.muserver.io`)
+      - traefik.http.routers.mudocs-http.service=mudocs-http
+      - traefik.http.services.mudocs-http.loadbalancer.server.port=8080
+      - traefik.http.routers.mudocs-acme.entrypoints=http
+      - traefik.http.routers.mudocs-acme.rule=(Host(`muserver.io`) || Host(`www.muserver.io`)) && PathPrefix(`/.well-known/acme-challenge/`)
+      - traefik.http.routers.mudocs-acme.priority=1000000001
+      - traefik.http.routers.mudocs-acme.service=mudocs-http
+
+volumes:
+  acme:
+
+networks:
+  docs:
+    external: true
+    name: ${DOCS_NETWORK:?Set DOCS_NETWORK}
