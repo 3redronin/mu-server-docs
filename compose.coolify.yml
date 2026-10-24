@@ -14,6 +14,8 @@ services:
       MUSERVER_DOMAINS: ${MUSERVER_DOMAINS:?Set MUSERVER_DOMAINS}
       MUSERVER_NOINDEX: ${MUSERVER_NOINDEX:-false}
       MUSERVER_ACME_START_DELAY_SECONDS: '15'
+      MUSERVER_ACME_CONFIG_DIR: ${MUSERVER_ACME_CONFIG_DIR:-letsencrypt}
+      MUSERVER_ACME_ENABLED: ${MUSERVER_ACME_ENABLED:-true}
     volumes:
       - acme:/app/letsencrypt
     networks:
@@ -34,16 +36,16 @@ services:
       - traefik.enable=true
       - traefik.docker.network=${DOCS_NETWORK:?Set DOCS_NETWORK}
       - traefik.tcp.routers.mudocs-tls.entrypoints=https
-      - traefik.tcp.routers.mudocs-tls.rule=HostSNI(`${DOCS_HOST:?Set DOCS_HOST}`)
+      - traefik.tcp.routers.mudocs-tls.rule=HostSNI(`${DOCS_HOST:?Set DOCS_HOST}`) || HostSNI(`${DOCS_ALT_HOST:-${DOCS_HOST}}`)
       - traefik.tcp.routers.mudocs-tls.tls.passthrough=true
       - traefik.tcp.routers.mudocs-tls.service=mudocs-tls
       - traefik.tcp.services.mudocs-tls.loadbalancer.server.port=8443
       - traefik.http.routers.mudocs-http.entrypoints=http
-      - traefik.http.routers.mudocs-http.rule=Host(`${DOCS_HOST:?Set DOCS_HOST}`)
+      - traefik.http.routers.mudocs-http.rule=Host(`${DOCS_HOST:?Set DOCS_HOST}`) || Host(`${DOCS_ALT_HOST:-${DOCS_HOST}}`)
       - traefik.http.routers.mudocs-http.service=mudocs-http
       - traefik.http.services.mudocs-http.loadbalancer.server.port=8080
       - traefik.http.routers.mudocs-acme.entrypoints=http
-      - traefik.http.routers.mudocs-acme.rule=Host(`${DOCS_HOST:?Set DOCS_HOST}`) && PathPrefix(`/.well-known/acme-challenge/`)
+      - traefik.http.routers.mudocs-acme.rule=(Host(`${DOCS_HOST:?Set DOCS_HOST}`) || Host(`${DOCS_ALT_HOST:-${DOCS_HOST}}`)) && PathPrefix(`/.well-known/acme-challenge/`)
       - traefik.http.routers.mudocs-acme.priority=1000000001
       - traefik.http.routers.mudocs-acme.service=mudocs-http
 

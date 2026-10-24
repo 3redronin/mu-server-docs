@@ -35,7 +35,7 @@ public class App {
         ViewRenderer renderer = ViewRenderer.create(isLocal);
 
         AcmeCertManagerBuilder acmeBuilder = AcmeCertManagerBuilder.letsEncrypt()
-            .withConfigDir(new File("letsencrypt"));
+            .withConfigDir(new File(System.getenv().getOrDefault("MUSERVER_ACME_CONFIG_DIR", "letsencrypt")));
         for (String domain : System.getenv().getOrDefault("MUSERVER_DOMAINS", "muserver.io,www.muserver.io").split(",")) {
             if (domain.isBlank()) {
                 throw new IllegalArgumentException("MUSERVER_DOMAINS must contain comma-separated hostnames");
@@ -43,7 +43,7 @@ public class App {
             acmeBuilder.withDomain(domain.trim());
         }
         AcmeCertManager acmeCertManager = acmeBuilder
-            .disable(isLocal) // when local, a no-op manager is returned
+            .disable(isLocal || !Boolean.parseBoolean(System.getenv().getOrDefault("MUSERVER_ACME_ENABLED", "true")))
             .build();
 
         MuServer server = muServer()
