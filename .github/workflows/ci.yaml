@@ -2,6 +2,9 @@ name: Build and test
 
 on: [push, pull_request]
 
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -20,3 +23,23 @@ jobs:
 
       - name: Build with Maven on JDK ${{ matrix.java }}
         run: mvn --batch-mode --update-snapshots verify
+
+      - name: Test deployment trigger
+        run: python3 -m unittest discover -s .github/scripts -p 'test_*.py'
+
+  deploy:
+    name: Deploy tested commit
+    needs: build
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    concurrency:
+      group: coolify-deploy-${{ github.repository }}
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+      - name: Trigger deployment
+        env:
+          COOLIFY_DEPLOY_CONFIG: ${{ secrets.COOLIFY_DEPLOY_CONFIG }}
+          GH_TOKEN: ${{ github.token }}
+        run: python3 .github/scripts/deploy.py
