@@ -43,7 +43,8 @@ class DeploymentTest(unittest.TestCase):
         self.assertEqual(request.call_count, 1)
 
     def test_only_exact_tested_commit_is_signed_without_forwarding_api_token(self):
-        request, output = self.run_main([{"object": {"sha": self.sha}}, [{"status": "queued"}]])
+        request, output = self.run_main([{"object": {"sha": self.sha}}, [
+            {"status": "success", "message": "Deployment queued.", "deployment_uuid": "test-deployment"}]])
         sent = request.call_args_list[1].args[1]
         body = json.loads(sent.data)
         self.assertEqual(body["after"], self.sha)
@@ -53,6 +54,11 @@ class DeploymentTest(unittest.TestCase):
         self.assertIsNone(sent.get_header("Authorization"))
         self.assertNotIn(self.config["webhook_secret"], output)
         self.assertNotIn(self.config["webhook_url"], output)
+        self.assertNotIn("test-deployment", output)
+
+    def test_success_without_deployment_id_is_not_accepted(self):
+        with self.assertRaises(ValueError):
+            self.run_main([{"object": {"sha": self.sha}}, [{"status": "success"}]])
 
     def test_http_success_with_rejected_deployment_is_failure(self):
         with self.assertRaises(ValueError):

@@ -74,7 +74,9 @@ def main():
         "X-GitHub-Delivery": str(uuid.uuid4()), "X-Hub-Signature-256": "sha256=" + signature,
     }))
     if not isinstance(result, list) or not result or any(
-            not isinstance(row, dict) or row.get("status") != "queued" for row in result):
+            not isinstance(row, dict) or row.get("status") not in ("success", "queued")
+            or not isinstance(row.get("deployment_uuid"), str) or not row["deployment_uuid"]
+            for row in result):
         raise ValueError("Deployment was not queued; check the private deployment dashboard.")
     print("Deployment queued for tested commit " + payload["after"] + ".")
 
